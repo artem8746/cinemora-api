@@ -3,9 +3,11 @@ import { ConfigModule } from '@nestjs/config';
 import { envValidationSchema } from './config/env-validation.schema';
 import { LoggerModule } from 'nestjs-pino';
 import { Response } from 'express';
+import { SentryModule } from '@sentry/nestjs/setup';
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: process.env.ENV_PATH,

@@ -10,9 +10,11 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+
     "paths": {
       "@/*": ["./src/*"]
     },
+
     "incremental": true,
     "skipLibCheck": true,
     "strictPropertyInitialization": false,
@@ -22,7 +24,13 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "inlineSources": true,
+
+    // Set `sourceRoot` to  "/" to strip the build path prefix
+    // from generated source code references.
+    // This improves issue grouping in Sentry.
+    "sourceRoot": "/"
   },
   "include": ["src/**/*.ts", "src/public/**/*"]
 }
