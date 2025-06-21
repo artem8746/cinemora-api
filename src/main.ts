@@ -1,3 +1,5 @@
+import './instrument';
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import {
@@ -24,7 +26,6 @@ function enableSwagger(app: INestApplication) {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('API', app, document);
   SwaggerModule.setup('swagger', app, document, {
     jsonDocumentUrl: 'swagger/json',
   });
@@ -89,7 +90,7 @@ async function bootstrap() {
 
     if (!isProduction) {
       logger.log(
-        `Swagger is available at http://localhost:${process.env.PORT}/API`,
+        `Swagger is available at http://localhost:${process.env.PORT}/swagger`,
       );
       logger.log(
         `Swagger JSON is available at http://localhost:${process.env.PORT}/swagger/json`,
