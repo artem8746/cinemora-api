@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 function enableSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
@@ -24,16 +25,31 @@ function enableSwagger(app: INestApplication) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const config = app.get<ConfigService>(ConfigService);
 
   app.setGlobalPrefix('api');
 
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = config.get<string>('nodeEnv') === 'production';
+  const port = config.get<number>('PORT') ?? 3000;
+  const allowedMethods =
+    config.get<string>('allowedMethods') ?? 'GET,HEAD,PUT,PATCH,POST,DELETE';
+  const allowedOrigins = config.get<string>('allowedOrigins') ?? '*';
+  const allowedHeaders =
+    config.get<string>('allowedHeaders') ??
+    'Content-Type, Accept, Authorization, X-Requested-With';
 
   if (!isProduction) {
     enableSwagger(app);
   }
 
-  await app.listen(process.env.PORT ?? 3000);
+  app.enableCors({
+    credentials: true,
+    methods: allowedMethods,
+    origin: allowedOrigins,
+    allowedHeaders: allowedHeaders,
+  });
+
+  await app.listen(port ?? 3000);
 }
 
 void bootstrap();
