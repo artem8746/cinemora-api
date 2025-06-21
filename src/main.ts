@@ -1,7 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { INestApplication } from '@nestjs/common';
+import {
+  BadRequestException,
+  INestApplication,
+  ValidationError,
+  ValidationPipe,
+} from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger } from 'nestjs-pino';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { ConfigService } from '@nestjs/config';
 
 function enableSwagger(app: INestApplication) {
@@ -24,8 +31,12 @@ function enableSwagger(app: INestApplication) {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
   const config = app.get<ConfigService>(ConfigService);
+
+  const logger = app.get(Logger);
+
+  app.useLogger(logger);
 
   app.setGlobalPrefix('api');
 
@@ -42,6 +53,28 @@ async function bootstrap() {
     enableSwagger(app);
   }
 
+  // Validation pipe to handle dto validation errors globally and return a custom error response
+  app.useGlobalPipes(
+    new ValidationPipe({
+      exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        const errors = {};
+        validationErrors.forEach((error) => {
+          errors[error.property] = error.constraints
+            ? Object.values(error.constraints)
+            : [];
+        });
+
+        return new BadRequestException({
+          error: {
+            message: 'Validation Error',
+            details: errors,
+          },
+          status: 400,
+        });
+      },
+    }),
+  );
+
   app.enableCors({
     credentials: true,
     methods: allowedMethods,
@@ -49,7 +82,20 @@ async function bootstrap() {
     allowedHeaders: allowedHeaders,
   });
 
-  await app.listen(port ?? 3000);
+  app.useGlobalFilters(new HttpExceptionFilter());
+
+  await app.listen(port ?? 3000, () => {
+    logger.log(`App is running on port ${process.env.PORT}`);
+
+    if (!isProduction) {
+      logger.log(
+        `Swagger is available at http://localhost:${process.env.PORT}/API`,
+      );
+      logger.log(
+        `Swagger JSON is available at http://localhost:${process.env.PORT}/swagger/json`,
+      );
+    }
+  });
 }
 
 void bootstrap();
