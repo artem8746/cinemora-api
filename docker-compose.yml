@@ -27,6 +27,30 @@ services:
     networks:
       - cinemora-network
 
+  db_backup:
+    profiles: [backup]
+    build:
+      context: ./backup
+      dockerfile: Dockerfile
+    container_name: cinemora-api-backup
+    restart: always
+    environment:
+    - PG_HOST=${POSTGRES_HOST}
+    - PG_PORT=${POSTGRES_PORT}
+    - PG_USER=${POSTGRES_USER}
+    - PG_PASSWORD=${POSTGRES_PASSWORD}
+    - PG_DATABASE=${POSTGRES_DB}
+    - BACKUP_PATH=${BACKUP_PATH}
+    - RETENTION_DAYS=${RETENTION_DAYS}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - postgres_backups:/backup
+    networks:
+      - cinemora-network
+
+
 networks:
   cinemora-network:
     driver: bridge
@@ -34,4 +58,5 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  postgres_backups:
 
