@@ -4,6 +4,9 @@ import { envValidationSchema } from './config/env-validation.schema';
 import { LoggerModule } from 'nestjs-pino';
 import { Response } from 'express';
 import { SentryModule } from '@sentry/nestjs/setup';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
+import { PostgresDataSource } from './database/data-source';
 
 @Module({
   imports: [
@@ -12,6 +15,12 @@ import { SentryModule } from '@sentry/nestjs/setup';
       isGlobal: true,
       envFilePath: process.env.ENV_PATH,
       validationSchema: envValidationSchema,
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
+        ...PostgresDataSource.options,
+        autoLoadEntities: true,
+      }),
     }),
     LoggerModule.forRoot({
       pinoHttp: {
@@ -54,6 +63,7 @@ import { SentryModule } from '@sentry/nestjs/setup';
         },
       },
     }),
+    UsersModule,
   ],
   controllers: [],
   providers: [],

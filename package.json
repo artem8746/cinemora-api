@@ -8,8 +8,8 @@
   "scripts": {
     "build": "nest build && npm run sentry:sourcemaps",
     "format": "prettier --write \"src/**/*.ts\"",
-    "start": "ENV_PATH=.env nest start",
-    "start:dev": "ENV_PATH=.env.local nest start --watch",
+    "start": "cross-env ENV_PATH=.env nest start",
+    "start:dev": "cross-env ENV_PATH=.env.local nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -20,7 +20,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky",
     "typecheck": "tsc --noEmit",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org americancookies --project node-nestjs ./dist && sentry-cli sourcemaps upload --org americancookies --project node-nestjs ./dist"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org americancookies --project node-nestjs ./dist && sentry-cli sourcemaps upload --org americancookies --project node-nestjs ./dist",
+    "migration:generate": "sh -c 'ts-node --esm ./node_modules/typeorm/cli.js migration:generate src/database/migrations/$0 -d src/database/data-source.ts'",
+    "migration:run": "ts-node --esm ./node_modules/typeorm/cli.js migration:run -d src/database/data-source.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -28,17 +30,21 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.0",
+    "@nestjs/typeorm": "^11.0.0",
     "@sentry/cli": "^2.46.0",
     "@sentry/nestjs": "^9.30.0",
     "@sentry/profiling-node": "^9.30.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "cross-env": "^7.0.3",
     "joi": "^17.13.3",
     "nestjs-pino": "^4.4.0",
+    "pg": "^8.16.2",
     "pino": "^9.7.0",
     "pino-pretty": "^13.0.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.25"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
