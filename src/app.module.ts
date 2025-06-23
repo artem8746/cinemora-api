@@ -7,6 +7,7 @@ import { SentryModule } from '@sentry/nestjs/setup';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { PostgresDataSource } from './database/data-source';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { PostgresDataSource } from './database/data-source';
       },
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
