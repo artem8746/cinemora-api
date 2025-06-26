@@ -17,4 +17,6 @@ export const envValidationSchema = Joi.object({
   POSTGRES_PORT: Joi.number().default(5432),
   // Redis configuration
   REDIS_PORT: Joi.number().default(6379),
+  // Email configuration
+  SEND_GRID_API_KEY: Joi.string().required(),
 });

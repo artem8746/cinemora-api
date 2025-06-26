@@ -30,6 +30,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.0",
+    "@sendgrid/mail": "^8.1.5",
     "@nestjs/typeorm": "^11.0.0",
     "@sentry/cli": "^2.46.0",
     "@sentry/nestjs": "^9.30.0",
