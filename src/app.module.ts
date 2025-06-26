@@ -4,6 +4,7 @@ import { envValidationSchema } from './config/env-validation.schema';
 import { LoggerModule } from 'nestjs-pino';
 import { Response } from 'express';
 import { SentryModule } from '@sentry/nestjs/setup';
+import { EmailModule } from './email/email.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { PostgresDataSource } from './database/data-source';
@@ -63,6 +64,7 @@ import { PostgresDataSource } from './database/data-source';
         },
       },
     }),
+    EmailModule,
     UsersModule,
   ],
   controllers: [],
