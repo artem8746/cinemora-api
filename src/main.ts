@@ -12,6 +12,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from 'nestjs-pino';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { ConfigService } from '@nestjs/config';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
+import { Configuration } from './config';
+import fastifyCookie from '@fastify/cookie';
+import '@fastify/cookie';
 
 function enableSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
@@ -32,8 +39,16 @@ function enableSwagger(app: INestApplication) {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
-  const config = app.get<ConfigService>(ConfigService);
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+    { bufferLogs: true },
+  );
+
+  const configService =
+    app.get<ConfigService<Configuration, true>>(ConfigService);
+  const port = configService.get('app.port') ?? 3100;
+  const cookiesSecret = configService.get('app.cookiesSecret');
 
   const logger = app.get(Logger);
 
@@ -41,18 +56,22 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  const isProduction = config.get<string>('nodeEnv') === 'production';
-  const port = config.get<number>('PORT') ?? 3000;
+  const isProduction = configService.get('app.isProduction');
   const allowedMethods =
-    config.get<string>('allowedMethods') ?? 'GET,HEAD,PUT,PATCH,POST,DELETE';
-  const allowedOrigins = config.get<string>('allowedOrigins') ?? '*';
+    configService.get('cors.allowedMethods') ??
+    'GET,HEAD,PUT,PATCH,POST,DELETE';
+  const allowedOrigins = configService.get('cors.allowedOrigins') ?? '*';
   const allowedHeaders =
-    config.get<string>('allowedHeaders') ??
+    configService.get('cors.allowedHeaders') ??
     'Content-Type, Accept, Authorization, X-Requested-With';
 
   if (!isProduction) {
     enableSwagger(app);
   }
+
+  await app.register(fastifyCookie, {
+    secret: cookiesSecret,
+  });
 
   // Validation pipe to handle dto validation errors globally and return a custom error response
   app.useGlobalPipes(
@@ -85,18 +104,15 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  await app.listen(port ?? 3000, () => {
-    logger.log(`App is running on port ${process.env.PORT}`);
+  await app.listen({ port, host: '0.0.0.0' });
+  logger.log(`🚀 App is running on port ${port}`);
 
-    if (!isProduction) {
-      logger.log(
-        `Swagger is available at http://localhost:${process.env.PORT}/swagger`,
-      );
-      logger.log(
-        `Swagger JSON is available at http://localhost:${process.env.PORT}/swagger/json`,
-      );
-    }
-  });
+  if (!isProduction) {
+    logger.log(`Swagger is available at http://localhost:${port}/swagger`);
+    logger.log(
+      `Swagger JSON is available at http://localhost:${port}/swagger/json`,
+    );
+  }
 }
 
 void bootstrap();

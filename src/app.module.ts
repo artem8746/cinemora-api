@@ -1,21 +1,23 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { envValidationSchema } from './config/env-validation.schema';
 import { LoggerModule } from 'nestjs-pino';
 import { Response } from 'express';
 import { SentryModule } from '@sentry/nestjs/setup';
+import { EmailModule } from './email/email.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { PostgresDataSource } from './database/data-source';
 import { AuthModule } from './auth/auth.module';
+import { getConfiguration } from './config';
+import { TokensModule } from './tokens/tokens.module';
 
 @Module({
   imports: [
     SentryModule.forRoot(),
     ConfigModule.forRoot({
+      load: [getConfiguration],
+      cache: true,
       isGlobal: true,
-      envFilePath: process.env.ENV_PATH,
-      validationSchema: envValidationSchema,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
@@ -64,8 +66,10 @@ import { AuthModule } from './auth/auth.module';
         },
       },
     }),
+    EmailModule,
     UsersModule,
     AuthModule,
+    TokensModule,
   ],
   controllers: [],
   providers: [],
