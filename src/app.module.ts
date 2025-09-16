@@ -10,6 +10,7 @@ import { PostgresDataSource } from './database/data-source';
 import { AuthModule } from './auth/auth.module';
 import { getConfiguration } from './config';
 import { TokensModule } from './tokens/tokens.module';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TokensModule } from './tokens/tokens.module';
         autoLoadEntities: true,
       }),
     }),
+    CqrsModule,
     LoggerModule.forRoot({
       pinoHttp: {
         transport: {
