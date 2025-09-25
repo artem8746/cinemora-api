@@ -24,6 +24,8 @@ import { CqrsModule } from '@nestjs/cqrs';
       useFactory: () => ({
         ...PostgresDataSource.options,
         autoLoadEntities: true,
+        retryAttempts: 2,
+        retryDelay: 1000,
       }),
     }),
     CqrsModule,

@@ -273,3 +273,67 @@ Response: Idempotency-Key: <same uuid>
 - Prefer a tiny PR that introduces an interface and a failing test, then iterate.
 - Default to emitting an **event** instead of calling another module directly.
 - If a requirement conflicts with these rules, **update this file** in the same PR and explain why.
+
+---
+
+## 16) AI Agent Operational Rules (Cursor)
+
+These rules define how the AI agent must work within this repository.
+
+### Workflow & Communication
+
+- Always create a concise TODO list for multi‑step tasks; keep only one item in progress.
+- Provide brief status updates before tool calls, after edits, and at completion.
+- Summarize changes at the end of each turn; include impacted files and high‑signal notes.
+
+### Exploration & Changes
+
+- Prefer semantic search to understand intent, then narrow scope; avoid guesswork.
+- Read relevant files before editing; avoid broad, blind edits.
+- Make small, reversible edits; keep changes within feature boundaries.
+
+### Layering & Boundaries (must enforce)
+
+- No ORM calls in controllers. Controllers → application services/handlers only.
+- Use CQRS handlers for commands/queries; do not place business logic in controllers.
+- Domain stays pure TypeScript (no I/O); infrastructure provides adapters via DI.
+
+### Type Safety & Style
+
+- Strict TypeScript; never use `any`. Prefer `unknown` with narrowing.
+- Validate DTOs at controller boundary; never return raw entities to HTTP.
+- Follow ESLint/Prettier; fix lints on edited files before concluding a change.
+
+### Persistence & Migrations
+
+- `synchronize: false`. Any schema change requires reversible migrations (up/down) and index review.
+- Use transactions when modifying multiple aggregates; write outbox within the same transaction.
+
+### Events & Idempotency
+
+- Prefer events for side effects. Use versioned subjects `kebab.case.vN`.
+- Ensure producers/consumers are idempotent; include `eventId` and `aggregateId`.
+
+### Observability & Errors
+
+- Use structured logging via `nestjs-pino`; no `console.log` in production paths.
+- Update logs/metrics/tracing when adding new paths/consumers.
+- Use global error handling; do not leak internal details to clients.
+
+### Tooling Rules (Cursor)
+
+- Use code exploration tools in parallel for efficiency when safe.
+- Before editing a file, re‑read it if not opened recently.
+- After each edit, check lints for the edited files and fix issues.
+- Do not introduce long‑running background jobs without marking them as such.
+
+### Testing & Quality Gates
+
+- Update or add tests for new behavior; keep coverage ≥ 80%.
+- Prefer unit tests for domain/mappers; integration tests for repositories; E2E for critical flows.
+- Ensure migrations apply cleanly (no drift) and tests pass locally.
+
+### PR Discipline
+
+- Keep edits focused and small; avoid > ~400 LOC changes unless unavoidable.
+- Use Conventional Commits with appropriate scope, aligned with the feature/module.

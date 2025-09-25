@@ -1,3 +1,4 @@
+import { ToNumber } from '@/transformers/to-number.transaformer';
 import { IsEnum, IsNumber, IsString, IsNotEmpty } from 'class-validator';
 
 export class EnvironmentDto {
@@ -5,6 +6,7 @@ export class EnvironmentDto {
   NODE_ENV!: 'development' | 'production' | 'test';
 
   @IsNumber()
+  @ToNumber()
   PORT!: number;
 
   @IsString()
@@ -42,12 +44,14 @@ export class EnvironmentDto {
   POSTGRES_HOST!: string;
 
   @IsNumber()
+  @ToNumber()
   POSTGRES_PORT!: number;
 
   // ==========================================
   // Redis configuration
   // ==========================================
   @IsNumber()
+  @ToNumber()
   REDIS_PORT!: number;
 
   // ==========================================
@@ -82,9 +86,11 @@ export class EnvironmentDto {
   JWT_SECRET_REFRESH!: string;
 
   @IsNumber()
+  @ToNumber()
   MAX_AGE_ACCESS_TOKEN!: number;
 
   @IsNumber()
+  @ToNumber()
   MAX_AGE_REFRESH_TOKEN!: number;
 
   @IsString()

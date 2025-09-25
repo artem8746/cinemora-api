@@ -21,9 +21,7 @@
 
 	COPY --from=builder /app/dist ./dist
 	COPY --from=builder /app/package*.json ./
-	COPY --from=builder /app/package*.json ./
 	COPY --from=builder /app/.env ./
-	COPY --from=builder /app/tsconfig.json ./
 	COPY --from=builder /app/tsconfig.json ./
 
 	# Install only production deps

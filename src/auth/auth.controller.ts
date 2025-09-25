@@ -53,6 +53,7 @@ export class AuthController {
     });
 
     this.logger.debug('Set refresh token', 'setAccessAndRefreshToken');
+
     setCookie(res, 'refreshToken', refreshToken, path, {
       maxAge: maxAgeRefreshToken,
       domain: isProduction ? domain : undefined,

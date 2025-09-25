@@ -1,4 +1,4 @@
-import { CookieOptions } from 'express';
+import type { CookieSerializeOptions } from '@fastify/cookie';
 import { FastifyReply } from 'fastify';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -8,7 +8,7 @@ export const setCookie = (
   name: string,
   value: string,
   path: string,
-  options: CookieOptions = {},
+  options: CookieSerializeOptions = {},
 ): void => {
   res.setCookie(`${name}`, value, {
     path: path,

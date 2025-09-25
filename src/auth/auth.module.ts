@@ -14,6 +14,6 @@ export const CommandHandlers = [RegisterHandler];
 @Module({
   imports: [TypeOrmModule.forFeature([User, Token]), CqrsModule],
   controllers: [AuthController],
-  providers: [AuthService, ...CommandHandlers, TokensService, JwtService],
+  providers: [AuthService, TokensService, JwtService, ...CommandHandlers],
 })
 export class AuthModule {}
