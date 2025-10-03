@@ -6,7 +6,6 @@ import { Token } from './token.entity';
 import { Repository } from 'typeorm';
 import { CreateToken } from '../auth/dto/create-token.dto';
 import { JwtSummaryDto } from '../auth/dto/jwt-summary.dto';
-import { User } from '@/users/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
@@ -79,16 +78,11 @@ export class TokensService {
   }
 
   async generateTokens(
-    payload: User,
+    payload: JwtSummaryDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const jwtSummary: JwtSummaryDto = {
-      sub: payload.id,
-      email: payload.email,
-    };
-
     const [accessToken, refreshToken] = await Promise.all([
-      this.createAccessToken(jwtSummary),
-      this.createRefreshToken(jwtSummary),
+      this.createAccessToken(payload),
+      this.createRefreshToken(payload),
     ]);
 
     return { accessToken, refreshToken };
