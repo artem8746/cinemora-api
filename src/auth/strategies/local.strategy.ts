@@ -5,13 +5,15 @@ import {
 } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
-import { UsersService } from '@/users/users.service';
 import { comparePasswords } from '@/utils/hash-passwords';
 import { JwtSummaryDto } from '../dto/jwt-summary.dto';
+import { CommandBus } from '@nestjs/cqrs';
+import { GetUserByEmailCommand } from '@/users/commands/get-user-by-email/get-user-by-email.command';
+import { User } from '@/users/user.entity';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private userService: UsersService) {
+  constructor(private readonly commandBus: CommandBus) {
     super({
       usernameField: 'email',
       passwordField: 'password',
@@ -22,7 +24,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     email: string,
     password: string,
   ): Promise<JwtSummaryDto> {
-    const user = await this.userService.findByEmail(email);
+    const user = await this.commandBus.execute<GetUserByEmailCommand, User>(
+      new GetUserByEmailCommand(email),
+    );
 
     if (!user) {
       throw new UnauthorizedException({

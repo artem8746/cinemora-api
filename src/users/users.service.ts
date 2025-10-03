@@ -20,17 +20,9 @@ export class UsersService {
     });
   }
 
-  createUser(signUpDto: SignUpDto): Promise<User> {
-    const user = this.usersRepository.create({
-      email: signUpDto.email,
-      password: signUpDto.password,
-    });
-
-    return this.usersRepository.save(user);
-  }
-
   create(signUpDto: SignUpDto): Promise<User> {
     const user = this.usersRepository.create(signUpDto);
+
     return this.usersRepository.save(user);
   }
 }

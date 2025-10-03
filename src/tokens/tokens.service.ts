@@ -2,12 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FastifyReply } from 'fastify';
 import { Token } from './token.entity';
 import { Repository } from 'typeorm';
 import { CreateToken } from '../auth/dto/create-token.dto';
 import { JwtSummaryDto } from '../auth/dto/jwt-summary.dto';
-import { setCookie } from '@/utils/cookies';
 import { User } from '@/users/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -92,39 +90,6 @@ export class TokensService {
       this.createAccessToken(jwtSummary),
       this.createRefreshToken(jwtSummary),
     ]);
-
-    return { accessToken, refreshToken };
-  }
-
-  setAccessAndRefreshToken(
-    res: FastifyReply,
-    refreshToken: string,
-    accessToken: string,
-  ) {
-    const isProduction = this.configService.getOrThrow('app.isProduction');
-    const path = this.configService.getOrThrow('app.cookiesPath');
-
-    const domain = this.configService.getOrThrow('app.domain');
-    const maxAgeAccessToken = parseInt(
-      this.configService.getOrThrow('auth.maxAgeAccessToken').toString(),
-      10,
-    );
-    const maxAgeRefreshToken = parseInt(
-      this.configService.getOrThrow('auth.maxAgeRefreshToken').toString(),
-      10,
-    );
-
-    this.logger.debug('Set token', 'setAccessAndRefreshToken');
-    setCookie(res, 'accessToken', accessToken, path, {
-      maxAge: maxAgeAccessToken,
-      domain: isProduction ? domain : undefined,
-    });
-
-    this.logger.debug('Set refresh token', 'setAccessAndRefreshToken');
-    setCookie(res, 'refreshToken', refreshToken, path, {
-      maxAge: maxAgeRefreshToken,
-      domain: isProduction ? domain : undefined,
-    });
 
     return { accessToken, refreshToken };
   }

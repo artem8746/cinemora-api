@@ -8,7 +8,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
   constructor(private readonly usersService: UsersService) {}
 
   async execute(command: CreateUserCommand): Promise<User> {
-    const newUser = await this.usersService.createUser(command);
+    const newUser = await this.usersService.create(command);
 
     return newUser;
   }

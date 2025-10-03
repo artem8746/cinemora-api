@@ -1,4 +1,5 @@
 import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
+import { SignInDto } from '@/auth/dto/sign-in.dto';
 import { SignUpDto } from '@/auth/dto/sign-up.dto';
 import { HttpStatus } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiResponse } from '@nestjs/swagger';
@@ -7,6 +8,10 @@ export const CommonBody = {
   RegisterUserBody: ApiBody({
     description: 'Register user body',
     type: SignUpDto,
+  }),
+  LoginUserBody: ApiBody({
+    description: 'Login user body',
+    type: SignInDto,
   }),
 };
 

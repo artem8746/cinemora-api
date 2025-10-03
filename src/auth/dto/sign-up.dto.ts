@@ -2,7 +2,7 @@ import { IsEmail, IsNotEmpty, Validate, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import escapeHtml from 'escape-html';
-import { IsValidPassword } from '@/validators/password-validator.validator';
+import { IsValidPassword } from '@/validators/password.validator';
 
 export class SignUpDto {
   @ApiProperty({
