@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Token } from '@/tokens/token.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -22,4 +23,7 @@ export class User {
 
   @Column({ nullable: true, type: 'varchar' })
   username?: string;
+
+  @OneToMany(() => Token, (token) => token.user)
+  tokens: Token[];
 }
