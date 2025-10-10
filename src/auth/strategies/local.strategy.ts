@@ -44,7 +44,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       });
     }
 
-    const isValidPassword = await comparePasswords(password, user.password);
+    const isValidPassword = await comparePasswords(
+      password,
+      user?.password ?? '',
+    );
 
     if (!isValidPassword) {
       throw new UnauthorizedException({
