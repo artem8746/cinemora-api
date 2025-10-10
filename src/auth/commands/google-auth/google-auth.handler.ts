@@ -24,7 +24,10 @@ export class GoogleAuthHandler implements ICommandHandler<GoogleAuthCommand> {
 
     const existingUser = await this.findUserByEmail(user.email);
 
-    const targetUser = existingUser ?? (await this.createNewUser(user.email));
+    const username = user.firstName + ' ' + user.lastName;
+
+    const targetUser =
+      existingUser ?? (await this.createNewUser(user.email, username));
 
     return this.generateTokensForUser(targetUser);
   }
@@ -33,8 +36,8 @@ export class GoogleAuthHandler implements ICommandHandler<GoogleAuthCommand> {
     return this.queryBus.execute(new GetUserByEmailQuery(email));
   }
 
-  private createNewUser(email: string): Promise<User> {
-    return this.commandBus.execute(new CreateUserCommand(email));
+  private createNewUser(email: string, username: string): Promise<User> {
+    return this.commandBus.execute(new CreateUserCommand(email, username));
   }
 
   private generateTokensForUser(user: User): Promise<AuthResponse> {
