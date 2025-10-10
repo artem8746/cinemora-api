@@ -8,7 +8,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true, type: 'varchar' })
   password: string;
 
   @Column({ default: false, name: 'is_confirmed' })

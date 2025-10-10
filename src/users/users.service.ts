@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignUpDto } from '@/auth/dto/sign-up.dto';
+import { MakeFieldPartial } from '@/generic/interface/utility';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +21,7 @@ export class UsersService {
     });
   }
 
-  create(signUpDto: SignUpDto): Promise<User> {
+  create(signUpDto: MakeFieldPartial<SignUpDto, 'password'>): Promise<User> {
     const user = this.usersRepository.create(signUpDto);
 
     return this.usersRepository.save(user);
