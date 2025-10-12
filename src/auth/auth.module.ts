@@ -11,8 +11,9 @@ import { JwtService } from '@nestjs/jwt';
 import { CookieService } from './services/cookie.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { GoogleAuthHandler } from './commands/google-auth/google-auth.handler';
 
-export const CommandHandlers = [RegisterHandler];
+export const CommandHandlers = [RegisterHandler, GoogleAuthHandler];
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Token]), CqrsModule],

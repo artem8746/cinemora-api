@@ -9,8 +9,8 @@ import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-
 import { AuthResponse } from '@/auth/types/auth';
 import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
 import { GenerateTokensCommand } from '@/tokens/commands/generate-tokens/generate-tokens.command';
-import { CreateUserCommand } from '@/users/commands/create-user/create-user.command';
 import { User } from '@/users/user.entity';
+import { CreateUserGoogleCommand } from '@/users/commands/create-user-google/create-user.command';
 
 @CommandHandler(GoogleAuthCommand)
 export class GoogleAuthHandler implements ICommandHandler<GoogleAuthCommand> {
@@ -37,7 +37,9 @@ export class GoogleAuthHandler implements ICommandHandler<GoogleAuthCommand> {
   }
 
   private createNewUser(email: string, username: string): Promise<User> {
-    return this.commandBus.execute(new CreateUserCommand(email, username));
+    return this.commandBus.execute(
+      new CreateUserGoogleCommand(email, username),
+    );
   }
 
   private generateTokensForUser(user: User): Promise<AuthResponse> {
