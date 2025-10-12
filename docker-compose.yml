@@ -35,13 +35,13 @@ services:
     container_name: cinemora-api-backup
     restart: always
     environment:
-    - PG_HOST=${POSTGRES_HOST}
-    - PG_PORT=${POSTGRES_PORT}
-    - PG_USER=${POSTGRES_USER}
-    - PG_PASSWORD=${POSTGRES_PASSWORD}
-    - PG_DATABASE=${POSTGRES_DB}
-    - BACKUP_PATH=${BACKUP_PATH}
-    - RETENTION_DAYS=${RETENTION_DAYS}
+      - PG_HOST=${POSTGRES_HOST}
+      - PG_PORT=${POSTGRES_PORT}
+      - PG_USER=${POSTGRES_USER}
+      - PG_PASSWORD=${POSTGRES_PASSWORD}
+      - PG_DATABASE=${POSTGRES_DB}
+      - BACKUP_PATH=${BACKUP_PATH}
+      - RETENTION_DAYS=${RETENTION_DAYS}
     depends_on:
       db:
         condition: service_healthy
@@ -50,6 +50,20 @@ services:
     networks:
       - cinemora-network
 
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - '${PORT}:3000'
+    volumes:
+      - .:/app
+    networks:
+      - cinemora-network
 
 networks:
   cinemora-network:
@@ -59,4 +73,3 @@ volumes:
   postgres_data:
   redis_data:
   postgres_backups:
-

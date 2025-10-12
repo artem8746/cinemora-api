@@ -1,12 +1,13 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as sgMail from '@sendgrid/mail';
+import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class EmailService {
   constructor(
-    @Inject(ConfigService) private configService: ConfigService,
-    private readonly logger: LoggerService,
+    private configService: ConfigService,
+    private readonly logger: PinoLogger,
   ) {}
 
   async sendEmail(
@@ -17,7 +18,7 @@ export class EmailService {
     const { subject, text, html } = this.getEmailTemplate(type, dynamicLink);
 
     const mailOptions = {
-      from: this.configService.getOrThrow<string>('EMAIL_USER'),
+      from: this.configService.getOrThrow('email.emailUser'),
       to: recipient,
       subject,
       text,
@@ -26,7 +27,10 @@ export class EmailService {
 
     try {
       await sgMail.send(mailOptions);
-      this.logger.log(`${type} email sent to: ${recipient}`, EmailService.name);
+      this.logger.info(
+        `${type} email sent to: ${recipient}`,
+        EmailService.name,
+      );
     } catch (error) {
       this.logger.error('Error sending email', error);
       throw error;
