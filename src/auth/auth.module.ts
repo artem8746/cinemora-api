@@ -9,6 +9,7 @@ import { Token } from '../tokens/token.entity';
 import { TokensService } from '../tokens/tokens.service';
 import { JwtService } from '@nestjs/jwt';
 import { CookieService } from './services/cookie.service';
+import { LocalStrategy } from './strategies/local.strategy';
 
 export const CommandHandlers = [RegisterHandler];
 
@@ -21,6 +22,7 @@ export const CommandHandlers = [RegisterHandler];
     JwtService,
     ...CommandHandlers,
     CookieService,
+    LocalStrategy,
   ],
 })
 export class AuthModule {}

@@ -1,5 +1,5 @@
-import { User } from '@/users/user.entity';
+import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
 
 export class GenerateTokensCommand {
-  constructor(public readonly payload: User) {}
+  constructor(public readonly payload: JwtSummaryDto) {}
 }
