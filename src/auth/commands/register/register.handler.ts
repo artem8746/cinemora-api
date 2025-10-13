@@ -10,6 +10,7 @@ import { CreateUserCommandResponse } from '@/users/commands/create-user/create-u
 import { GenerateTokensCommandResponse } from '@/tokens/commands/generate-tokens/generate-tokens.handler';
 import { RegisterTokenCommand } from '@/tokens/commands/register-token/register-token.command';
 import { RegisterTokenCommandResponse } from '@/tokens/commands/register-token/register-token.handler';
+import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
 
 @CommandHandler(RegisterCommand)
 export class RegisterHandler implements ICommandHandler<RegisterCommand> {
@@ -35,10 +36,12 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand> {
       CreateUserCommandResponse
     >(new CreateUserCommand(email, hashedPassword));
 
+    const jwtSummary = new JwtSummaryDto(newUser);
+
     const { accessToken, refreshToken } = await this.commandBus.execute<
       GenerateTokensCommand,
       GenerateTokensCommandResponse
-    >(new GenerateTokensCommand(newUser));
+    >(new GenerateTokensCommand(jwtSummary));
 
     await this.commandBus.execute<
       RegisterTokenCommand,
