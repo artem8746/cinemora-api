@@ -16,6 +16,9 @@ function getAuthConfig(env: EnvironmentDto) {
     jwtSecretRefresh: env.JWT_SECRET_REFRESH,
     expiresAccessToken: env.EXPIRES_ACCESS_TOKEN,
     expiresRefreshToken: env.EXPIRES_REFRESH_TOKEN,
+    googleClientId: env.GOOGLE_CLIENT_ID,
+    googleClientSecret: env.GOOGLE_CLIENT_SECRET,
+    googleCallbackUrl: env.GOOGLE_CALLBACK_URL,
   } as const;
 }
 

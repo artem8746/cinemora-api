@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Token } from '@/tokens/token.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -8,9 +9,21 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
-  password: string;
+  @Column({ nullable: true, type: 'varchar' })
+  password?: string;
 
   @Column({ default: false, name: 'is_confirmed' })
   isConfirmed: boolean;
+
+  @Column({ nullable: true, type: 'varchar' })
+  avatar?: string;
+
+  @Column({ default: 0, type: 'integer' })
+  credits: number;
+
+  @Column({ nullable: true, type: 'varchar' })
+  username?: string;
+
+  @OneToMany(() => Token, (token) => token.user)
+  tokens: Token[];
 }
