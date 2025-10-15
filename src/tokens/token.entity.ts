@@ -1,12 +1,25 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { User } from '@/users/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Token {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @ManyToOne(() => User, (user) => user.tokens, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
   @Column({ unique: true })
-  body: string;
+  refreshToken: string;
 
   @Column({ name: 'created_at', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

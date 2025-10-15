@@ -7,13 +7,16 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { comparePasswords } from '@/utils/hash-passwords';
 import { JwtSummaryDto } from '../dto/jwt-summary.dto';
-import { CommandBus } from '@nestjs/cqrs';
-import { GetUserByEmailCommand } from '@/users/commands/get-user-by-email/get-user-by-email.command';
-import { User } from '@/users/user.entity';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.command';
+import { GetUserByEmailQueryResponse } from '@/users/queries/get-user-by-email/get-user-by-email.handler';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly commandBus: CommandBus) {
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {
     super({
       usernameField: 'email',
       passwordField: 'password',
@@ -24,9 +27,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     email: string,
     password: string,
   ): Promise<JwtSummaryDto> {
-    const user = await this.commandBus.execute<GetUserByEmailCommand, User>(
-      new GetUserByEmailCommand(email),
-    );
+    const user = await this.queryBus.execute<
+      GetUserByEmailQuery,
+      GetUserByEmailQueryResponse
+    >(new GetUserByEmailQuery(email));
 
     if (!user) {
       throw new UnauthorizedException({
@@ -40,7 +44,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       });
     }
 
-    const isValidPassword = await comparePasswords(password, user.password);
+    const isValidPassword = await comparePasswords(
+      password,
+      user?.password ?? '',
+    );
 
     if (!isValidPassword) {
       throw new UnauthorizedException({
