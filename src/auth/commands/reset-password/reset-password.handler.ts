@@ -65,6 +65,12 @@ export class ResetPasswordHandler
         throw new UnauthorizedException('Invalid reset token');
       }
 
+      if (!user.password) {
+        throw new BadRequestException(
+          'You used socials for auth, you cannot reset password',
+        );
+      }
+
       const isSamePassword = await compare(newPassword, user.password);
 
       if (isSamePassword) {

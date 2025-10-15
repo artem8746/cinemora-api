@@ -15,11 +15,14 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { EmailModule } from '@/email/email.module';
 import { UsersModule } from '@/users/users.module';
 import { RedisModule } from '@/redis/redis.module';
+import { GoogleAuthHandler } from './commands/google-auth/google-auth.handler';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 export const CommandHandlers = [
   RegisterHandler,
   ForgotPasswordHandler,
   ResetPasswordHandler,
+  GoogleAuthHandler,
 ];
 
 @Module({
@@ -38,6 +41,7 @@ export const CommandHandlers = [
     ...CommandHandlers,
     CookieService,
     LocalStrategy,
+    GoogleStrategy,
   ],
 })
 export class AuthModule {}

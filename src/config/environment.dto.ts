@@ -114,4 +114,18 @@ export class EnvironmentDto {
   // ==========================================
   @IsString()
   FRONTEND_URL?: string;
+  // ==========================================
+  // Google configuration
+  // ==========================================
+  @IsString()
+  @IsNotEmpty()
+  GOOGLE_CLIENT_ID!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  GOOGLE_CLIENT_SECRET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  GOOGLE_CALLBACK_URL!: string;
 }

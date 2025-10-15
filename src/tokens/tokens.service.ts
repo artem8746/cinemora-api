@@ -25,7 +25,7 @@ export class TokensService {
       return await this.registerToken({ token: refreshToken, userId });
     }
 
-    token.body = refreshToken;
+    token.refreshToken = refreshToken;
 
     return this.tokenRepository.save(token);
   }
@@ -42,8 +42,8 @@ export class TokensService {
 
   async registerToken(payload: CreateToken): Promise<Token> {
     const token = this.tokenRepository.create({
-      id: payload.userId,
-      body: payload.token,
+      user: { id: payload.userId },
+      refreshToken: payload.token,
     });
 
     return await this.tokenRepository.save(token);
