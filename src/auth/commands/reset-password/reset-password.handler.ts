@@ -89,8 +89,8 @@ export class ResetPasswordHandler
       });
     } catch (error) {
       this.logger.error('Password reset failed', {
-        error: error.message,
-        stack: error.stack,
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
       });
 
       if (error instanceof Error && error.name === 'TokenExpiredError') {
