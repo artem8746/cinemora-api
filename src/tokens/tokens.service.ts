@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Token } from './token.entity';
 import { Repository } from 'typeorm';
@@ -57,24 +57,47 @@ export class TokensService {
     }
   }
 
-  createAccessToken(payload: JwtSummaryDto): Promise<string> {
+  createToken(
+    payload: JwtSummaryDto,
+    options: JwtSignOptions,
+  ): Promise<string> {
     return this.jwtService.signAsync(
       { ...payload },
       {
-        secret: this.configService.get('auth.jwtSecretAccess'),
-        expiresIn: this.configService.getOrThrow('auth.expiresAccessToken'),
+        ...options,
       },
     );
   }
 
+  createAccessToken(payload: JwtSummaryDto): Promise<string> {
+    return this.createToken(payload, {
+      secret: this.configService.getOrThrow('auth.jwtSecretAccess'),
+      expiresIn: this.configService.getOrThrow('auth.expiresAccessToken'),
+    });
+  }
+
   createRefreshToken(payload: JwtSummaryDto): Promise<string> {
-    return this.jwtService.signAsync(
-      { ...payload },
-      {
-        secret: this.configService.getOrThrow('auth.jwtSecretRefresh'),
-        expiresIn: this.configService.getOrThrow('auth.expiresRefreshToken'),
-      },
-    );
+    return this.createToken(payload, {
+      secret: this.configService.getOrThrow('auth.jwtSecretRefresh'),
+      expiresIn: this.configService.getOrThrow('auth.expiresRefreshToken'),
+    });
+  }
+
+  createResetPasswordToken(payload: JwtSummaryDto): Promise<string> {
+    return this.createToken(payload, {
+      secret: this.configService.getOrThrow('auth.jwtSecretResetPassword'),
+      expiresIn: this.configService.getOrThrow('auth.expiresResetPassword'),
+    });
+  }
+
+  verifyToken({
+    token,
+    secret,
+  }: {
+    token: string;
+    secret: string;
+  }): Promise<JwtSummaryDto> {
+    return this.jwtService.verifyAsync(token, { secret });
   }
 
   async generateTokens(

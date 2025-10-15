@@ -5,13 +5,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { GetUserByEmailHandler } from './commands/get-user-by-email/get-user-by-email.handler';
 import { CreateUserHandler } from './commands/create-user/create-user.handler';
+import { UpdateUserPasswordHandler } from './commands/update-user-password/update-user-password.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 
-export const CommandHandlers = [GetUserByEmailHandler, CreateUserHandler];
+export const CommandHandlers = [
+  GetUserByEmailHandler,
+  CreateUserHandler,
+  UpdateUserPasswordHandler,
+];
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), CqrsModule],
   controllers: [UsersController],
   providers: [UsersService, ...CommandHandlers],
+  exports: [UsersService, ...CommandHandlers],
 })
 export class UsersModule {}

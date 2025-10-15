@@ -100,4 +100,18 @@ export class EnvironmentDto {
   @IsString()
   @IsNotEmpty()
   COOKIES_SECRET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_SECRET_RESET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EXPIRES_RESET_TOKEN!: string;
+
+  // ==========================================
+  // Frontend configuration
+  // ==========================================
+  @IsString()
+  FRONTEND_URL?: string;
 }
