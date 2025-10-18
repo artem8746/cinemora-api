@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { getConfiguration } from './config';
 import { TokensModule } from './tokens/tokens.module';
 import { CqrsModule } from '@nestjs/cqrs';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { CqrsModule } from '@nestjs/cqrs';
     UsersModule,
     AuthModule,
     TokensModule,
+    RedisModule,
   ],
   controllers: [],
   providers: [],

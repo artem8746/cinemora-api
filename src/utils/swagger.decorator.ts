@@ -1,6 +1,8 @@
 import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
 import { SignInDto } from '@/auth/dto/sign-in.dto';
 import { SignUpDto } from '@/auth/dto/sign-up.dto';
+import { ForgotPasswordDto } from '@/auth/dto/forgot-password.dto';
+import { ResetPasswordDto } from '@/auth/dto/reset-password.dto';
 import { HttpStatus } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiResponse } from '@nestjs/swagger';
 
@@ -12,6 +14,14 @@ export const CommonBody = {
   LoginUserBody: ApiBody({
     description: 'Login user body',
     type: SignInDto,
+  }),
+  ForgotPasswordBody: ApiBody({
+    description: 'Forgot password request body',
+    type: ForgotPasswordDto,
+  }),
+  ResetPasswordBody: ApiBody({
+    description: 'Reset password request body',
+    type: ResetPasswordDto,
   }),
 };
 

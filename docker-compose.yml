@@ -14,6 +14,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - cinemora-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:6
@@ -24,6 +29,18 @@ services:
       - '${REDIS_PORT}:6379'
     volumes:
       - redis_data:/data
+    networks:
+      - cinemora-network
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: cinemora-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:${REDIS_PORT}
+    ports:
+      - '8081:8081'
+    depends_on:
+      - redis
     networks:
       - cinemora-network
 
@@ -43,7 +60,7 @@ services:
       - BACKUP_PATH=${BACKUP_PATH}
       - RETENTION_DAYS=${RETENTION_DAYS}
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
     volumes:
       - postgres_backups:/backup
@@ -64,6 +81,7 @@ services:
       - .:/app
     networks:
       - cinemora-network
+    command: sh -c "npm run migration:run && npm run start:dev"
 
 networks:
   cinemora-network:
