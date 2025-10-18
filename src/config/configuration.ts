@@ -14,8 +14,10 @@ function getAuthConfig(env: EnvironmentDto) {
     maxAgeRefreshToken: env.MAX_AGE_REFRESH_TOKEN ?? 1728000000,
     jwtSecretAccess: env.JWT_SECRET_ACCESS,
     jwtSecretRefresh: env.JWT_SECRET_REFRESH,
+    jwtSecretResetPassword: env.JWT_SECRET_RESET,
     expiresAccessToken: env.EXPIRES_ACCESS_TOKEN,
     expiresRefreshToken: env.EXPIRES_REFRESH_TOKEN,
+    expiresResetPassword: env.EXPIRES_RESET_TOKEN,
     googleClientId: env.GOOGLE_CLIENT_ID,
     googleClientSecret: env.GOOGLE_CLIENT_SECRET,
     googleCallbackUrl: env.GOOGLE_CALLBACK_URL,
@@ -35,6 +37,7 @@ function getAppConfig(env: EnvironmentDto) {
     nodeEnv: env.NODE_ENV,
     cookiesPath: env.COOKIES_PATH,
     cookiesSecret: env.COOKIES_SECRET,
+    frontendUrl: env.FRONTEND_URL || 'http://localhost:3000',
     isDevelopment: env.NODE_ENV === 'development',
     isProduction: env.NODE_ENV === 'production',
   } as const;
