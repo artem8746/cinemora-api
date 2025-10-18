@@ -4,13 +4,14 @@ import { CommandBus } from '@nestjs/cqrs';
 import { GetUserByEmailCommand } from '@/users/commands/get-user-by-email/get-user-by-email.command';
 import { User } from '@/users/user.entity';
 import { EmailService } from '@/email/email.service';
-import { TokensService } from '@/tokens/tokens.service';
 import { JwtSummaryDto } from '../../dto/jwt-summary.dto';
 import { ConfigService } from '@nestjs/config';
-import { InjectRedis } from '@nestjs-modules/ioredis';
-import Redis from 'ioredis';
 import { PinoLogger } from 'nestjs-pino';
 import { NotFoundException } from '@nestjs/common';
+import { ResetPasswordTokenCommand } from '@/tokens/commands/reset-password-token/reset-password-token.command';
+import { ResetPasswordTokenCommandResponse } from '@/tokens/commands/reset-password-token/reset-password-token.handler';
+import { SaveTokenCommand } from '@/tokens/commands/save-token/save-token.command';
+import { SaveTokenCommandResponse } from '@/tokens/commands/save-token/save-token.handler';
 
 @CommandHandler(ForgotPasswordCommand)
 export class ForgotPasswordHandler
@@ -19,10 +20,8 @@ export class ForgotPasswordHandler
   constructor(
     private readonly commandBus: CommandBus,
     private readonly emailService: EmailService,
-    private readonly tokensService: TokensService,
     private readonly configService: ConfigService,
     private readonly logger: PinoLogger,
-    @InjectRedis() private readonly redisClient: Redis,
   ) {}
 
   async execute(command: ForgotPasswordCommand): Promise<void> {
@@ -38,13 +37,17 @@ export class ForgotPasswordHandler
     }
 
     const jwtPayload = new JwtSummaryDto(user);
-    const resetToken =
-      await this.tokensService.createResetPasswordToken(jwtPayload);
+    const resetToken = await this.commandBus.execute<
+      ResetPasswordTokenCommand,
+      ResetPasswordTokenCommandResponse
+    >(new ResetPasswordTokenCommand(jwtPayload));
 
-    await this.redisClient.setex(
-      `reset_token:${user.email}`,
-      this.configService.getOrThrow('auth.expiresResetPassword'),
-      resetToken,
+    await this.commandBus.execute<SaveTokenCommand, SaveTokenCommandResponse>(
+      new SaveTokenCommand(
+        `reset_token:${user.email}`,
+        resetToken,
+        parseInt(this.configService.getOrThrow('auth.expiresResetPassword')),
+      ),
     );
 
     const frontendUrl = this.configService.getOrThrow('app.frontendUrl');
