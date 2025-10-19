@@ -5,13 +5,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
-
-export interface GoogleUser {
-  email: string;
-  firstName: string;
-  lastName: string;
-  picture: string;
-}
+import { SocialUser } from '../commands/social-auth/social-auth.command';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -31,11 +25,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     done: VerifyCallback,
   ) {
     const { name, emails, photos } = profile;
-    const user: GoogleUser = {
+    const user: SocialUser = {
       email: emails[0].value,
-      firstName: name.givenName,
-      lastName: name.familyName,
+      username: name.givenName + ' ' + name.familyName,
       picture: photos[0].value,
+      provider: 'google',
     };
     done(null, user);
   }
