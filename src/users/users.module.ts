@@ -7,6 +7,7 @@ import { GetUserByEmailHandler } from './queries/get-user-by-email/get-user-by-e
 import { CreateUserHandler } from './commands/create-user/create-user.handler';
 import { CreateUserSocialHandler } from './commands/create-user-social/create-user-social.handler';
 import { UpdateUserPasswordHandler } from './commands/update-user-password/update-user-password.handler';
+import { ActivateAccountHandler } from './commands/activate-account/activate-account.handler';
 import { GenerateUsernameHandler } from './commands/generate-username/generate-username.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 
@@ -15,6 +16,7 @@ export const CommandHandlers = [
   CreateUserHandler,
   CreateUserSocialHandler,
   UpdateUserPasswordHandler,
+  ActivateAccountHandler,
   GenerateUsernameHandler,
 ];
 

@@ -109,6 +109,14 @@ export class EnvironmentDto {
   @IsNotEmpty()
   EXPIRES_RESET_TOKEN!: string;
 
+  @IsString()
+  @IsNotEmpty()
+  JWT_SECRET_ACTIVATION!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EXPIRES_ACTIVATION_TOKEN!: string;
+
   // ==========================================
   // Frontend configuration
   // ==========================================
