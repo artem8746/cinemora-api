@@ -23,6 +23,9 @@ function getAuthConfig(env: EnvironmentDto) {
     googleClientId: env.GOOGLE_CLIENT_ID,
     googleClientSecret: env.GOOGLE_CLIENT_SECRET,
     googleCallbackUrl: env.GOOGLE_CALLBACK_URL,
+    githubClientId: env.GITHUB_CLIENT_ID,
+    githubClientSecret: env.GITHUB_CLIENT_SECRET,
+    githubCallbackUrl: env.GITHUB_CALLBACK_URL,
   } as const;
 }
 

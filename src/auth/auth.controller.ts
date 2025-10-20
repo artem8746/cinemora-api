@@ -26,9 +26,12 @@ import { GenerateTokensCommand } from '@/tokens/commands/generate-tokens/generat
 import { GenerateTokensCommandResponse } from '@/tokens/commands/generate-tokens/generate-tokens.handler';
 import { AuthenthicatedRequest } from '@/generic/interface/request';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { GoogleAuthCommand } from './commands/google-auth/google-auth.command';
-import { GoogleAuthCommandResponse } from './commands/google-auth/google-auth.handler';
-import { GoogleUser } from './strategies/google.strategy';
+import {
+  SocialAuthCommand,
+  type SocialUser,
+} from './commands/social-auth/social-auth.command';
+import { SocialAuthCommandResponse } from './commands/social-auth/social-auth.handler';
+import { GithubAuthGuard } from './guards/github-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -44,13 +47,41 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   public async googleAuthRedirect(
-    @Req() req: Request & { user: GoogleUser },
+    @Req() req: Request & { user: SocialUser },
     @Res({ passthrough: true }) res: FastifyReply,
   ) {
     const { accessToken, refreshToken } = await this.commandBus.execute<
-      GoogleAuthCommand,
-      GoogleAuthCommandResponse
-    >(new GoogleAuthCommand(req.user));
+      SocialAuthCommand,
+      SocialAuthCommandResponse
+    >(
+      new SocialAuthCommand({
+        ...req.user,
+        provider: 'google' as const,
+      }),
+    );
+
+    this.cookieService.setAuthCookies(res, accessToken, refreshToken);
+  }
+
+  @Get('github')
+  @UseGuards(GithubAuthGuard)
+  async githubAuth() {}
+
+  @Get('github/callback')
+  @UseGuards(GithubAuthGuard)
+  public async githubAuthRedirect(
+    @Req() req: Request & { user: SocialUser },
+    @Res({ passthrough: true }) res: FastifyReply,
+  ) {
+    const { accessToken, refreshToken } = await this.commandBus.execute<
+      SocialAuthCommand,
+      SocialAuthCommandResponse
+    >(
+      new SocialAuthCommand({
+        ...req.user,
+        provider: 'github' as const,
+      }),
+    );
 
     this.cookieService.setAuthCookies(res, accessToken, refreshToken);
   }

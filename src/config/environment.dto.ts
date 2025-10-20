@@ -136,4 +136,19 @@ export class EnvironmentDto {
   @IsString()
   @IsNotEmpty()
   GOOGLE_CALLBACK_URL!: string;
+
+  // ==========================================
+  // Github configuration
+  // ==========================================
+  @IsString()
+  @IsNotEmpty()
+  GITHUB_CLIENT_ID!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  GITHUB_CLIENT_SECRET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  GITHUB_CALLBACK_URL!: string;
 }
