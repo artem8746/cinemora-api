@@ -6,12 +6,14 @@ import { User } from './user.entity';
 import { GetUserByEmailHandler } from './queries/get-user-by-email/get-user-by-email.handler';
 import { CreateUserHandler } from './commands/create-user/create-user.handler';
 import { UpdateUserPasswordHandler } from './commands/update-user-password/update-user-password.handler';
+import { ActivateAccountHandler } from './commands/activate-account/activate-account.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 
 export const CommandHandlers = [
   GetUserByEmailHandler,
   CreateUserHandler,
   UpdateUserPasswordHandler,
+  ActivateAccountHandler,
 ];
 
 @Module({

@@ -7,6 +7,8 @@ import { GenerateTokensHandler } from './commands/generate-tokens/generate-token
 import { RegisterTokenHandler } from './commands/register-token/register-token.handler';
 import { ResetPasswordTokenHandler } from './commands/reset-password-token/reset-password-token.handler';
 import { SaveTokenHandler } from './commands/save-token/save-token.handler';
+import { GenerateActivationTokenHandler } from './commands/generate-activation-token/generate-activation-token.handler';
+import { VerifyActivationTokenHandler } from './commands/verify-activation-token/verify-activation-token.handler';
 import { JwtService } from '@nestjs/jwt';
 
 export const CommandHandlers = [
@@ -14,6 +16,8 @@ export const CommandHandlers = [
   RegisterTokenHandler,
   ResetPasswordTokenHandler,
   SaveTokenHandler,
+  GenerateActivationTokenHandler,
+  VerifyActivationTokenHandler,
 ];
 @Module({
   imports: [TypeOrmModule.forFeature([Token]), CqrsModule],

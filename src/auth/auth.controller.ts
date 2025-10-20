@@ -71,6 +71,11 @@ export class AuthController {
     >(new RegisterCommand(signUpDto.email, signUpDto.password));
 
     this.cookieService.setAuthCookies(res, accessToken, refreshToken);
+
+    return {
+      message:
+        'Registration successful. Please check your email to activate your account.',
+    };
   }
 
   @Post('sign-in')

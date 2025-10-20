@@ -6,7 +6,6 @@ import { Token } from './token.entity';
 import { Repository } from 'typeorm';
 import { CreateToken } from '../auth/dto/create-token.dto';
 import { JwtSummaryDto } from '../auth/dto/jwt-summary.dto';
-import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class TokensService {
@@ -15,7 +14,6 @@ export class TokensService {
     @InjectRepository(Token)
     private readonly tokenRepository: Repository<Token>,
     private readonly configService: ConfigService,
-    private readonly logger: PinoLogger,
   ) {}
 
   async updateRefreshToken(userId: string, refreshToken: string) {
@@ -87,6 +85,13 @@ export class TokensService {
     return this.createToken(payload, {
       secret: this.configService.getOrThrow('auth.jwtSecretResetPassword'),
       expiresIn: this.configService.getOrThrow('auth.expiresResetPassword'),
+    });
+  }
+
+  createActivationToken(payload: JwtSummaryDto): Promise<string> {
+    return this.createToken(payload, {
+      secret: this.configService.getOrThrow('auth.jwtSecretActivation'),
+      expiresIn: '24h',
     });
   }
 

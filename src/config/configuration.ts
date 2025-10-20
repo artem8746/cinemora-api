@@ -15,6 +15,7 @@ function getAuthConfig(env: EnvironmentDto) {
     jwtSecretAccess: env.JWT_SECRET_ACCESS,
     jwtSecretRefresh: env.JWT_SECRET_REFRESH,
     jwtSecretResetPassword: env.JWT_SECRET_RESET,
+    jwtSecretActivation: env.JWT_SECRET_ACTIVATION,
     expiresAccessToken: env.EXPIRES_ACCESS_TOKEN,
     expiresRefreshToken: env.EXPIRES_REFRESH_TOKEN,
     expiresResetPassword: env.EXPIRES_RESET_TOKEN,

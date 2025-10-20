@@ -8,15 +8,17 @@ import { RegisterCommand } from './register.command';
 import { BadRequestException } from '@nestjs/common';
 import { hashPassword } from '@/utils/hash-passwords';
 import { CreateUserCommand } from '@/users/commands/create-user/create-user.command';
-import { GenerateTokensCommand } from '@/tokens/commands/generate-tokens/generate-tokens.command';
 import { CreateUserCommandResponse } from '@/users/commands/create-user/create-user.handler';
+import { GenerateTokensCommand } from '@/tokens/commands/generate-tokens/generate-tokens.command';
 import { GenerateTokensCommandResponse } from '@/tokens/commands/generate-tokens/generate-tokens.handler';
 import { RegisterTokenCommand } from '@/tokens/commands/register-token/register-token.command';
 import { RegisterTokenCommandResponse } from '@/tokens/commands/register-token/register-token.handler';
-import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
 import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.command';
-import { AuthResponse } from '@/auth/types/auth';
 import { GetUserByEmailQueryResponse } from '@/users/queries/get-user-by-email/get-user-by-email.handler';
+import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
+import { AuthResponse } from '@/auth/types/auth';
+import { SendActivationEmailCommand } from '@/email/commands/send-activation-email/send-activation-email.command';
+import { SendActivationEmailCommandResponse } from '@/email/commands/send-activation-email/send-activation-email.handler';
 
 @CommandHandler(RegisterCommand)
 export class RegisterHandler implements ICommandHandler<RegisterCommand> {
@@ -60,6 +62,11 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand> {
         token: refreshToken,
       }),
     );
+
+    await this.commandBus.execute<
+      SendActivationEmailCommand,
+      SendActivationEmailCommandResponse
+    >(new SendActivationEmailCommand(email));
 
     return {
       accessToken,
