@@ -21,18 +21,15 @@ export class SendActivationEmailHandler
     const { email } = command;
 
     try {
-      // Generate activation token
       const activationToken = await this.commandBus.execute<
         GenerateActivationTokenCommand,
         GenerateActivationTokenCommandResponse
       >(new GenerateActivationTokenCommand(email));
 
-      // Create activation link
       const frontendUrl = this.configService.getOrThrow('app.frontendUrl');
       const activationLink = `${frontendUrl}/activate?token=${activationToken}`;
 
-      // Send activation email
-      await this.emailService.sendEmail(email, activationLink, 'activation');
+      await this.emailService.sendEmail(email, activationLink, 'confirm');
 
       this.logger.info(
         `Activation email sent to user: ${email}`,

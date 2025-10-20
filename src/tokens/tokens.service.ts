@@ -91,7 +91,7 @@ export class TokensService {
   createActivationToken(payload: JwtSummaryDto): Promise<string> {
     return this.createToken(payload, {
       secret: this.configService.getOrThrow('auth.jwtSecretActivation'),
-      expiresIn: '24h',
+      expiresIn: this.configService.getOrThrow('auth.expiresActivationToken'),
     });
   }
 
