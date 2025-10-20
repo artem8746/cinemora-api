@@ -10,6 +10,7 @@ import { PostgresDataSource } from './database/data-source';
 import { AuthModule } from './auth/auth.module';
 import { getConfiguration } from './config';
 import { TokensModule } from './tokens/tokens.module';
+import { OpenAIModule } from './openai/openai.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RedisModule } from './redis/redis.module';
 
@@ -76,6 +77,7 @@ import { RedisModule } from './redis/redis.module';
     AuthModule,
     TokensModule,
     RedisModule,
+    OpenAIModule,
   ],
   controllers: [],
   providers: [],
