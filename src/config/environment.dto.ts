@@ -135,4 +135,18 @@ export class EnvironmentDto {
   @IsString()
   @IsNotEmpty()
   OPENAI_API_KEY!: string;
+
+  // Github configuration
+  // ==========================================
+  @IsString()
+  @IsNotEmpty()
+  GITHUB_CLIENT_ID!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  GITHUB_CLIENT_SECRET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  GITHUB_CALLBACK_URL!: string;
 }
