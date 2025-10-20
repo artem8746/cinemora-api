@@ -130,6 +130,12 @@ export class EnvironmentDto {
   GOOGLE_CALLBACK_URL!: string;
 
   // ==========================================
+  // OpenAI configuration
+  // ==========================================
+  @IsString()
+  @IsNotEmpty()
+  OPENAI_API_KEY!: string;
+
   // Github configuration
   // ==========================================
   @IsString()

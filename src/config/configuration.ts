@@ -33,6 +33,12 @@ function getEmailConfig(env: EnvironmentDto) {
   } as const;
 }
 
+function getOpenAIConfig(env: EnvironmentDto) {
+  return {
+    apiKey: env.OPENAI_API_KEY,
+  } as const;
+}
+
 function getAppConfig(env: EnvironmentDto) {
   return {
     domain: env.DOMAIN,
@@ -51,6 +57,7 @@ export function configuration(env: EnvironmentDto) {
     cors: getCorsConfig(env),
     auth: getAuthConfig(env),
     email: getEmailConfig(env),
+    openai: getOpenAIConfig(env),
     app: getAppConfig(env),
   } as const;
 }
