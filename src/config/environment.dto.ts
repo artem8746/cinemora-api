@@ -55,11 +55,15 @@ export class EnvironmentDto {
   REDIS_PORT!: number;
 
   // ==========================================
-  // Sendgrid configuration
+  // Mailjet configuration
   // ==========================================
   @IsString()
   @IsNotEmpty()
-  SEND_GRID_API_KEY!: string;
+  MAILJET_API_KEY!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  MAILJET_SECRET_KEY!: string;
 
   // ==========================================
   // Email configuration

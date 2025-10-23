@@ -32,6 +32,8 @@ function getAuthConfig(env: EnvironmentDto) {
 function getEmailConfig(env: EnvironmentDto) {
   return {
     emailUser: env.EMAIL_USER,
+    mailjetApiKey: env.MAILJET_API_KEY,
+    mailjetSecretKey: env.MAILJET_SECRET_KEY,
   } as const;
 }
 

@@ -12,7 +12,6 @@ import { GenerateUsernameHandler } from './commands/generate-username/generate-u
 import { CqrsModule } from '@nestjs/cqrs';
 
 export const CommandHandlers = [
-  GetUserByEmailHandler,
   CreateUserHandler,
   CreateUserSocialHandler,
   UpdateUserPasswordHandler,
@@ -20,10 +19,12 @@ export const CommandHandlers = [
   GenerateUsernameHandler,
 ];
 
+export const QueryHandlers = [GetUserByEmailHandler];
+
 @Module({
   imports: [TypeOrmModule.forFeature([User]), CqrsModule],
   controllers: [UsersController],
-  providers: [UsersService, ...CommandHandlers],
-  exports: [UsersService, ...CommandHandlers],
+  providers: [UsersService, ...CommandHandlers, ...QueryHandlers],
+  exports: [UsersService, ...CommandHandlers, ...QueryHandlers],
 })
 export class UsersModule {}
