@@ -6,9 +6,12 @@ import { RedisModule as NestRedisModule } from '@nestjs-modules/ioredis';
   imports: [
     NestRedisModule.forRootAsync({
       useFactory: () => {
+        const redisHost = process.env.REDIS_HOST || 'localhost';
+        const redisPort = process.env.REDIS_PORT || '6379';
+
         return {
           type: 'single',
-          url: `redis://localhost:6379`,
+          url: `redis://${redisHost}:${redisPort}`,
         };
       },
     }),

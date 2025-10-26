@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ForgotPasswordCommand } from './forgot-password.command';
-import { CommandBus } from '@nestjs/cqrs';
-import { GetUserByEmailCommand } from '@/users/commands/get-user-by-email/get-user-by-email.command';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.command';
 import { User } from '@/users/user.entity';
 import { EmailService } from '@/email/email.service';
 import { JwtSummaryDto } from '../../dto/jwt-summary.dto';
@@ -18,6 +18,7 @@ export class ForgotPasswordHandler
   implements ICommandHandler<ForgotPasswordCommand>
 {
   constructor(
+    private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
     private readonly emailService: EmailService,
     private readonly configService: ConfigService,
@@ -28,8 +29,8 @@ export class ForgotPasswordHandler
     const { email } = command;
     this.logger.info('Forgot password command received', { email });
 
-    const user = await this.commandBus.execute<GetUserByEmailCommand, User>(
-      new GetUserByEmailCommand(email),
+    const user = await this.queryBus.execute<GetUserByEmailQuery, User>(
+      new GetUserByEmailQuery(email),
     );
 
     if (!user) {

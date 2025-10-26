@@ -50,6 +50,10 @@ export class EnvironmentDto {
   // ==========================================
   // Redis configuration
   // ==========================================
+  @IsString()
+  @IsNotEmpty()
+  REDIS_HOST!: string;
+
   @IsNumber()
   @ToNumber()
   REDIS_PORT!: number;
