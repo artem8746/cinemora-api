@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { UsersService } from '@/users/users.service';
-import { GetUserByEmailQuery } from './get-user-by-email.command';
+import { GetUserByEmailQuery } from './get-user-by-email.query';
 
 @QueryHandler(GetUserByEmailQuery)
 export class GetUserByEmailHandler

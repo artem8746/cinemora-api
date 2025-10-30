@@ -3,9 +3,9 @@ import { GenerateActivationTokenCommand } from './generate-activation-token.comm
 import { TokensService } from '@/tokens/tokens.service';
 import { PinoLogger } from 'nestjs-pino';
 import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
-import { User } from '@/users/user.entity';
-import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.command';
 import { NotFoundException } from '@nestjs/common';
+import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.query';
+import { GetUserByEmailQueryResponse } from '@/users/queries/get-user-by-email/get-user-by-email.handler';
 
 @CommandHandler(GenerateActivationTokenCommand)
 export class GenerateActivationTokenHandler
@@ -20,9 +20,10 @@ export class GenerateActivationTokenHandler
   async execute(command: GenerateActivationTokenCommand): Promise<string> {
     const { email } = command;
 
-    const user = await this.queryBus.execute<GetUserByEmailQuery, User>(
-      new GetUserByEmailQuery(email),
-    );
+    const user = await this.queryBus.execute<
+      GetUserByEmailQuery,
+      GetUserByEmailQueryResponse
+    >(new GetUserByEmailQuery(email));
 
     if (!user) {
       throw new NotFoundException('User not found');
