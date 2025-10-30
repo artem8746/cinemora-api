@@ -56,6 +56,13 @@ function getAppConfig(env: EnvironmentDto) {
   } as const;
 }
 
+function getRedisConfig(env: EnvironmentDto) {
+  return {
+    host: env.REDIS_HOST,
+    port: env.REDIS_PORT,
+  } as const;
+}
+
 export function configuration(env: EnvironmentDto) {
   return {
     cors: getCorsConfig(env),
@@ -63,5 +70,6 @@ export function configuration(env: EnvironmentDto) {
     email: getEmailConfig(env),
     openai: getOpenAIConfig(env),
     app: getAppConfig(env),
+    redis: getRedisConfig(env),
   } as const;
 }

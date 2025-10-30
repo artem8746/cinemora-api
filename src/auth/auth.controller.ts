@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Post,
   Req,
   Res,
@@ -65,7 +66,7 @@ export class AuthController {
     this.cookieService.setAuthCookies(res, accessToken, refreshToken);
 
     const frontendUrl = this.configService.get('app.frontendUrl');
-    res.redirect(`${frontendUrl}/dashboard`, 302);
+    res.redirect(`${frontendUrl}/dashboard`, HttpStatus.FOUND);
   }
 
   @Get('github')
@@ -91,7 +92,7 @@ export class AuthController {
     this.cookieService.setAuthCookies(res, accessToken, refreshToken);
 
     const frontendUrl = this.configService.get('app.frontendUrl');
-    res.redirect(`${frontendUrl}/dashboard`, 302);
+    res.redirect(`${frontendUrl}/dashboard`, HttpStatus.FOUND);
   }
 
   @Post('sign-up')
