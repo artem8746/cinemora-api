@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Post,
   Req,
   Res,
@@ -32,12 +33,14 @@ import {
 } from './commands/social-auth/social-auth.command';
 import { SocialAuthCommandResponse } from './commands/social-auth/social-auth.handler';
 import { GithubAuthGuard } from './guards/github-auth.guard';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly cookieService: CookieService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Get('google')
@@ -61,6 +64,9 @@ export class AuthController {
     );
 
     this.cookieService.setAuthCookies(res, accessToken, refreshToken);
+
+    const frontendUrl = this.configService.get('app.frontendUrl');
+    res.redirect(`${frontendUrl}/dashboard`, HttpStatus.FOUND);
   }
 
   @Get('github')
@@ -71,7 +77,7 @@ export class AuthController {
   @UseGuards(GithubAuthGuard)
   public async githubAuthRedirect(
     @Req() req: Request & { user: SocialUser },
-    @Res({ passthrough: true }) res: FastifyReply,
+    @Res() res: FastifyReply,
   ) {
     const { accessToken, refreshToken } = await this.commandBus.execute<
       SocialAuthCommand,
@@ -84,6 +90,9 @@ export class AuthController {
     );
 
     this.cookieService.setAuthCookies(res, accessToken, refreshToken);
+
+    const frontendUrl = this.configService.get('app.frontendUrl');
+    res.redirect(`${frontendUrl}/dashboard`, HttpStatus.FOUND);
   }
 
   @Post('sign-up')
