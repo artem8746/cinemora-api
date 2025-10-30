@@ -13,7 +13,7 @@ import { GenerateTokensCommand } from '@/tokens/commands/generate-tokens/generat
 import { GenerateTokensCommandResponse } from '@/tokens/commands/generate-tokens/generate-tokens.handler';
 import { RegisterTokenCommand } from '@/tokens/commands/register-token/register-token.command';
 import { RegisterTokenCommandResponse } from '@/tokens/commands/register-token/register-token.handler';
-import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.command';
+import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.query';
 import { GetUserByEmailQueryResponse } from '@/users/queries/get-user-by-email/get-user-by-email.handler';
 import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
 import { AuthResponse } from '@/auth/types/auth';

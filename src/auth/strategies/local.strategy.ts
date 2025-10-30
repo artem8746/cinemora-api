@@ -8,7 +8,7 @@ import { Strategy } from 'passport-local';
 import { comparePasswords } from '@/utils/hash-passwords';
 import { JwtSummaryDto } from '../dto/jwt-summary.dto';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.command';
+import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.query';
 import { GetUserByEmailQueryResponse } from '@/users/queries/get-user-by-email/get-user-by-email.handler';
 
 @Injectable()

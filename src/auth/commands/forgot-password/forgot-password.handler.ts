@@ -1,8 +1,6 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { ForgotPasswordCommand } from './forgot-password.command';
 import { CommandBus } from '@nestjs/cqrs';
-import { GetUserByEmailCommand } from '@/users/commands/get-user-by-email/get-user-by-email.command';
-import { User } from '@/users/user.entity';
 import { EmailService } from '@/email/email.service';
 import { JwtSummaryDto } from '../../dto/jwt-summary.dto';
 import { ConfigService } from '@nestjs/config';
@@ -12,6 +10,8 @@ import { ResetPasswordTokenCommand } from '@/tokens/commands/reset-password-toke
 import { ResetPasswordTokenCommandResponse } from '@/tokens/commands/reset-password-token/reset-password-token.handler';
 import { SaveTokenCommand } from '@/tokens/commands/save-token/save-token.command';
 import { SaveTokenCommandResponse } from '@/tokens/commands/save-token/save-token.handler';
+import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.query';
+import { GetUserByEmailQueryResponse } from '@/users/queries/get-user-by-email/get-user-by-email.handler';
 
 @CommandHandler(ForgotPasswordCommand)
 export class ForgotPasswordHandler
@@ -22,15 +22,17 @@ export class ForgotPasswordHandler
     private readonly emailService: EmailService,
     private readonly configService: ConfigService,
     private readonly logger: PinoLogger,
+    private readonly queryBus: QueryBus,
   ) {}
 
   async execute(command: ForgotPasswordCommand): Promise<void> {
     const { email } = command;
     this.logger.info('Forgot password command received', { email });
 
-    const user = await this.commandBus.execute<GetUserByEmailCommand, User>(
-      new GetUserByEmailCommand(email),
-    );
+    const user = await this.queryBus.execute<
+      GetUserByEmailQuery,
+      GetUserByEmailQueryResponse
+    >(new GetUserByEmailQuery(email));
 
     if (!user) {
       throw new NotFoundException('User not found');

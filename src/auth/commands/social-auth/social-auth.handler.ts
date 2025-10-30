@@ -5,7 +5,7 @@ import {
   QueryBus,
 } from '@nestjs/cqrs';
 import { SocialAuthCommand } from './social-auth.command';
-import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.command';
+import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.query';
 import { AuthResponse } from '@/auth/types/auth';
 import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
 import { GenerateTokensCommand } from '@/tokens/commands/generate-tokens/generate-tokens.command';
