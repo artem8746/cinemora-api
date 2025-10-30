@@ -1,6 +1,10 @@
-import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
+import {
+  CommandHandler,
+  ICommandHandler,
+  QueryBus,
+  CommandBus,
+} from '@nestjs/cqrs';
 import { ForgotPasswordCommand } from './forgot-password.command';
-import { CommandBus } from '@nestjs/cqrs';
 import { EmailService } from '@/email/email.service';
 import { JwtSummaryDto } from '../../dto/jwt-summary.dto';
 import { ConfigService } from '@nestjs/config';
@@ -18,11 +22,11 @@ export class ForgotPasswordHandler
   implements ICommandHandler<ForgotPasswordCommand>
 {
   constructor(
+    private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
     private readonly emailService: EmailService,
     private readonly configService: ConfigService,
     private readonly logger: PinoLogger,
-    private readonly queryBus: QueryBus,
   ) {}
 
   async execute(command: ForgotPasswordCommand): Promise<void> {

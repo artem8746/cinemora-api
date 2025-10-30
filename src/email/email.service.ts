@@ -1,14 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as sgMail from '@sendgrid/mail';
+import Mailjet, { Client } from 'node-mailjet';
 import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class EmailService {
+  private readonly mailjet: Client;
+
   constructor(
     private configService: ConfigService,
     private readonly logger: PinoLogger,
-  ) {}
+  ) {
+    this.mailjet = Mailjet.apiConnect(
+      this.configService.getOrThrow('email.mailjetApiKey'),
+      this.configService.getOrThrow('email.mailjetSecretKey'),
+    );
+  }
 
   async sendEmail(
     recipient: string,
@@ -17,16 +24,27 @@ export class EmailService {
   ): Promise<void> {
     const { subject, text, html } = this.getEmailTemplate(type, dynamicLink);
 
-    const mailOptions = {
-      from: this.configService.getOrThrow('email.emailUser'),
-      to: recipient,
-      subject,
-      text,
-      html,
+    const emailData = {
+      Messages: [
+        {
+          From: {
+            Email: this.configService.getOrThrow('email.emailUser'),
+            Name: 'Cinemora Platform',
+          },
+          To: [
+            {
+              Email: recipient,
+            },
+          ],
+          Subject: subject,
+          TextPart: text,
+          HTMLPart: html,
+        },
+      ],
     };
 
     try {
-      await sgMail.send(mailOptions);
+      await this.mailjet.post('send', { version: 'v3.1' }).request(emailData);
       this.logger.info(
         `${type} email sent to: ${recipient}`,
         EmailService.name,

@@ -32,6 +32,8 @@ function getAuthConfig(env: EnvironmentDto) {
 function getEmailConfig(env: EnvironmentDto) {
   return {
     emailUser: env.EMAIL_USER,
+    mailjetApiKey: env.MAILJET_API_KEY,
+    mailjetSecretKey: env.MAILJET_SECRET_KEY,
   } as const;
 }
 
@@ -54,6 +56,13 @@ function getAppConfig(env: EnvironmentDto) {
   } as const;
 }
 
+function getRedisConfig(env: EnvironmentDto) {
+  return {
+    host: env.REDIS_HOST,
+    port: env.REDIS_PORT,
+  } as const;
+}
+
 export function configuration(env: EnvironmentDto) {
   return {
     cors: getCorsConfig(env),
@@ -61,5 +70,6 @@ export function configuration(env: EnvironmentDto) {
     email: getEmailConfig(env),
     openai: getOpenAIConfig(env),
     app: getAppConfig(env),
+    redis: getRedisConfig(env),
   } as const;
 }
