@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     NestRedisModule.forRootAsync({
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const redisHost = configService.get('redis.host');
         const redisPort = configService.get('redis.port');

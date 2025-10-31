@@ -10,7 +10,7 @@ import { SaveTokenHandler } from './commands/save-token/save-token.handler';
 import { GenerateActivationTokenHandler } from './commands/generate-activation-token/generate-activation-token.handler';
 import { VerifyActivationTokenHandler } from './commands/verify-activation-token/verify-activation-token.handler';
 import { JwtService } from '@nestjs/jwt';
-import { GetUserByEmailHandler } from '@/users/queries/get-user-by-email/get-user-by-email.handler';
+import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.query';
 
 export const CommandHandlers = [
   GenerateTokensHandler,
@@ -21,7 +21,7 @@ export const CommandHandlers = [
   VerifyActivationTokenHandler,
 ];
 
-export const QueryHandlers = [GetUserByEmailHandler];
+export const QueryHandlers = [GetUserByEmailQuery];
 @Module({
   imports: [TypeOrmModule.forFeature([Token]), CqrsModule],
   providers: [TokensService, JwtService, ...CommandHandlers, ...QueryHandlers],

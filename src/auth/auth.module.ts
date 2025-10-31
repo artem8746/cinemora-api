@@ -18,7 +18,7 @@ import { RedisModule } from '@/redis/redis.module';
 import { SocialAuthHandler } from './commands/social-auth/social-auth.handler';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GithubStrategy } from './strategies/github.stategy';
-import { GetUserByEmailHandler } from '@/users/queries/get-user-by-email/get-user-by-email.handler';
+import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.query';
 
 export const CommandHandlers = [
   RegisterHandler,
@@ -27,7 +27,7 @@ export const CommandHandlers = [
   SocialAuthHandler,
 ];
 
-export const QueryHandlers = [GetUserByEmailHandler];
+export const QueryHandlers = [GetUserByEmailQuery];
 
 @Module({
   imports: [
