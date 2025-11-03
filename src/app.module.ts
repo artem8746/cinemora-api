@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { Response } from 'express';
@@ -13,6 +13,7 @@ import { TokensModule } from './tokens/tokens.module';
 import { OpenAIModule } from './openai/openai.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RedisModule } from './redis/redis.module';
+import { RefreshTokenMiddleware } from './common/middleware/refresh-token.middleware';
 
 @Module({
   imports: [
@@ -82,4 +83,10 @@ import { RedisModule } from './redis/redis.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(RefreshTokenMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

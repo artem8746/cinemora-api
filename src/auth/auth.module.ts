@@ -19,6 +19,7 @@ import { SocialAuthHandler } from './commands/social-auth/social-auth.handler';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GithubStrategy } from './strategies/github.stategy';
 import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.query';
+import { JwtStrategy } from '@/common/strategies/jwt.strategy';
 
 export const CommandHandlers = [
   RegisterHandler,
@@ -48,6 +49,8 @@ export const QueryHandlers = [GetUserByEmailQuery];
     LocalStrategy,
     GoogleStrategy,
     GithubStrategy,
+    JwtStrategy,
   ],
+  exports: [JwtService, CookieService],
 })
 export class AuthModule {}

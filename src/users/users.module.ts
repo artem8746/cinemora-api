@@ -9,6 +9,7 @@ import { CreateUserSocialHandler } from './commands/create-user-social/create-us
 import { UpdateUserPasswordHandler } from './commands/update-user-password/update-user-password.handler';
 import { ActivateAccountHandler } from './commands/activate-account/activate-account.handler';
 import { GenerateUsernameHandler } from './commands/generate-username/generate-username.handler';
+import { UpdateProfileHandler } from './commands/update-profile/update-profile.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 
 export const CommandHandlers = [
@@ -17,6 +18,7 @@ export const CommandHandlers = [
   UpdateUserPasswordHandler,
   ActivateAccountHandler,
   GenerateUsernameHandler,
+  UpdateProfileHandler,
 ];
 
 export const QueryHandlers = [GetUserByEmailHandler];

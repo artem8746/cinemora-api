@@ -34,6 +34,8 @@ import {
 import { SocialAuthCommandResponse } from './commands/social-auth/social-auth.handler';
 import { GithubAuthGuard } from './guards/github-auth.guard';
 import { ConfigService } from '@nestjs/config';
+import { RegisterTokenCommand } from '@/tokens/commands/register-token/register-token.command';
+import { RegisterTokenCommandResponse } from '@/tokens/commands/register-token/register-token.handler';
 
 @Controller('auth')
 export class AuthController {
@@ -132,6 +134,16 @@ export class AuthController {
       GenerateTokensCommand,
       GenerateTokensCommandResponse
     >(new GenerateTokensCommand(request.user));
+
+    await this.commandBus.execute<
+      RegisterTokenCommand,
+      RegisterTokenCommandResponse
+    >(
+      new RegisterTokenCommand({
+        userId: request.user.sub,
+        token: refreshToken,
+      }),
+    );
 
     this.cookieService.setAuthCookies(res, accessToken, refreshToken);
   }

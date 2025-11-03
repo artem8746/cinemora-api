@@ -24,6 +24,12 @@ export class User {
   @Column({ nullable: true, type: 'varchar' })
   username?: string;
 
+  @Column({ nullable: true, type: 'varchar' })
+  position?: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  location?: string;
+
   @OneToMany(() => Token, (token) => token.user)
   tokens: Token[];
 }

@@ -9,6 +9,8 @@ import { ResetPasswordTokenHandler } from './commands/reset-password-token/reset
 import { SaveTokenHandler } from './commands/save-token/save-token.handler';
 import { GenerateActivationTokenHandler } from './commands/generate-activation-token/generate-activation-token.handler';
 import { VerifyActivationTokenHandler } from './commands/verify-activation-token/verify-activation-token.handler';
+import { VerifyAccessTokenHandler } from './commands/verify-access-token/verify-access-token.handler';
+import { RefreshAccessTokenHandler } from './commands/refresh-access-token/refresh-access-token.handler';
 import { JwtService } from '@nestjs/jwt';
 import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.query';
 
@@ -19,6 +21,8 @@ export const CommandHandlers = [
   SaveTokenHandler,
   GenerateActivationTokenHandler,
   VerifyActivationTokenHandler,
+  VerifyAccessTokenHandler,
+  RefreshAccessTokenHandler,
 ];
 
 export const QueryHandlers = [GetUserByEmailQuery];
