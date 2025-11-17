@@ -1,32 +1,34 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
 import { UpdateProfileCommand } from './update-profile.command';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../user.entity';
-import { Repository } from 'typeorm';
+import { UsersService } from '@/users/users.service';
+import { PinoLogger } from 'nestjs-pino';
 
 @CommandHandler(UpdateProfileCommand)
 export class UpdateProfileHandler
   implements ICommandHandler<UpdateProfileCommand>
 {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
+    private readonly usersService: UsersService,
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(UpdateProfileHandler.name);
+  }
 
   async execute(command: UpdateProfileCommand): Promise<User> {
     const { userId, updateData } = command;
 
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
+    const user = await this.usersService.findById(userId);
 
     if (!user) {
+      this.logger.error('User not found', { userId });
       throw new NotFoundException('User not found');
     }
 
     const updateFields: Partial<User> = {};
 
+    // TODO: Use mapper to update fields
     if (updateData.avatar !== undefined) {
       updateFields.avatar = updateData.avatar;
     }
@@ -47,13 +49,12 @@ export class UpdateProfileHandler
       return user;
     }
 
-    await this.userRepository.update(userId, updateFields);
+    await this.usersService.updateUser(userId, updateFields);
 
-    const updatedUser = await this.userRepository.findOne({
-      where: { id: userId },
-    });
+    const updatedUser = await this.usersService.findById(userId);
 
     if (!updatedUser) {
+      this.logger.error('User not found after update', { userId });
       throw new NotFoundException('User not found after update');
     }
 

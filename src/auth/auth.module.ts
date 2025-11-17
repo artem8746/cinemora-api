@@ -11,10 +11,12 @@ import { Token } from '../tokens/token.entity';
 import { TokensService } from '../tokens/tokens.service';
 import { JwtService } from '@nestjs/jwt';
 import { CookieService } from './services/cookie.service';
+import { RefreshTokenService } from './services/refresh-token.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { EmailModule } from '@/email/email.module';
 import { UsersModule } from '@/users/users.module';
 import { RedisModule } from '@/redis/redis.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { SocialAuthHandler } from './commands/social-auth/social-auth.handler';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GithubStrategy } from './strategies/github.stategy';
@@ -37,6 +39,7 @@ export const QueryHandlers = [GetUserByEmailQuery];
     EmailModule,
     UsersModule,
     RedisModule,
+    ThrottlerModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -46,11 +49,12 @@ export const QueryHandlers = [GetUserByEmailQuery];
     ...CommandHandlers,
     ...QueryHandlers,
     CookieService,
+    RefreshTokenService,
     LocalStrategy,
     GoogleStrategy,
     GithubStrategy,
     JwtStrategy,
   ],
-  exports: [JwtService, CookieService],
+  exports: [RefreshTokenService],
 })
 export class AuthModule {}

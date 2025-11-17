@@ -28,6 +28,16 @@ export class TokensService {
     return this.tokenRepository.save(token);
   }
 
+  async findTokenByRefreshToken(refreshToken: string) {
+    const token = await this.tokenRepository.findOne({
+      where: {
+        refreshToken,
+      },
+    });
+
+    return token ?? null;
+  }
+
   async findToken(userId: string) {
     const token = await this.tokenRepository.findOne({
       where: {

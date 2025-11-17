@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { Response } from 'express';
@@ -13,7 +13,9 @@ import { TokensModule } from './tokens/tokens.module';
 import { OpenAIModule } from './openai/openai.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RedisModule } from './redis/redis.module';
-import { RefreshTokenMiddleware } from './common/middleware/refresh-token.middleware';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { RedisThrottlerStorage } from './common/storage/redis-throttler.storage';
+import Redis from 'ioredis';
 
 @Module({
   imports: [
@@ -32,6 +34,19 @@ import { RefreshTokenMiddleware } from './common/middleware/refresh-token.middle
       }),
     }),
     CqrsModule,
+    ThrottlerModule.forRootAsync({
+      imports: [RedisModule],
+      useFactory: (redisClient: Redis) => ({
+        throttlers: [
+          {
+            ttl: 60000,
+            limit: 5,
+          },
+        ],
+        storage: new RedisThrottlerStorage(redisClient),
+      }),
+      inject: ['default_IORedisModuleConnectionToken'],
+    }),
     LoggerModule.forRoot({
       pinoHttp: {
         transport: {
@@ -83,10 +98,4 @@ import { RefreshTokenMiddleware } from './common/middleware/refresh-token.middle
   controllers: [],
   providers: [],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(RefreshTokenMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
-  }
-}
+export class AppModule {}

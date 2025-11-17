@@ -1,12 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Token } from '@/tokens/token.entity';
-import { Repository } from 'typeorm';
 import { RefreshAccessTokenCommand } from './refresh-access-token.command';
 import { TokensService } from '@/tokens/tokens.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
 import { User } from '@/users/user.entity';
+import { PinoLogger } from 'nestjs-pino';
 
 @CommandHandler(RefreshAccessTokenCommand)
 export class RefreshAccessTokenHandler
@@ -15,9 +13,10 @@ export class RefreshAccessTokenHandler
   constructor(
     private readonly tokensService: TokensService,
     private readonly configService: ConfigService,
-    @InjectRepository(Token)
-    private readonly tokenRepository: Repository<Token>,
-  ) {}
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(RefreshAccessTokenHandler.name);
+  }
 
   async execute(
     command: RefreshAccessTokenCommand,
@@ -33,13 +32,11 @@ export class RefreshAccessTokenHandler
         secret: jwtSecretRefresh,
       });
 
-      const tokenRecord = await this.tokenRepository.findOne({
-        where: { refreshToken },
-        relations: ['user'],
-      });
+      const tokenRecord =
+        await this.tokensService.findTokenByRefreshToken(refreshToken);
 
       if (!tokenRecord || tokenRecord.user.id !== payload.sub) {
-        console.warn(
+        this.logger.warn(
           'RefreshAccessTokenHandler: Token not found or user mismatch',
         );
         return null;
@@ -50,18 +47,12 @@ export class RefreshAccessTokenHandler
         email: payload.email,
       } as User);
 
-      console.warn('RefreshAccessTokenHandler: Clean payload', {
-        sub: cleanPayload.sub,
-        email: cleanPayload.email,
-        hasExp: 'exp' in payload,
-      });
-
       const accessToken =
         await this.tokensService.createAccessToken(cleanPayload);
 
       return { accessToken };
     } catch (error) {
-      console.error('RefreshAccessTokenHandler error:', error);
+      this.logger.error('RefreshAccessTokenHandler error:', error);
       return null;
     }
   }
