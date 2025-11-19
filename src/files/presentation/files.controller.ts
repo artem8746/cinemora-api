@@ -35,6 +35,7 @@ export class FilesController {
     @Req() req: AuthenthicatedRequest,
     @UploadedFile(new FileValidationPipe('avatar')) file: UploadedFileType,
   ): Promise<UploadResponseDto> {
+    // TODO: Replace with actual user ID
     const userId = 'bc136e79-72d6-4f07-a403-19f2a163331b';
     const url = await this.commandBus.execute<
       UploadAvatarCommand,
@@ -56,6 +57,7 @@ export class FilesController {
     @Req() req: AuthenthicatedRequest,
     @UploadedFile(new FileValidationPipe('resume')) file: UploadedFileType,
   ): Promise<UploadResponseDto> {
+    // TODO: Replace with actual user ID
     const userId = 'bc136e79-72d6-4f07-a403-19f2a163331b';
     const url = await this.commandBus.execute<
       UploadResumeCommand,

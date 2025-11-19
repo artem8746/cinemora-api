@@ -13,7 +13,7 @@ import { TokensModule } from './tokens/tokens.module';
 import { OpenAIModule } from './openai/openai.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RedisModule } from './redis/redis.module';
-import { FilesModule } from './modules/files/files.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
