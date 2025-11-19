@@ -2,6 +2,7 @@ import './instrument';
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import fastifyMultipart from '@fastify/multipart';
 import {
   BadRequestException,
   INestApplication,
@@ -43,6 +44,12 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+
+  await app.register(fastifyMultipart, {
+    limits: {
+      fileSize: 30_000_000, // 30MB
+    },
+  });
 
   const configService =
     app.get<ConfigService<Configuration, true>>(ConfigService);
@@ -102,22 +109,6 @@ async function bootstrap() {
   });
 
   app.useGlobalFilters(new HttpExceptionFilter());
-
-  app
-    .getHttpAdapter()
-    .getInstance()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .addHook('onRequest', (req: any, res: any, done: any) => {
-      res.setHeader = (key: string, value: string) => {
-        return res.raw.setHeader(key, value);
-      };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      res.end = (data?: any) => {
-        res.raw.end(data);
-      };
-      req.res = res;
-      done();
-    });
 
   await app.listen({ port, host: '0.0.0.0' });
   logger.log(`🚀 App is running on port ${port}`);

@@ -165,4 +165,31 @@ export class EnvironmentDto {
   @IsString()
   @IsNotEmpty()
   GITHUB_CALLBACK_URL!: string;
+
+  // ==========================================
+  // Cloudflare R2 configuration
+  // ==========================================
+  @IsString()
+  @IsNotEmpty()
+  R2_ACCOUNT_ID!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  R2_ACCESS_KEY_ID!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  R2_SECRET_ACCESS_KEY!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  R2_PUBLIC_BUCKET_NAME!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  R2_PRIVATE_BUCKET_NAME!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  R2_PUBLIC_URL!: string;
 }

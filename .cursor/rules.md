@@ -24,17 +24,59 @@
 - **Feature Modules**: Group related functionality in modules
 - **Command Structure**: Follow `commands/{name}/{name}.command.ts` and `{name}.handler.ts`
 - **Entity Placement**: Keep entities with their respective modules
-- **Shared Code**: Place utilities in appropriate shared directories
+- **Shared Code**: Place utilities in appropriate shared directories (`src/utils/`)
+- **DDD Modules**: New modules in `src/modules/` follow DDD structure:
+  - Helper functions in `presentation/utils/` (module-specific, keeps autonomy)
+  - Domain ports with Symbol tokens for DI
+  - Infrastructure adapters implement ports
+  - Store keys in DB, not full URLs
+- **Legacy Modules**: Existing modules in `src/{module}/` use shared `src/utils/` for helpers
 
 ## 📁 File Structure & Naming
 
-### Commands & Handlers
+### Legacy Module Structure (Existing Modules)
 
 ```
-src/{module}/commands/{action}/
-├── {action}.command.ts      # Command definition
-└── {action}.handler.ts      # Command handler
+src/{module}/
+├── commands/{action}/
+│   ├── {action}.command.ts
+│   └── {action}.handler.ts
+├── {module}.service.ts
+├── {module}.controller.ts
+└── {module}.entity.ts
 ```
+
+**Helper Functions**: Place in `src/utils/` for legacy modules
+
+### DDD Module Structure (New Modules)
+
+```
+src/modules/{module-name}/
+├── domain/
+│   └── {name}.port.ts              # Domain interfaces with Symbol tokens
+├── infrastructure/
+│   └── {provider}-{name}.service.ts # Infrastructure adapters
+├── application/
+│   ├── {name}.service.ts           # Application service
+│   ├── commands/{action}/
+│   │   ├── {action}.command.ts
+│   │   └── {action}.handler.ts
+│   ├── queries/{query}/
+│   │   ├── {query}.query.ts
+│   │   └── {query}.handler.ts
+│   └── events/
+│       └── {event}.event.ts
+├── presentation/
+│   ├── dto/
+│   │   └── {name}-response.dto.ts
+│   ├── utils/                       # Module-specific helpers
+│   │   └── {helper}.helper.ts
+│   └── {name}.controller.ts
+├── {name}.entity.ts
+└── {name}.module.ts
+```
+
+**Helper Functions**: Place in `presentation/utils/` for DDD modules (keeps modules autonomous)
 
 ### Examples
 
@@ -149,6 +191,24 @@ export class UsersService {
 - **Single responsibility** for each command handler
 - **Use command bus** for cross-module communication
 - **Maintain command/response type safety**
+
+### DDD Architecture (for modules in `src/modules/`)
+
+- **Domain Layer**: Pure TypeScript interfaces with Symbol tokens for DI
+- **Application Layer**: Business logic, depends only on domain ports
+- **Infrastructure Layer**: Implements domain ports (R2, S3, etc.)
+- **Presentation Layer**: Controllers, DTOs, and module-specific utils
+- **Helper Functions**: Place in `presentation/utils/` to keep modules autonomous
+- **Storage Keys**: Store keys in DB, not full URLs (flexibility for CDN changes)
+
+### Swagger Documentation Organization
+
+- **Module-Specific Swagger**: Each module should have its own `swagger/` folder
+  - **Responses**: All `@ApiResponse` decorators go in `swagger/response.ts`
+  - **Requests**: All `@ApiBody` and request-related decorators go in `swagger/request.ts`
+  - **Always extract** swagger decorators from controller files to these dedicated files
+- **Reusable Swagger Logic**: For cross-module reusable swagger decorators or logic, place them in `src/utils/swagger.decorator.ts`
+- **Controller Files**: Controllers should import and use the swagger decorators from the module's `swagger/` folder, keeping controllers clean and focused
 
 ### Authentication & Security
 
