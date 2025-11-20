@@ -5,7 +5,6 @@ import { VerifyAccessTokenCommand } from '@/tokens/commands/verify-access-token/
 import { VerifyAccessTokenCommandResponse } from '@/tokens/commands/verify-access-token/verify-access-token.handler';
 import { RefreshAccessTokenCommand } from '@/tokens/commands/refresh-access-token/refresh-access-token.command';
 import { RefreshAccessTokenCommandResponse } from '@/tokens/commands/refresh-access-token/refresh-access-token.handler';
-import { ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
 import { CookieService } from './cookie.service';
 import { ThrottlerStorage, InjectThrottlerStorage } from '@nestjs/throttler';
@@ -15,13 +14,12 @@ import Redis from 'ioredis';
 
 @Injectable()
 export class RefreshTokenService {
-  private readonly LOCK_TTL = 5;
-  private readonly RATE_LIMIT_TTL = 60;
+  private readonly LOCK_TTL = 5 * 1000; // 5 sec
+  private readonly RATE_LIMIT_TTL = 60 * 1000; // 60 sec
   private readonly RATE_LIMIT_MAX_ATTEMPTS = 5;
 
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly configService: ConfigService,
     private readonly logger: PinoLogger,
     private readonly cookieService: CookieService,
     @InjectThrottlerStorage()
@@ -45,9 +43,9 @@ export class RefreshTokenService {
     const record: ThrottlerStorageRecord =
       await this.throttlerStorage.increment(
         key,
-        this.RATE_LIMIT_TTL * 1000,
+        this.RATE_LIMIT_TTL,
         this.RATE_LIMIT_MAX_ATTEMPTS,
-        this.RATE_LIMIT_TTL * 1000,
+        this.LOCK_TTL,
         'refresh-token',
       );
 

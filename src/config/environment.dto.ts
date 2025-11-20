@@ -1,12 +1,6 @@
 import { ToNumber } from '@/transformers/to-number.transaformer';
-import {
-  IsEnum,
-  IsNumber,
-  IsString,
-  IsNotEmpty,
-  Validate,
-} from 'class-validator';
-import { IsJwtExpiresFormat } from '@/validators/jwt-expires.validator';
+import { IsEnum, IsNumber, IsString, IsNotEmpty } from 'class-validator';
+import { IsTimeDuration } from '@/validators/time-duration.validator';
 
 export class EnvironmentDto {
   @IsEnum(['development', 'production', 'test'])
@@ -87,11 +81,11 @@ export class EnvironmentDto {
   // JWT configuration
   // ==========================================
   @IsString()
-  @Validate(IsJwtExpiresFormat)
+  @IsTimeDuration()
   EXPIRES_ACCESS_TOKEN!: string;
 
   @IsString()
-  @Validate(IsJwtExpiresFormat)
+  @IsTimeDuration()
   EXPIRES_REFRESH_TOKEN!: string;
 
   @IsString()
@@ -124,7 +118,7 @@ export class EnvironmentDto {
 
   @IsString()
   @IsNotEmpty()
-  @Validate(IsJwtExpiresFormat)
+  @IsTimeDuration()
   EXPIRES_RESET_TOKEN!: string;
 
   @IsString()
@@ -133,8 +127,13 @@ export class EnvironmentDto {
 
   @IsString()
   @IsNotEmpty()
-  @Validate(IsJwtExpiresFormat)
+  @IsTimeDuration()
   EXPIRES_ACTIVATION_TOKEN!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsTimeDuration()
+  EXPIRES_RESET_PASSWORD!: string;
 
   // ==========================================
   // Frontend configuration
