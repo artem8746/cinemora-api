@@ -14,6 +14,9 @@ import { OpenAIModule } from './openai/openai.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RedisModule } from './redis/redis.module';
 import { FilesModule } from './files/files.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { RedisThrottlerStorage } from './common/storage/redis-throttler.storage';
+import Redis from 'ioredis';
 
 @Module({
   imports: [
@@ -32,6 +35,19 @@ import { FilesModule } from './files/files.module';
       }),
     }),
     CqrsModule,
+    ThrottlerModule.forRootAsync({
+      imports: [RedisModule],
+      useFactory: (redisClient: Redis) => ({
+        throttlers: [
+          {
+            ttl: 60000,
+            limit: 5,
+          },
+        ],
+        storage: new RedisThrottlerStorage(redisClient),
+      }),
+      inject: ['default_IORedisModuleConnectionToken'],
+    }),
     LoggerModule.forRoot({
       pinoHttp: {
         transport: {

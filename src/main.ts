@@ -20,6 +20,8 @@ import {
 import { Configuration } from './config';
 import fastifyCookie from '@fastify/cookie';
 import '@fastify/cookie';
+import { FastifyRequest, FastifyReply } from 'fastify';
+import { RefreshTokenService } from './auth/services/refresh-token.service';
 
 function enableSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
@@ -109,6 +111,16 @@ async function bootstrap() {
   });
 
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  const fastifyInstance = app.getHttpAdapter().getInstance();
+  const refreshTokenService = app.get(RefreshTokenService);
+
+  fastifyInstance.addHook(
+    'onRequest',
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      await refreshTokenService.handleRefreshToken(request, reply);
+    },
+  );
 
   await app.listen({ port, host: '0.0.0.0' });
   logger.log(`🚀 App is running on port ${port}`);
