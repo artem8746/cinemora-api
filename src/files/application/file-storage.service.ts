@@ -30,7 +30,7 @@ export class FileStorageService {
   ): Promise<string> {
     this.logger.log(`Uploading avatar for user: ${userId}`);
 
-    const key = this.createAvatarKey(userId, mimeType.split('/')[1] ?? '');
+    const key = this.createAvatarKey(userId, this.getExtension(mimeType));
 
     await this.publicFileStorage.upload(key, file);
 
@@ -57,7 +57,7 @@ export class FileStorageService {
   ): Promise<string> {
     this.logger.log(`Uploading resume for user: ${userId}`);
 
-    const key = this.createResumeKey(userId, mimeType.split('/')[1] ?? '');
+    const key = this.createResumeKey(userId, this.getExtension(mimeType));
 
     await this.privateFileStorage.upload(key, file);
 
@@ -74,6 +74,10 @@ export class FileStorageService {
     this.logger.log(`Resume uploaded and saved to DB: ${key}`);
 
     return url;
+  }
+
+  private getExtension(mimeType: string): string {
+    return mimeType.split('/')[1] ?? '';
   }
 
   private createAvatarKey(userId: string, extension: string): string {
