@@ -4,6 +4,8 @@ import {
   UseInterceptors,
   UploadedFile,
   Req,
+  UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiConsumes } from '@nestjs/swagger';
@@ -18,14 +20,15 @@ import { FileResponses } from '../swagger/response';
 import { UploadedFile as UploadedFileType } from './types/file.interface';
 import { FastifyFileInterceptor } from './interceptors/fastify-file.interceptor';
 import { FileRequests } from '../swagger/request';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 
 @Controller('files')
 export class FilesController {
   constructor(private readonly commandBus: CommandBus) {}
 
-  // TODO: Add auth guard
   @Post('avatar')
   @UseInterceptors(new FastifyFileInterceptor('file'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Upload user avatar' })
   @ApiConsumes('multipart/form-data')
   @FileRequests.FileUploadRequest
@@ -35,8 +38,13 @@ export class FilesController {
     @Req() req: AuthenthicatedRequest,
     @UploadedFile(new FileValidationPipe('avatar')) file: UploadedFileType,
   ): Promise<UploadResponseDto> {
-    // TODO: Replace with actual user ID
-    const userId = 'bc136e79-72d6-4f07-a403-19f2a163331b';
+    // TODO: Replace with User decorator
+    const userId = req.user?.sub;
+
+    if (!userId) {
+      throw new UnauthorizedException('User not found');
+    }
+
     const url = await this.commandBus.execute<
       UploadAvatarCommand,
       UploadAvatarCommandResponse
@@ -45,9 +53,9 @@ export class FilesController {
     return new UploadResponseDto(url);
   }
 
-  // TODO: Add auth guard
   @Post('resume')
   @UseInterceptors(new FastifyFileInterceptor('file'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Upload user resume' })
   @ApiConsumes('multipart/form-data')
   @FileRequests.FileUploadRequest
@@ -57,8 +65,13 @@ export class FilesController {
     @Req() req: AuthenthicatedRequest,
     @UploadedFile(new FileValidationPipe('resume')) file: UploadedFileType,
   ): Promise<UploadResponseDto> {
-    // TODO: Replace with actual user ID
-    const userId = 'bc136e79-72d6-4f07-a403-19f2a163331b';
+    // TODO: Replace with User decorator
+    const userId = req.user?.sub;
+
+    if (!userId) {
+      throw new UnauthorizedException('User not found');
+    }
+
     const url = await this.commandBus.execute<
       UploadResumeCommand,
       UploadResumeCommandResponse

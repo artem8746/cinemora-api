@@ -19,7 +19,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonResponses } from '@/utils/swagger.decorator';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { AuthenthicatedRequest } from '@/generic/interface/request';
-import { AccessTokenGuard } from '@/common/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -48,7 +48,7 @@ export class UsersController {
   }
 
   @Patch('profile')
-  @UseGuards(AccessTokenGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update user profile' })
   @CommonResponses.ApiResponseBadRequest
   @CommonResponses.ApiResponseSuccess
