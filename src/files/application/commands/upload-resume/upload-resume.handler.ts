@@ -1,16 +1,12 @@
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UploadResumeCommand } from './upload-resume.command';
 import { FileStorageService } from '../../file-storage.service';
-import { ResumeUploadedEvent } from '../../events/resume-uploaded.event';
 
 @CommandHandler(UploadResumeCommand)
 export class UploadResumeHandler
   implements ICommandHandler<UploadResumeCommand>
 {
-  constructor(
-    private readonly fileStorageService: FileStorageService,
-    private readonly eventBus: EventBus,
-  ) {}
+  constructor(private readonly fileStorageService: FileStorageService) {}
 
   async execute(command: UploadResumeCommand): Promise<string> {
     const { userId, file } = command;
@@ -21,9 +17,6 @@ export class UploadResumeHandler
       file.mimetype,
       file.size,
     );
-
-    const event = new ResumeUploadedEvent(userId, url, new Date());
-    this.eventBus.publish(event);
 
     return url;
   }
