@@ -1,5 +1,6 @@
 import { ToNumber } from '@/transformers/to-number.transaformer';
 import { IsEnum, IsNumber, IsString, IsNotEmpty } from 'class-validator';
+import { IsTimeDuration } from '@/validators/time-duration.validator';
 
 export class EnvironmentDto {
   @IsEnum(['development', 'production', 'test'])
@@ -80,9 +81,11 @@ export class EnvironmentDto {
   // JWT configuration
   // ==========================================
   @IsString()
+  @IsTimeDuration()
   EXPIRES_ACCESS_TOKEN!: string;
 
   @IsString()
+  @IsTimeDuration()
   EXPIRES_REFRESH_TOKEN!: string;
 
   @IsString()
@@ -115,6 +118,7 @@ export class EnvironmentDto {
 
   @IsString()
   @IsNotEmpty()
+  @IsTimeDuration()
   EXPIRES_RESET_TOKEN!: string;
 
   @IsString()
@@ -123,7 +127,13 @@ export class EnvironmentDto {
 
   @IsString()
   @IsNotEmpty()
+  @IsTimeDuration()
   EXPIRES_ACTIVATION_TOKEN!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsTimeDuration()
+  EXPIRES_RESET_PASSWORD!: string;
 
   // ==========================================
   // Frontend configuration

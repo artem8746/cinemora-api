@@ -16,6 +16,7 @@ import { SaveTokenCommand } from '@/tokens/commands/save-token/save-token.comman
 import { SaveTokenCommandResponse } from '@/tokens/commands/save-token/save-token.handler';
 import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-by-email.query';
 import { GetUserByEmailQueryResponse } from '@/users/queries/get-user-by-email/get-user-by-email.handler';
+import { parseTimeDurationToSeconds } from '@/utils/parse-time-duration';
 
 @CommandHandler(ForgotPasswordCommand)
 export class ForgotPasswordHandler
@@ -52,7 +53,9 @@ export class ForgotPasswordHandler
       new SaveTokenCommand(
         `reset_token:${user.email}`,
         resetToken,
-        parseInt(this.configService.getOrThrow('auth.expiresResetPassword')),
+        parseTimeDurationToSeconds(
+          this.configService.getOrThrow('auth.expiresResetPassword'),
+        ),
       ),
     );
 

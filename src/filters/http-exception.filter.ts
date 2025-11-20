@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { SentryExceptionCaptured } from '@sentry/nestjs';
-import type { Request, Response } from 'express';
+import { FastifyRequest, FastifyReply } from 'fastify';
 import { PinoLogger } from 'nestjs-pino';
 
 @Catch()
@@ -32,8 +32,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
   @SentryExceptionCaptured()
   catch(exception: Error | HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<FastifyReply>();
+    const request = ctx.getRequest<FastifyRequest>();
 
     if (exception instanceof HttpException) {
       const statusCode = exception.getStatus();
