@@ -15,16 +15,16 @@ export class NormalizeTableNames1763645468427 implements MigrationInterface {
     // Rename token table to tokens
     await queryRunner.query(`ALTER TABLE "token" RENAME TO "tokens"`);
 
-    // Re-add foreign key constraint with updated table names
+    // Re-add foreign key constraint with updated table names and new constraint name
     await queryRunner.query(
-      `ALTER TABLE "tokens" ADD CONSTRAINT "FK_e50ca89d635960fda2ffeb17639" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "tokens" ADD CONSTRAINT "FK_8769073e38c365f315426554ca5" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Drop foreign key constraint from tokens table
     await queryRunner.query(
-      `ALTER TABLE "tokens" DROP CONSTRAINT IF EXISTS "FK_e50ca89d635960fda2ffeb17639"`,
+      `ALTER TABLE "tokens" DROP CONSTRAINT IF EXISTS "FK_8769073e38c365f315426554ca5"`,
     );
 
     // Rename tokens table back to token
