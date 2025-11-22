@@ -3,13 +3,13 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SettingsService } from './settings.service';
 import { UpdateAppearanceDto } from './dto/update-appearance.dto';
 import { UpdateNotificationsDto } from './dto/update-notifications.dto';
-import { AccessTokenGuard } from '@/common/guards/jwt-auth.guard';
 import { CommonResponses } from '@/utils/swagger.decorator';
 import { CurrentUserId } from '@/common/decorators/current-user-id.decorator';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 
 @ApiTags('settings')
 @Controller('settings')
-@UseGuards(AccessTokenGuard)
+@UseGuards(JwtAuthGuard)
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 

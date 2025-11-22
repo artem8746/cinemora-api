@@ -13,6 +13,7 @@ import { TokensModule } from './tokens/tokens.module';
 import { OpenAIModule } from './openai/openai.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RedisModule } from './redis/redis.module';
+import { FilesModule } from './files/files.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { RedisThrottlerStorage } from './common/storage/redis-throttler.storage';
 import { SettingsModule } from './settings/settings.module';
@@ -95,6 +96,7 @@ import Redis from 'ioredis';
     TokensModule,
     RedisModule,
     OpenAIModule,
+    FilesModule,
     SettingsModule,
   ],
   controllers: [],

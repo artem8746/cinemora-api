@@ -2,6 +2,7 @@ import './instrument';
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import fastifyMultipart from '@fastify/multipart';
 import {
   BadRequestException,
   INestApplication,
@@ -45,6 +46,12 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+
+  await app.register(fastifyMultipart, {
+    limits: {
+      fileSize: 30_000_000, // 30MB
+    },
+  });
 
   const configService =
     app.get<ConfigService<Configuration, true>>(ConfigService);
