@@ -9,7 +9,7 @@ import { UpdateProfileCommandResponse } from './commands/update-profile/update-p
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonResponses } from '@/utils/swagger.decorator';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { AccessTokenGuard } from '@/common/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { CurrentUserId } from '@/common/decorators/current-user-id.decorator';
 
 @ApiTags('users')
@@ -37,7 +37,7 @@ export class UsersController {
   }
 
   @Patch('profile')
-  @UseGuards(AccessTokenGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update user profile' })
   @CommonResponses.ApiResponseBadRequest
   @CommonResponses.ApiResponseSuccess

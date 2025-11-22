@@ -63,6 +63,17 @@ function getRedisConfig(env: EnvironmentDto) {
   } as const;
 }
 
+function getR2Config(env: EnvironmentDto) {
+  return {
+    accountId: env.R2_ACCOUNT_ID,
+    accessKeyId: env.R2_ACCESS_KEY_ID,
+    secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+    publicBucketName: env.R2_PUBLIC_BUCKET_NAME,
+    privateBucketName: env.R2_PRIVATE_BUCKET_NAME,
+    publicUrl: env.R2_PUBLIC_URL,
+  } as const;
+}
+
 export function configuration(env: EnvironmentDto) {
   return {
     cors: getCorsConfig(env),
@@ -71,5 +82,6 @@ export function configuration(env: EnvironmentDto) {
     openai: getOpenAIConfig(env),
     app: getAppConfig(env),
     redis: getRedisConfig(env),
+    r2: getR2Config(env),
   } as const;
 }
