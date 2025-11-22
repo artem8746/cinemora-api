@@ -23,12 +23,12 @@ import { FileRequests } from '../swagger/request';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 
 @Controller('files')
+@UseGuards(JwtAuthGuard)
 export class FilesController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Post('avatar')
   @UseInterceptors(new FastifyFileInterceptor('file'))
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Upload user avatar' })
   @ApiConsumes('multipart/form-data')
   @FileRequests.FileUploadRequest
@@ -55,7 +55,6 @@ export class FilesController {
 
   @Post('resume')
   @UseInterceptors(new FastifyFileInterceptor('file'))
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Upload user resume' })
   @ApiConsumes('multipart/form-data')
   @FileRequests.FileUploadRequest
