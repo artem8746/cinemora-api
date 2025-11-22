@@ -60,7 +60,7 @@ export class FileValidationPipe implements PipeTransform {
     }
 
     // Additional validation: Check if buffer exists
-    if (!file.buffer || file.buffer.length === 0) {
+    if (!file.buffer?.length) {
       throw new BadRequestException({
         error: {
           message: 'File buffer is empty or invalid',
