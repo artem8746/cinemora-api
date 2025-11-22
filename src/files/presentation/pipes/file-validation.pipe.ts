@@ -10,16 +10,6 @@ import {
 } from '../../domain/file-validation.constants';
 import { bytesToMegabytes } from '../utils/file-size.helper';
 import { UploadedFile } from '../types/file.interface';
-
-function getValidationRules(fileType: FileType) {
-  switch (fileType) {
-    case 'avatar':
-      return FILE_VALIDATION_CONSTANTS.AVATAR;
-    case 'resume':
-      return FILE_VALIDATION_CONSTANTS.RESUME;
-  }
-}
-
 @Injectable()
 export class FileValidationPipe implements PipeTransform {
   constructor(private readonly fileType: FileType) {}
@@ -34,7 +24,7 @@ export class FileValidationPipe implements PipeTransform {
       });
     }
 
-    const validationRules = getValidationRules(this.fileType);
+    const validationRules = FILE_VALIDATION_CONSTANTS[this.fileType];
 
     // Validate file size
     if (file.size > validationRules.MAX_SIZE_BYTES) {
