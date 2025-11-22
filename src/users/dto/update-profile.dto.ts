@@ -12,7 +12,7 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   @IsUrl({}, { message: 'Avatar must be a valid URL' })
-  @Transform(({ value }) => (value ? escapeHtml(value as string) : value))
+  @Transform(({ value }) => (value ? escapeHtml(value as string) : undefined))
   readonly avatar?: string;
 
   @ApiProperty({
@@ -23,7 +23,7 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   @MaxLength(64, { message: 'Username must not exceed 64 characters' })
-  @Transform(({ value }) => (value ? escapeHtml(value as string) : value))
+  @Transform(({ value }) => (value ? escapeHtml(value as string) : undefined))
   readonly username?: string;
 
   @ApiProperty({
@@ -34,7 +34,7 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   @MaxLength(128, { message: 'Position must not exceed 128 characters' })
-  @Transform(({ value }) => (value ? escapeHtml(value as string) : value))
+  @Transform(({ value }) => (value ? escapeHtml(value as string) : undefined))
   readonly position?: string;
 
   @ApiProperty({
@@ -45,6 +45,6 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   @MaxLength(128, { message: 'Location must not exceed 128 characters' })
-  @Transform(({ value }) => (value ? escapeHtml(value as string) : value))
+  @Transform(({ value }) => (value ? escapeHtml(value as string) : undefined))
   readonly location?: string;
 }
