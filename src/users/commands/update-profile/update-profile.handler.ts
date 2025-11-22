@@ -26,30 +26,7 @@ export class UpdateProfileHandler
       throw new NotFoundException('User not found');
     }
 
-    const updateFields: Partial<User> = {};
-
-    // TODO: Use mapper to update fields
-    if (updateData.avatar !== undefined) {
-      updateFields.avatar = updateData.avatar;
-    }
-
-    if (updateData.username !== undefined) {
-      updateFields.username = updateData.username;
-    }
-
-    if (updateData.position !== undefined) {
-      updateFields.position = updateData.position;
-    }
-
-    if (updateData.location !== undefined) {
-      updateFields.location = updateData.location;
-    }
-
-    if (Object.keys(updateFields).length === 0) {
-      return user;
-    }
-
-    await this.usersService.updateUser(userId, updateFields);
+    await this.usersService.updateUser(userId, updateData);
 
     const updatedUser = await this.usersService.findById(userId);
 

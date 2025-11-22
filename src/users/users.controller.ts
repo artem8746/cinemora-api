@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Req,
-  NotFoundException,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { CommandBus } from '@nestjs/cqrs';
@@ -18,8 +9,8 @@ import { UpdateProfileCommandResponse } from './commands/update-profile/update-p
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonResponses } from '@/utils/swagger.decorator';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { AuthenthicatedRequest } from '@/generic/interface/request';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
+import { CurrentUserId } from '@/common/decorators/current-user-id.decorator';
 
 @ApiTags('users')
 @Controller('users')
@@ -38,13 +29,11 @@ export class UsersController {
   @ApiOperation({ summary: 'Activate user account' })
   @CommonResponses.ApiResponseBadRequest
   @CommonResponses.ApiResponseSuccess
-  public async activateAccount(@Body() body: { token: string }) {
-    const result = await this.commandBus.execute<
+  public activateAccount(@Body() body: { token: string }) {
+    return this.commandBus.execute<
       ActivateAccountCommand,
       ActivateAccountCommandResponse
     >(new ActivateAccountCommand(body.token));
-
-    return result;
   }
 
   @Patch('profile')
@@ -52,20 +41,13 @@ export class UsersController {
   @ApiOperation({ summary: 'Update user profile' })
   @CommonResponses.ApiResponseBadRequest
   @CommonResponses.ApiResponseSuccess
-  public async updateProfile(
-    @Req() request: AuthenthicatedRequest,
+  public updateProfile(
+    @CurrentUserId() userId: string,
     @Body() updateProfileDto: UpdateProfileDto,
-  ): Promise<User> {
-    const userId = request.user?.sub;
-    if (!userId) {
-      throw new NotFoundException('User not found');
-    }
-
-    const updatedUser = await this.commandBus.execute<
+  ) {
+    return this.commandBus.execute<
       UpdateProfileCommand,
       UpdateProfileCommandResponse
     >(new UpdateProfileCommand(userId, updateProfileDto));
-
-    return updatedUser;
   }
 }

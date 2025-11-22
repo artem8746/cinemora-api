@@ -33,11 +33,7 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async updateUser(
-    userId: string,
-    updateData: Partial<User>,
-  ): Promise<User | null> {
-    await this.usersRepository.update(userId, updateData);
-    return this.usersRepository.findOne({ where: { id: userId } });
+  updateUser(userId: string, updateData: Partial<User>) {
+    return this.usersRepository.update(userId, updateData);
   }
 }
