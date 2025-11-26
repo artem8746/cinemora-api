@@ -130,11 +130,6 @@ export class EnvironmentDto {
   @IsTimeDuration()
   EXPIRES_ACTIVATION_TOKEN!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsTimeDuration()
-  EXPIRES_RESET_PASSWORD!: string;
-
   // ==========================================
   // Frontend configuration
   // ==========================================

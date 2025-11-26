@@ -10,21 +10,18 @@ interface GitLabVariable {
   protected?: boolean;
 }
 
-async function syncEnvFromGitLab() {
-  const gitlabUrl = process.env.GITLAB_URL || 'https://gitlab.com';
-  const projectId = process.env.GITLAB_PROJECT_ID;
-  const accessToken = process.env.GITLAB_ACCESS_TOKEN;
-  const envFile = process.env.ENV_FILE || '.env';
+async function fetchAllVariables(
+  gitlabUrl: string,
+  projectId: string,
+  accessToken: string,
+): Promise<GitLabVariable[]> {
+  const allVariables: GitLabVariable[] = [];
+  let currentPage = 1;
+  let totalPages = 1;
+  const perPage = 100;
 
-  if (!projectId || !accessToken) {
-    console.error(
-      '❌ Error: GITLAB_PROJECT_ID and GITLAB_ACCESS_TOKEN must be set',
-    );
-    process.exit(1);
-  }
-
-  try {
-    const apiUrl = `${gitlabUrl}/api/v4/projects/${projectId}/variables`;
+  do {
+    const apiUrl = `${gitlabUrl}/api/v4/projects/${projectId}/variables?page=${currentPage}&per_page=${perPage}`;
     const response = await fetch(apiUrl, {
       headers: {
         'PRIVATE-TOKEN': accessToken,
@@ -45,7 +42,44 @@ async function syncEnvFromGitLab() {
       throw new Error(errorMessage);
     }
 
-    const variables = (await response.json()) as GitLabVariable[];
+    const pageVariables = (await response.json()) as GitLabVariable[];
+    allVariables.push(...pageVariables);
+
+    const totalPagesHeader = response.headers.get('X-Total-Pages');
+    if (totalPagesHeader) {
+      totalPages = parseInt(totalPagesHeader, 10);
+    }
+
+    currentPage++;
+
+    console.log(
+      `📄 Fetched page ${currentPage - 1}/${totalPages} (${pageVariables.length} variables)`,
+    );
+  } while (currentPage <= totalPages);
+
+  return allVariables;
+}
+
+async function syncEnvFromGitLab() {
+  const gitlabUrl = process.env.GITLAB_URL || 'https://gitlab.com';
+  const projectId = process.env.GITLAB_PROJECT_ID;
+  const accessToken = process.env.GITLAB_ACCESS_TOKEN;
+  const envFile = process.env.ENV_FILE || '.env';
+
+  if (!projectId || !accessToken) {
+    console.error(
+      '❌ Error: GITLAB_PROJECT_ID and GITLAB_ACCESS_TOKEN must be set',
+    );
+    process.exit(1);
+  }
+
+  try {
+    console.log('🔄 Fetching variables from GitLab...\n');
+    const variables = await fetchAllVariables(
+      gitlabUrl,
+      projectId,
+      accessToken,
+    );
 
     if (variables.length === 0) {
       console.warn('⚠️  No variables found in GitLab project');
