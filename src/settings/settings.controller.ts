@@ -6,6 +6,9 @@ import { UpdateNotificationsDto } from './dto/update-notifications.dto';
 import { CommonResponses } from '@/utils/swagger.decorator';
 import { CurrentUserId } from '@/common/decorators/current-user-id.decorator';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
+import { UpdatePersonalInfoDto } from './dto/update-personal-info.dto';
+import { UpdateAISettingsDto } from './dto/update-ai-settings.dto';
+import { UpdateJobPreferencesDto } from './dto/update-job-preferences.dto';
 
 @ApiTags('settings')
 @Controller('settings')
@@ -43,6 +46,45 @@ export class SettingsController {
     return this.settingsService.updateNotifications(
       userId,
       updateNotificationsDto,
+    );
+  }
+
+  @Put('personal-info')
+  @ApiOperation({ summary: 'Replace personal info settings' })
+  @CommonResponses.ApiResponseBadRequest
+  @CommonResponses.ApiResponseSuccess
+  public updatePersonalInfo(
+    @CurrentUserId() userId: string,
+    @Body() updatePersonalInfoDto: UpdatePersonalInfoDto,
+  ) {
+    return this.settingsService.updatePersonalInfo(
+      userId,
+      updatePersonalInfoDto,
+    );
+  }
+
+  @Put('ai-settings')
+  @ApiOperation({ summary: 'Replace AI settings' })
+  @CommonResponses.ApiResponseBadRequest
+  @CommonResponses.ApiResponseSuccess
+  public updateAISettings(
+    @CurrentUserId() userId: string,
+    @Body() updateAISettingsDto: UpdateAISettingsDto,
+  ) {
+    return this.settingsService.updateAISettings(userId, updateAISettingsDto);
+  }
+
+  @Put('job-preferences')
+  @ApiOperation({ summary: 'Replace job preferences settings' })
+  @CommonResponses.ApiResponseBadRequest
+  @CommonResponses.ApiResponseSuccess
+  public updateJobPreferences(
+    @CurrentUserId() userId: string,
+    @Body() updateJobPreferencesDto: UpdateJobPreferencesDto,
+  ) {
+    return this.settingsService.updateJobPreferences(
+      userId,
+      updateJobPreferencesDto,
     );
   }
 }
