@@ -19,9 +19,9 @@ export class PdfLinkParserService implements IPdfLinkParserPort {
       // Pattern to match URI annotations in PDF structure
       // Matches /URI (link) patterns in PDF annotations
       const uriPattern = /\/URI\s*\(([^)]+)\)/g;
-      let match;
+      let match = uriPattern.exec(pdfContent);
 
-      while ((match = uriPattern.exec(pdfContent)) !== null) {
+      while (match !== null) {
         const link = match[1];
         if (link) {
           // Decode PDF string encoding (handle escape sequences)
@@ -30,6 +30,8 @@ export class PdfLinkParserService implements IPdfLinkParserPort {
             links.add(decodedLink);
           }
         }
+
+        match = uriPattern.exec(pdfContent);
       }
 
       // Also search for common link patterns in the text content

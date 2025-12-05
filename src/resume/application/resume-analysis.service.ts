@@ -3,7 +3,7 @@ import { IPdfParserPort, PDF_PARSER_PORT } from '../domain/pdf-parser.port';
 import {
   IPdfLinkParserPort,
   PDF_LINK_PARSER_PORT,
-} from '@/files/domain/pdf-link-parser.port';
+} from '../domain/pdf-link-parser.port';
 import { UploadedFile } from '@/files/presentation/types/file.interface';
 import { ResumeRawContent } from '../presentation/types/resume';
 
