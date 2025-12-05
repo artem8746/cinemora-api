@@ -3,6 +3,7 @@ import {
   INotificationStreamPort,
   NOTIFICATION_STREAM_PORT,
 } from '../domain/notification-stream.port';
+import { NotificationPayload } from '../domain/notification-payload.type';
 import { Notification } from '../notification.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,7 +17,7 @@ export class NotificationsService {
     private readonly notificationRepository: Repository<Notification>,
   ) {}
 
-  sendNotification(data: unknown): void {
+  sendNotification(data: NotificationPayload): void {
     this.notificationStreamPort.sendNotification(data);
   }
 
