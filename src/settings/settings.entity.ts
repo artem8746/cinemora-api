@@ -12,6 +12,9 @@ import {
 import {
   AppearanceSettings,
   NotificationSettings,
+  PersonalInfoSettings,
+  AISettings,
+  JobPreferencesSettings,
 } from './types/settings.types';
 
 @Entity('user_settings')
@@ -40,6 +43,27 @@ export class Settings {
     default: () => "'{}'",
   })
   notifications: NotificationSettings;
+
+  @Column({
+    type: 'jsonb',
+    name: 'personal_info',
+    default: () => "'{}'",
+  })
+  personalInfo: PersonalInfoSettings;
+
+  @Column({
+    type: 'jsonb',
+    name: 'ai_settings',
+    default: () => "'{}'",
+  })
+  aiSettings: AISettings;
+
+  @Column({
+    type: 'jsonb',
+    name: 'job_preferences',
+    default: () => "'{}'",
+  })
+  jobPreferences: JobPreferencesSettings;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
