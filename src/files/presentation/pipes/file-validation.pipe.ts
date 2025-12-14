@@ -8,7 +8,7 @@ import {
   FILE_VALIDATION_CONSTANTS,
   FileType,
 } from '../../domain/file-validation.constants';
-import { bytesToMegabytes } from '../utils/file-size.helper';
+import { bytesToMegabytes } from '../../../utils/file-size.helper';
 import { UploadedFile } from '../types/file.interface';
 @Injectable()
 export class FileValidationPipe implements PipeTransform {
