@@ -43,6 +43,12 @@ function getOpenAIConfig(env: EnvironmentDto) {
   } as const;
 }
 
+function getJinaConfig(env: EnvironmentDto) {
+  return {
+    apiUrl: env.JINA_API_URL,
+  } as const;
+}
+
 function getAppConfig(env: EnvironmentDto) {
   return {
     domain: env.DOMAIN,
@@ -80,6 +86,7 @@ export function configuration(env: EnvironmentDto) {
     auth: getAuthConfig(env),
     email: getEmailConfig(env),
     openai: getOpenAIConfig(env),
+    jina: getJinaConfig(env),
     app: getAppConfig(env),
     redis: getRedisConfig(env),
     r2: getR2Config(env),

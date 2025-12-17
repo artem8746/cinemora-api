@@ -6,9 +6,7 @@ import { UsersService } from '@/users/users.service';
 import { PinoLogger } from 'nestjs-pino';
 
 @CommandHandler(UpdateProfileCommand)
-export class UpdateProfileHandler
-  implements ICommandHandler<UpdateProfileCommand>
-{
+export class UpdateProfileHandler implements ICommandHandler<UpdateProfileCommand> {
   constructor(
     private readonly usersService: UsersService,
     private readonly logger: PinoLogger,

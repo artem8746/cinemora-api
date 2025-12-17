@@ -7,9 +7,7 @@ import { VerifyActivationTokenCommand } from '@/tokens/commands/verify-activatio
 import { VerifyActivationTokenCommandResponse } from '@/tokens/commands/verify-activation-token/verify-activation-token.handler';
 
 @CommandHandler(ActivateAccountCommand)
-export class ActivateAccountHandler
-  implements ICommandHandler<ActivateAccountCommand>
-{
+export class ActivateAccountHandler implements ICommandHandler<ActivateAccountCommand> {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly usersService: UsersService,

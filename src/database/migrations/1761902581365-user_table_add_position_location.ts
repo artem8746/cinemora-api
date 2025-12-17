@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UserTableAddPositionLocation1761902581365
-  implements MigrationInterface
-{
+export class UserTableAddPositionLocation1761902581365 implements MigrationInterface {
   name = 'UserTableAddPositionLocation1761902581365';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

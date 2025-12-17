@@ -1,5 +1,5 @@
-export const OPENAI_PROMPTS = {
-  RESUME_PARSER_SYSTEM: `You are a resume parser. Convert the provided resume text and list of links into a strictly typed ParsedResume object.
+export const RESUME_PARSER_SYSTEM =
+  `You are a resume parser. Convert the provided resume text and list of links into a strictly typed ParsedResume object.
 
 ### OUTPUT RULES
 - Output **ONLY valid JSON** matching the ParsedResume TypeScript type.
@@ -95,5 +95,4 @@ Given:
 Produce a fully structured ParsedResume object.
 
 ### INPUT FORMAT
-{ "text": "...", "links": ["...", "..."] }`,
-} as const;
+{ "text": "...", "links": ["...", "..."] }` as const;
