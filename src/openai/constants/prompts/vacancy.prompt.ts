@@ -1,3 +1,6 @@
+export const VACANCY_PARSER_SYSTEM =
+  'You are a vacancy parser. Extract all data and translate everything to English. Respond only with valid JSON without markdown formatting.' as const;
+
 export function getParseVacancyPrompt(url: string, content: string): string {
   return `Page content: ${url}
 

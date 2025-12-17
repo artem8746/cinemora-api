@@ -6,7 +6,10 @@ import type { ParsedVacancyResponse } from './types/parsed-vacancy.type';
 import { ParsedResume } from '@/resume/presentation/types/resume';
 import { ResumeRawContent } from '@/resume/presentation/types/resume';
 import { RESUME_PARSER_SYSTEM } from './constants/prompts/resume.prompt';
-import { getParseVacancyPrompt } from './constants/prompts/vacancy.prompt';
+import {
+  getParseVacancyPrompt,
+  VACANCY_PARSER_SYSTEM,
+} from './constants/prompts/vacancy.prompt';
 
 @Injectable()
 export class OpenAIService {
@@ -71,8 +74,7 @@ export class OpenAIService {
       messages: [
         {
           role: 'system',
-          content:
-            'You are a vacancy parser. Extract all data and translate everything to English. Respond only with valid JSON without markdown formatting.',
+          content: VACANCY_PARSER_SYSTEM,
         },
         {
           role: 'user',
