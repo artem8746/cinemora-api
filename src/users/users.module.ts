@@ -4,6 +4,7 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { GetUserByEmailHandler } from './queries/get-user-by-email/get-user-by-email.handler';
+import { GetUserByIdHandler } from './queries/get-user-by-id/get-user-by-id.handler';
 import { CreateUserHandler } from './commands/create-user/create-user.handler';
 import { CreateUserSocialHandler } from './commands/create-user-social/create-user-social.handler';
 import { UpdateUserPasswordHandler } from './commands/update-user-password/update-user-password.handler';
@@ -21,7 +22,7 @@ export const CommandHandlers = [
   UpdateProfileHandler,
 ];
 
-export const QueryHandlers = [GetUserByEmailHandler];
+export const QueryHandlers = [GetUserByEmailHandler, GetUserByIdHandler];
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), CqrsModule],

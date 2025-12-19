@@ -84,6 +84,9 @@ async function bootstrap() {
   // Validation pipe to handle dto validation errors globally and return a custom error response
   app.useGlobalPipes(
     new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: false,
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
         const errors = {};
         validationErrors.forEach((error) => {

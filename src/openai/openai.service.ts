@@ -65,10 +65,7 @@ export class OpenAIService {
     }
   }
 
-  async parseVacancy(
-    content: string,
-    url: string,
-  ): Promise<ParsedVacancyResponse> {
+  async parseVacancy(content: string): Promise<ParsedVacancyResponse> {
     const response = await this.client.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
@@ -78,7 +75,7 @@ export class OpenAIService {
         },
         {
           role: 'user',
-          content: getParseVacancyPrompt(url, content),
+          content: getParseVacancyPrompt(content),
         },
       ],
       response_format: { type: 'json_object' },
