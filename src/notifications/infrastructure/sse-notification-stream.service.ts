@@ -4,13 +4,9 @@ import { MessageEvent } from '@nestjs/common';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { INotificationStreamPort } from '../domain/notification-stream.port';
+import { NotificationPayload } from '../domain/notification-payload.type';
 import { PinoLogger } from 'nestjs-pino';
 import { ConfigService } from '@nestjs/config';
-
-interface NotificationData {
-  userIds?: string[];
-  [key: string]: unknown;
-}
 
 @Injectable()
 export class SseNotificationStreamService
@@ -44,7 +40,7 @@ export class SseNotificationStreamService
     this.cleanupStreams();
   }
 
-  sendNotification(data: unknown): void {
+  sendNotification(data: NotificationPayload): void {
     const { message, userIds } = this.parseNotificationData(data);
     this.publishToChannels(message, userIds);
   }
@@ -124,22 +120,12 @@ export class SseNotificationStreamService
     return `${this.USER_CHANNEL_PREFIX}${userId}`;
   }
 
-  private parseNotificationData(data: unknown): {
+  private parseNotificationData(data: NotificationPayload): {
     message: string;
     userIds: string[];
   } {
-    let notificationData: NotificationData;
-
-    if (typeof data === 'string') {
-      notificationData = JSON.parse(data) as NotificationData;
-    } else {
-      notificationData = data as NotificationData;
-    }
-
-    const message = typeof data === 'string' ? data : JSON.stringify(data);
-    const userIds = notificationData.userIds
-      ? [...new Set(notificationData.userIds)]
-      : [];
+    const message = JSON.stringify(data);
+    const userIds = data.userIds ? [...new Set(data.userIds)] : [];
 
     return { message, userIds };
   }

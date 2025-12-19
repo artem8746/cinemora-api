@@ -1,8 +1,9 @@
 import { Observable } from 'rxjs';
 import { MessageEvent } from '@nestjs/common';
+import { NotificationPayload } from './notification-payload.type';
 
 export interface INotificationStreamPort {
-  sendNotification(data: unknown): void;
+  sendNotification(data: NotificationPayload): void;
   getNotificationStream(userId?: string): Observable<MessageEvent>;
 }
 
