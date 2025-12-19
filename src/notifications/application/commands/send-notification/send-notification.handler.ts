@@ -3,9 +3,7 @@ import { SendNotificationCommand } from './send-notification.command';
 import { NotificationsService } from '../../notifications.service';
 
 @CommandHandler(SendNotificationCommand)
-export class SendNotificationHandler
-  implements ICommandHandler<SendNotificationCommand>
-{
+export class SendNotificationHandler implements ICommandHandler<SendNotificationCommand> {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   execute(command: SendNotificationCommand): Promise<void> {

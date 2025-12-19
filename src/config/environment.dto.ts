@@ -157,6 +157,13 @@ export class EnvironmentDto {
   @IsNotEmpty()
   OPENAI_API_KEY!: string;
 
+  // ==========================================
+  // Jina AI configuration
+  // ==========================================
+  @IsString()
+  @IsNotEmpty()
+  JINA_API_URL!: string;
+
   // Github configuration
   // ==========================================
   @IsString()

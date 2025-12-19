@@ -20,6 +20,14 @@ export class UsersController {
     private readonly commandBus: CommandBus,
   ) {}
 
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get current user' })
+  @CommonResponses.ApiResponseSuccess
+  public getCurrentUser(@CurrentUserId() userId: string) {
+    return this.usersService.findById(userId);
+  }
+
   @Get()
   getAll(): Promise<User[]> {
     return this.usersService.getAll();

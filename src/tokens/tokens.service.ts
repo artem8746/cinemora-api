@@ -6,6 +6,7 @@ import { Token } from './token.entity';
 import { Repository } from 'typeorm';
 import { CreateToken } from '../auth/dto/create-token.dto';
 import { JwtSummaryDto } from '../auth/dto/jwt-summary.dto';
+import type { StringValue } from 'ms';
 
 @Injectable()
 export class TokensService {
@@ -80,28 +81,36 @@ export class TokensService {
   createAccessToken(payload: JwtSummaryDto): Promise<string> {
     return this.createToken(payload, {
       secret: this.configService.getOrThrow('auth.jwtSecretAccess'),
-      expiresIn: this.configService.getOrThrow('auth.expiresAccessToken'),
+      expiresIn: this.configService.getOrThrow(
+        'auth.expiresAccessToken',
+      ) as StringValue,
     });
   }
 
   createRefreshToken(payload: JwtSummaryDto): Promise<string> {
     return this.createToken(payload, {
       secret: this.configService.getOrThrow('auth.jwtSecretRefresh'),
-      expiresIn: this.configService.getOrThrow('auth.expiresRefreshToken'),
+      expiresIn: this.configService.getOrThrow(
+        'auth.expiresRefreshToken',
+      ) as StringValue,
     });
   }
 
   createResetPasswordToken(payload: JwtSummaryDto): Promise<string> {
     return this.createToken(payload, {
       secret: this.configService.getOrThrow('auth.jwtSecretResetPassword'),
-      expiresIn: this.configService.getOrThrow('auth.expiresResetPassword'),
+      expiresIn: this.configService.getOrThrow(
+        'auth.expiresResetPassword',
+      ) as StringValue,
     });
   }
 
   createActivationToken(payload: JwtSummaryDto): Promise<string> {
     return this.createToken(payload, {
       secret: this.configService.getOrThrow('auth.jwtSecretActivation'),
-      expiresIn: this.configService.getOrThrow('auth.expiresActivationToken'),
+      expiresIn: this.configService.getOrThrow(
+        'auth.expiresActivationToken',
+      ) as StringValue,
     });
   }
 
