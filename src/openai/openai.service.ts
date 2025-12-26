@@ -8,14 +8,15 @@ import { ParsedResume } from '@/resume/presentation/types/resume';
 import { ResumeRawContent } from '@/resume/presentation/types/resume';
 import { RESUME_PARSER_SYSTEM } from './constants/prompts/resume.prompt';
 import {
-  getParseVacancyPrompt,
   VACANCY_PARSER_SYSTEM,
+  VACANCY_PARSER_PROMPT,
 } from './constants/prompts/vacancy.prompt';
 import {
   RESUME_COMPARISON_SYSTEM_PROMPT,
   getResumeComparisonPrompt,
 } from './constants/prompts/resume-comparison.prompt';
 import type { ResumeMatchResponseDto } from '@/resume/presentation/dto/compare-resume.dto';
+import { removeMarkdownCodeBlocks } from '@/utils';
 
 @Injectable()
 export class OpenAIService {
@@ -72,6 +73,7 @@ export class OpenAIService {
   }
 
   async parseVacancy(content: string): Promise<ParsedVacancyResponse> {
+    const truncatedContent = content.substring(0, 40000);
     const response = await this.client.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
@@ -81,7 +83,7 @@ export class OpenAIService {
         },
         {
           role: 'user',
-          content: getParseVacancyPrompt(content),
+          content: `${truncatedContent}\n\n${VACANCY_PARSER_PROMPT}`,
         },
       ],
       response_format: { type: 'json_object' },
@@ -141,18 +143,7 @@ export class OpenAIService {
         throw new Error('Failed to compare resume: empty response from OpenAI');
       }
 
-      let parsedContent = content.trim();
-
-      // Remove markdown code blocks if present
-      if (parsedContent.startsWith('```json')) {
-        parsedContent = parsedContent
-          .replace(/^```json\s*/, '')
-          .replace(/\s*```$/, '');
-      } else if (parsedContent.startsWith('```')) {
-        parsedContent = parsedContent
-          .replace(/^```\s*/, '')
-          .replace(/\s*```$/, '');
-      }
+      const parsedContent = removeMarkdownCodeBlocks(content);
 
       let comparison: ResumeMatchResponseDto;
       try {

@@ -286,17 +286,17 @@ export class VacanciesService {
 
     const vacancy = await this.findVacancyById({ vacancyId, userId });
 
-    if (updateData.status !== undefined) {
+    if (updateData.status) {
       vacancy.status = updateData.status;
       this.logger.log(`Updating status to ${updateData.status}`);
     }
 
-    if (updateData.url !== undefined) {
+    if (updateData.url) {
       vacancy.url = updateData.url;
       this.logger.log(`Updating URL to ${updateData.url}`);
     }
 
-    if (updateData.parsedData !== undefined) {
+    if (updateData.parsedData) {
       vacancy.parsedData = updateData.parsedData;
       this.logger.log('Updating parsed data');
     }

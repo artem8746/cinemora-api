@@ -7,25 +7,25 @@ export class VacancyDataDto {
   @IsOptional()
   @Transform(({ value }) => (value === '' ? null : value))
   @IsString()
-  title?: string | null | undefined;
+  title?: string | null;
 
   @ApiProperty({ example: 'Tech Corp Inc.', nullable: true })
   @IsOptional()
   @Transform(({ value }) => (value === '' ? null : value))
   @IsString()
-  company?: string | null | undefined;
+  company?: string | null;
 
   @ApiProperty({ example: 'New York, USA', nullable: true })
   @IsOptional()
   @Transform(({ value }) => (value === '' ? null : value))
   @IsString()
-  location?: string | null | undefined;
+  location?: string | null;
 
   @ApiProperty({ example: '$100000 - $150000', nullable: true })
   @IsOptional()
   @Transform(({ value }) => (value === '' ? null : value))
   @IsString()
-  salary?: string | null | undefined;
+  salary?: string | null;
 
   @ApiProperty({
     example: 'Full-time',
@@ -36,7 +36,7 @@ export class VacancyDataDto {
   @IsOptional()
   @Transform(({ value }) => (value === '' ? null : value))
   @IsString()
-  employmentType?: string | null | undefined;
+  employmentType?: string | null;
 
   @ApiProperty({
     example: 'Remote',
@@ -46,7 +46,7 @@ export class VacancyDataDto {
   @IsOptional()
   @Transform(({ value }) => (value === '' ? null : value))
   @IsString()
-  workType?: string | null | undefined;
+  workType?: string | null;
 
   @ApiProperty({
     example: 'Long-term (1+ year)',
@@ -56,7 +56,7 @@ export class VacancyDataDto {
   @IsOptional()
   @Transform(({ value }) => (value === '' ? null : value))
   @IsString()
-  duration?: string | null | undefined;
+  duration?: string | null;
 
   @ApiProperty({
     example: 'Senior',
@@ -66,13 +66,13 @@ export class VacancyDataDto {
   @IsOptional()
   @Transform(({ value }) => (value === '' ? null : value))
   @IsString()
-  experienceLevel?: string | null | undefined;
+  experienceLevel?: string | null;
 
   @ApiProperty({ example: 'Vacancy description...', nullable: true })
   @IsOptional()
   @Transform(({ value }) => (value === '' ? null : value))
   @IsString()
-  description?: string | null | undefined;
+  description?: string | null;
 
   @ApiProperty({
     example: ['API Development', 'Performance Optimization'],
