@@ -33,15 +33,6 @@ export class UsersController {
     return this.usersService.getAll();
   }
 
-  @Get('me')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get current user' })
-  @CommonResponses.ApiResponseBadRequest
-  @CommonResponses.ApiResponseSuccess
-  public getMe(@CurrentUserId() userId: string) {
-    return this.usersService.findById(userId);
-  }
-
   @Post('activate')
   @ApiOperation({ summary: 'Activate user account' })
   @CommonResponses.ApiResponseBadRequest

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryBus } from '@nestjs/cqrs';
@@ -93,10 +93,6 @@ export class VacanciesService {
     });
   }
 
-  private async saveVacancyEntity(vacancy: Vacancy): Promise<Vacancy> {
-    return await this.vacancyRepository.save(vacancy);
-  }
-
   private async parseViaJina(url: string): Promise<ParsedVacancy> {
     const jinaResponse = await fetch(`${this.jinaApiUrl}/${url}`);
 
@@ -155,11 +151,12 @@ export class VacanciesService {
     >(new ParseVacancyQuery(content));
   }
 
-  async saveVacancy(
-    url: string | null | undefined,
-    parsedData: ParsedVacancyData,
-    user: User,
-  ): Promise<Vacancy> {
+  async saveVacancy(params: {
+    url: string | null | undefined;
+    parsedData: ParsedVacancyData;
+    user: User;
+  }): Promise<Vacancy> {
+    const { url, parsedData, user } = params;
     const logMessage = url
       ? `Saving vacancy with URL: ${url} for user: ${user.id}`
       : `Saving vacancy without URL for user: ${user.id}`;
@@ -216,6 +213,98 @@ export class VacanciesService {
       .getMany();
 
     return this.groupVacanciesByStatus(vacancies);
+  }
+
+  async findVacancyById(params: {
+    vacancyId: string;
+    userId: string;
+  }): Promise<Vacancy> {
+    const { vacancyId, userId } = params;
+    this.logger.log(`Finding vacancy ${vacancyId} for user: ${userId}`);
+    const vacancy = await this.vacancyRepository
+      .createQueryBuilder('vacancy')
+      .innerJoin('vacancy.users', 'user')
+      .where('vacancy.id = :vacancyId', { vacancyId })
+      .andWhere('user.id = :userId', { userId })
+      .getOne();
+
+    if (!vacancy) {
+      throw new NotFoundException(
+        `Vacancy with ID ${vacancyId} not found or does not belong to user`,
+      );
+    }
+
+    return vacancy;
+  }
+
+  async deleteVacancy(params: {
+    vacancyId: string;
+    userId: string;
+  }): Promise<void> {
+    const { vacancyId, userId } = params;
+    this.logger.log(`Deleting vacancy ${vacancyId} for user: ${userId}`);
+
+    const vacancy = await this.findVacancyById({ vacancyId, userId });
+
+    await this.vacancyRepository
+      .createQueryBuilder()
+      .relation(Vacancy, 'users')
+      .of(vacancy.id)
+      .remove(userId);
+
+    this.logger.log(`Removed user ${userId} from vacancy ${vacancyId}`);
+
+    const remainingUsersCount = await this.vacancyRepository
+      .createQueryBuilder('vacancy')
+      .innerJoin('vacancy.users', 'user')
+      .where('vacancy.id = :vacancyId', { vacancyId })
+      .getCount();
+
+    if (remainingUsersCount === 0) {
+      await this.vacancyRepository.remove(vacancy);
+      this.logger.log(
+        `Deleted vacancy ${vacancyId} as it has no associated users`,
+      );
+    } else {
+      this.logger.log(
+        `Vacancy ${vacancyId} still has ${remainingUsersCount} associated users, keeping it`,
+      );
+    }
+  }
+
+  async updateVacancy(params: {
+    vacancyId: string;
+    userId: string;
+    updateData: {
+      status?: VacancyStatus;
+      url?: string;
+      parsedData?: ParsedVacancyData;
+    };
+  }): Promise<Vacancy> {
+    const { vacancyId, userId, updateData } = params;
+    this.logger.log(`Updating vacancy ${vacancyId} for user: ${userId}`);
+
+    const vacancy = await this.findVacancyById({ vacancyId, userId });
+
+    if (updateData.status !== undefined) {
+      vacancy.status = updateData.status;
+      this.logger.log(`Updating status to ${updateData.status}`);
+    }
+
+    if (updateData.url !== undefined) {
+      vacancy.url = updateData.url;
+      this.logger.log(`Updating URL to ${updateData.url}`);
+    }
+
+    if (updateData.parsedData !== undefined) {
+      vacancy.parsedData = updateData.parsedData;
+      this.logger.log('Updating parsed data');
+    }
+
+    const updatedVacancy = await this.vacancyRepository.save(vacancy);
+    this.logger.log(`Successfully updated vacancy ${vacancyId}`);
+
+    return updatedVacancy;
   }
 
   private groupVacanciesByStatus(vacancies: Vacancy[]): VacanciesByStatusDto {

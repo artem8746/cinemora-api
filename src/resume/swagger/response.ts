@@ -208,6 +208,89 @@ const parsedResumeSchema = {
   required: ['id', 'userId', 'title', 'personalDetails', 'content'],
 };
 
+const keySkillMatchSchema = {
+  type: 'object',
+  properties: {
+    skill: { type: 'string', example: 'React' },
+    status: {
+      type: 'string',
+      enum: ['match', 'partial', 'missing'],
+      example: 'match',
+    },
+    message: { type: 'string', example: 'You have it' },
+  },
+  required: ['skill', 'status', 'message'],
+};
+
+const aiInsightsSchema = {
+  type: 'object',
+  properties: {
+    atsScore: { type: 'number', example: 85, minimum: 0, maximum: 100 },
+    keywordMatch: { type: 'number', example: 75, minimum: 0, maximum: 100 },
+    experienceMatch: {
+      type: 'number',
+      example: 80,
+      minimum: 0,
+      maximum: 100,
+    },
+  },
+  required: ['atsScore', 'keywordMatch', 'experienceMatch'],
+};
+
+const resumeMatchResponseSchema = {
+  type: 'object',
+  properties: {
+    keySkillsMatch: {
+      type: 'array',
+      items: keySkillMatchSchema,
+      example: [
+        {
+          skill: 'React',
+          status: 'match',
+          message: 'You have it',
+        },
+        {
+          skill: 'TypeScript',
+          status: 'match',
+          message: 'You have it',
+        },
+        {
+          skill: 'System Design',
+          status: 'partial',
+          message: 'Partial match',
+        },
+        {
+          skill: 'GraphQL',
+          status: 'missing',
+          message: 'Missing - add to resume!',
+        },
+      ],
+    },
+    matchScore: { type: 'number', example: 78, minimum: 0, maximum: 100 },
+    strengths: {
+      type: 'array',
+      items: { type: 'string' },
+      example: [
+        'Your React experience aligns well',
+        'Leadership background fits',
+      ],
+    },
+    toImprove: {
+      type: 'array',
+      items: { type: 'string' },
+      example: ['Add GraphQL projects', 'Highlight system design examples'],
+    },
+    aiInsights: aiInsightsSchema,
+  },
+  required: [
+    'keySkillsMatch',
+    'matchScore',
+    'strengths',
+    'toImprove',
+    'aiInsights',
+  ],
+};
+
 export const ResumeResponses = {
   AnalyzeSuccess: ApiResponse({
     status: HttpStatus.OK,
@@ -218,5 +301,16 @@ export const ResumeResponses = {
   AnalyzeBadRequest: ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Invalid file (size or type)',
+  }),
+
+  CompareSuccess: ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Resume compared with vacancy successfully',
+    schema: resumeMatchResponseSchema,
+  }),
+
+  CompareBadRequest: ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid request data or vacancy not found',
   }),
 };

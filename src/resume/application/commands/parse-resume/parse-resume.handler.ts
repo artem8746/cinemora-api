@@ -5,12 +5,14 @@ import { ParseResumeRawContentCommand } from '@/openai/commands/parse-text-to-re
 import { ParsedResume } from '@/resume/presentation/types/resume';
 import { ResumeContentMapper } from '../../resume-content.mapper';
 import { ResumeParsedContent } from '@/openai/types/resume';
+import { ResumeService } from '../../resume.service';
 
 @CommandHandler(ParseResumeCommand)
 export class ParseResumeHandler implements ICommandHandler<ParseResumeCommand> {
   constructor(
     private readonly resumeAnalysisService: ResumeAnalysisService,
     private readonly commandBus: CommandBus,
+    private readonly resumeService: ResumeService,
   ) {}
 
   async execute(command: ParseResumeCommand): Promise<ParsedResume> {
@@ -24,7 +26,14 @@ export class ParseResumeHandler implements ICommandHandler<ParseResumeCommand> {
       ResumeParsedContent
     >(new ParseResumeRawContentCommand(rawContent));
 
-    return ResumeContentMapper.toParsedResume(parsedContent, userId);
+    const parsedResume = ResumeContentMapper.toParsedResume(
+      parsedContent,
+      userId,
+    );
+
+    await this.resumeService.saveResume(parsedResume);
+
+    return parsedResume;
   }
 }
 

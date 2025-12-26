@@ -27,7 +27,11 @@ export class SaveVacancyHandler implements ICommandHandler<SaveVacancyCommand> {
       throw new NotFoundException(`User with ID not found: ${userId}`);
     }
 
-    return this.vacanciesService.saveVacancy(url, parsedData, userResult);
+    return this.vacanciesService.saveVacancy({
+      url,
+      parsedData,
+      user: userResult,
+    });
   }
 }
 
