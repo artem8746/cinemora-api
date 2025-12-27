@@ -157,23 +157,14 @@ export class OpenAIService {
         );
       }
 
-      // Ensure required fields exist
-      if (!comparison.keySkillsMatch) {
-        comparison.keySkillsMatch = [];
-      }
-      if (!comparison.strengths) {
-        comparison.strengths = [];
-      }
-      if (!comparison.toImprove) {
-        comparison.toImprove = [];
-      }
-      if (!comparison.aiInsights) {
-        comparison.aiInsights = {
-          atsScore: 0,
-          keywordMatch: 0,
-          experienceMatch: 0,
-        };
-      }
+      comparison.keySkillsMatch = comparison.keySkillsMatch ?? [];
+      comparison.strengths = comparison.strengths ?? [];
+      comparison.toImprove = comparison.toImprove ?? [];
+      comparison.aiInsights = comparison.aiInsights ?? {
+        atsScore: 0,
+        keywordMatch: 0,
+        experienceMatch: 0,
+      };
 
       return comparison;
     } catch (error) {
