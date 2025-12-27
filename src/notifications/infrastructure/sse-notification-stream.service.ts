@@ -1,7 +1,6 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { Observable, Subject } from 'rxjs';
 import { MessageEvent } from '@nestjs/common';
-import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { INotificationStreamPort } from '../domain/notification-stream.port';
 import { NotificationPayload } from '../domain/notification-payload.type';
@@ -16,17 +15,18 @@ export class SseNotificationStreamService
   private readonly userStreams = new Map<string, Subject<MessageEvent>>();
   private readonly subscribedChannels = new Set<string>();
   private readonly publisherClient: Redis;
+  private readonly subscriberClient: Redis;
 
   private readonly NOTIFICATION_CHANNEL = 'notifications';
   private readonly USER_CHANNEL_PREFIX = 'notifications:user:';
 
   constructor(
-    @InjectRedis() private readonly subscriberClient: Redis,
     private readonly configService: ConfigService,
     private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(SseNotificationStreamService.name);
     this.publisherClient = this.createPublisherClient();
+    this.subscriberClient = this.createSubscriberClient();
   }
 
   async onModuleInit(): Promise<void> {
@@ -37,6 +37,7 @@ export class SseNotificationStreamService
   async onModuleDestroy(): Promise<void> {
     await this.unsubscribeFromAllChannels();
     await this.publisherClient.quit();
+    await this.subscriberClient.quit();
     this.cleanupStreams();
   }
 
@@ -54,6 +55,16 @@ export class SseNotificationStreamService
   }
 
   private createPublisherClient(): Redis {
+    const redisHost = this.configService.getOrThrow('redis.host');
+    const redisPort = this.configService.getOrThrow('redis.port');
+
+    return new Redis({
+      host: redisHost,
+      port: redisPort,
+    });
+  }
+
+  private createSubscriberClient(): Redis {
     const redisHost = this.configService.getOrThrow('redis.host');
     const redisPort = this.configService.getOrThrow('redis.port');
 

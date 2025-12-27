@@ -1,12 +1,8 @@
 export const VACANCY_PARSER_SYSTEM =
   'You are a vacancy parser. Extract all data and translate everything to English. Respond only with valid JSON without markdown formatting.' as const;
 
-export function getParseVacancyPrompt(url: string, content: string): string {
-  return `Page content: ${url}
-
-${content.substring(0, 40000)}
-
-Extract data and translate ALL text content to English in the following format:
+export const VACANCY_PARSER_PROMPT =
+  `Extract data and translate ALL text content to English in the following format:
 {
   "isVacancy": boolean,
   "data": {
@@ -70,5 +66,4 @@ CRITICAL EXTRACTION RULES:
    - Extract company name from anywhere it appears (header, footer, description, etc.)
    - Extract location from job description, location field, or remote/hybrid mentions
    - If salary is mentioned anywhere (even in benefits), extract it
-   - Don't leave arrays empty if information exists - be proactive in finding and categorizing content`;
-}
+   - Don't leave arrays empty if information exists - be proactive in finding and categorizing content` as const;

@@ -31,4 +31,21 @@ export class ResumeAnalysisService {
       links,
     };
   }
+
+  async getResumeRawContentFromBuffer(
+    buffer: Buffer,
+    filename = 'resume.pdf',
+  ): Promise<ResumeRawContent> {
+    this.logger.log(`Analyzing resume from buffer: ${filename}`);
+
+    const [result, links] = await Promise.all([
+      this.pdfParser.getText(buffer),
+      this.pdfLinkParser.extractLinks(buffer),
+    ]);
+
+    return {
+      ...result,
+      links,
+    };
+  }
 }

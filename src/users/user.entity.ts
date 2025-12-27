@@ -1,5 +1,12 @@
 import { Token } from '@/tokens/token.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Vacancy } from '@/vacancies/vacancy.entity';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -45,4 +52,7 @@ export class User {
 
   @OneToMany(() => Token, (token) => token.user)
   tokens: Token[];
+
+  @ManyToMany(() => Vacancy, (vacancy) => vacancy.users)
+  vacancies: Vacancy[];
 }
