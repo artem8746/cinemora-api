@@ -19,6 +19,7 @@ import { RedisThrottlerStorage } from './common/storage/redis-throttler.storage'
 import { SettingsModule } from './settings/settings.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { VacanciesModule } from './vacancies/vacancies.module';
+import { VacancyNotesModule } from './vacancy-notes/vacancy-notes.module';
 import { ResumeModule } from './resume/resume.module';
 import Redis from 'ioredis';
 
@@ -104,6 +105,7 @@ import Redis from 'ioredis';
     SettingsModule,
     NotificationsModule,
     VacanciesModule,
+    VacancyNotesModule,
   ],
   controllers: [],
   providers: [],
