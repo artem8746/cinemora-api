@@ -67,23 +67,23 @@ services:
     networks:
       - cinemora-network
 
-  # api:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   env_file: .env
-  #   environment:
-  #     - REDIS_HOST=redis
-  #   depends_on:
-  #     - postgres
-  #     - redis
-  #   ports:
-  #     - '3000:${PORT}'
-  #   volumes:
-  #     - .:/app
-  #   networks:
-  #     - cinemora-network
-  #   command: sh -c "npm run migration:run && npm run start:dev"
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - '3000:${PORT}'
+    volumes:
+      - .:/app
+    networks:
+      - cinemora-network
+    command: sh -c "npm run migration:run && npm run start:dev"
 
 networks:
   cinemora-network:
