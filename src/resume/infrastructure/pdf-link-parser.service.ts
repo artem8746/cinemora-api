@@ -9,7 +9,7 @@ export class PdfLinkParserService implements IPdfLinkParserPort {
    * Extracts all links from a PDF buffer by parsing the PDF structure
    * Supports mailto:, tel:, http://, and https:// links
    */
-  extractLinks(buffer: Buffer): string[] {
+  extractLinks(buffer: Buffer): Promise<string[]> {
     this.logger.log('Extracting links from PDF buffer');
 
     try {
@@ -19,7 +19,7 @@ export class PdfLinkParserService implements IPdfLinkParserPort {
       // Pattern to match URI annotations in PDF structure
       // Matches /URI (link) patterns in PDF annotations
       const uriPattern = /\/URI\s*\(([^)]+)\)/g;
-      let match = uriPattern.exec(pdfContent);
+      let match: RegExpExecArray | null = uriPattern.exec(pdfContent);
 
       while (match !== null) {
         const link = match[1];
@@ -43,7 +43,7 @@ export class PdfLinkParserService implements IPdfLinkParserPort {
       ];
 
       for (const pattern of textLinkPatterns) {
-        let textMatch;
+        let textMatch: RegExpExecArray | null;
         while ((textMatch = pattern.exec(pdfContent)) !== null) {
           const link = textMatch[1];
           if (link && this.isValidLink(link)) {
@@ -55,7 +55,7 @@ export class PdfLinkParserService implements IPdfLinkParserPort {
       const linksArray = Array.from(links).sort();
       this.logger.log(`Extracted ${linksArray.length} unique links from PDF`);
 
-      return linksArray;
+      return Promise.resolve(linksArray);
     } catch (error) {
       this.logger.error(
         `Failed to extract links from PDF: ${error instanceof Error ? error.message : 'Unknown error'}`,

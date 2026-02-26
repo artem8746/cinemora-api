@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build && npm run sentry:sourcemaps",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "cross-env ENV_PATH=.env NODE_ENV=development nest start",
     "start:dev": "cross-env ENV_PATH=.env.local NODE_ENV=development nest start --watch",
@@ -23,7 +23,8 @@
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org americancookies --project node-nestjs ./dist && sentry-cli sourcemaps upload --org americancookies --project node-nestjs ./dist",
     "migration:generate": "sh -c 'ts-node --esm -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate src/database/migrations/$0 -d src/database/data-source.ts'",
     "migration:run": "ts-node --esm -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/database/data-source.ts",
-    "migration:revert": "ts-node -r tsconfig-paths/register node_modules/.bin/typeorm migration:revert -d ./src/database/data-source.ts"
+    "migration:revert": "ts-node -r tsconfig-paths/register node_modules/.bin/typeorm migration:revert -d ./src/database/data-source.ts",
+    "env:sync": "ts-node -r tsconfig-paths/register scripts/sync-env.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.931.0",

@@ -6,6 +6,7 @@ import { ParsedResume } from '@/resume/presentation/types/resume';
 import { ResumeContentMapper } from '../../resume-content.mapper';
 import { ResumeParsedContent } from '@/openai/types/resume';
 import { ResumeCustomizationService } from '../../resume-customization.service';
+import { ResumeService } from '../../resume.service';
 
 @CommandHandler(ParseResumeCommand)
 export class ParseResumeHandler implements ICommandHandler<ParseResumeCommand> {
@@ -13,6 +14,7 @@ export class ParseResumeHandler implements ICommandHandler<ParseResumeCommand> {
     private readonly resumeAnalysisService: ResumeAnalysisService,
     private readonly commandBus: CommandBus,
     private readonly resumeCustomizationService: ResumeCustomizationService,
+    private readonly resumeService: ResumeService,
   ) {}
 
   async execute(command: ParseResumeCommand): Promise<ParsedResume> {

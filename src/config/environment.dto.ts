@@ -130,11 +130,6 @@ export class EnvironmentDto {
   @IsTimeDuration()
   EXPIRES_ACTIVATION_TOKEN!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsTimeDuration()
-  EXPIRES_RESET_PASSWORD!: string;
-
   // ==========================================
   // Frontend configuration
   // ==========================================
@@ -161,6 +156,13 @@ export class EnvironmentDto {
   @IsString()
   @IsNotEmpty()
   OPENAI_API_KEY!: string;
+
+  // ==========================================
+  // Jina AI configuration
+  // ==========================================
+  @IsString()
+  @IsNotEmpty()
+  JINA_API_URL!: string;
 
   // Github configuration
   // ==========================================

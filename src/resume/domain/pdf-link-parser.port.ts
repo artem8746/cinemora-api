@@ -9,7 +9,7 @@ export interface IPdfLinkParserPort {
    * @param buffer - PDF file buffer
    * @returns Promise resolving to array of extracted links
    */
-  extractLinks(buffer: Buffer): string[];
+  extractLinks(buffer: Buffer): Promise<string[]>;
 }
 
 /**
