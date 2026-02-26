@@ -196,6 +196,18 @@ const contentSchema = {
   additionalProperties: sectionSchema(customEntrySchema),
 };
 
+const customizationSchema = {
+  type: 'object',
+  properties: {
+    sectionOrder: {
+      type: 'array',
+      items: { type: 'string' },
+      example: ['profile', 'work', 'project', 'education', 'skill'],
+    },
+  },
+  required: ['sectionOrder'],
+};
+
 const parsedResumeSchema = {
   type: 'object',
   properties: {
@@ -204,8 +216,16 @@ const parsedResumeSchema = {
     title: { type: 'string', example: 'John Doe - Software Engineer' },
     personalDetails: personalDetailsSchema,
     content: contentSchema,
+    customization: customizationSchema,
   },
-  required: ['id', 'userId', 'title', 'personalDetails', 'content'],
+  required: [
+    'id',
+    'userId',
+    'title',
+    'personalDetails',
+    'content',
+    'customization',
+  ],
 };
 
 export const ResumeResponses = {

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ResumeController } from './presentation/resume.controller';
 import { ResumeAnalysisService } from './application/resume-analysis.service';
+import { ResumeCustomizationService } from './application/resume-customization.service';
 import { PdfParseService } from './infrastructure/pdf-parse.service';
 import { ParseResumeHandler } from './application/commands/parse-resume/parse-resume.handler';
 import { PDF_PARSER_PORT } from './domain/pdf-parser.port';
@@ -15,6 +16,7 @@ export const CommandHandlers = [ParseResumeHandler];
   controllers: [ResumeController],
   providers: [
     ResumeAnalysisService,
+    ResumeCustomizationService,
     {
       provide: PDF_PARSER_PORT,
       useClass: PdfParseService,

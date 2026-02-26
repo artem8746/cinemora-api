@@ -41,6 +41,8 @@ export interface ParsedResume {
       | Section<EducationEntry> // FOR THESE CUSTOM NAMES ABOVE
       | Section<CustomEntry>; // KEY - HEADING
   };
+
+  customization: Customization;
 }
 
 // NO NEED FOR ID FIELD, ALL KEYS ARE UNIQUE
@@ -115,4 +117,11 @@ export interface EducationEntry {
   schoolLink: string;
   description: string;
   startDateNew: string;
+}
+
+/* -------------------------
+    CUSTOMIZATION TYPES
+-------------------------- */
+export interface Customization {
+  sectionOrder: string[];
 }

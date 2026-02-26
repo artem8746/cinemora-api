@@ -18,6 +18,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { RedisThrottlerStorage } from './common/storage/redis-throttler.storage';
 import { SettingsModule } from './settings/settings.module';
 import { ResumeModule } from './resume/resume.module';
+import { PdfModule } from './pdf/pdf.module';
 import Redis from 'ioredis';
 
 @Module({
@@ -100,6 +101,7 @@ import Redis from 'ioredis';
     FilesModule,
     ResumeModule,
     SettingsModule,
+    PdfModule,
   ],
   controllers: [],
   providers: [],
