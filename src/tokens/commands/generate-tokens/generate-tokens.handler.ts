@@ -3,7 +3,9 @@ import { GenerateTokensCommand } from './generate-tokens.command';
 import { TokensService } from '@/tokens/tokens.service';
 
 @CommandHandler(GenerateTokensCommand)
-export class GenerateTokensHandler implements ICommandHandler<GenerateTokensCommand> {
+export class GenerateTokensHandler
+  implements ICommandHandler<GenerateTokensCommand>
+{
   constructor(private readonly tokenService: TokensService) {}
 
   execute(command: GenerateTokensCommand): Promise<{

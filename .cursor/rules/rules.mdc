@@ -1,0 +1,31 @@
+---
+description: Import/dependency rules, workflow, pitfalls, scripts
+alwaysApply: true
+---
+
+# Rules
+
+## Imports & dependencies
+
+- Use path alias `@/` for `src/` (e.g. `@/users/user.entity`).
+- No circular dependencies between modules. Application layer must not import infrastructure except via module wiring.
+- Domain layer has no imports from NestJS, TypeORM, or other infra.
+
+## Workflow
+
+- Run `npm run lint` before commit; fix reported issues.
+- Run tests when changing behavior: `npm run test`.
+- Migrations: `npm run migration:generate`, `npm run migration:run` when schema changes.
+
+## Pitfalls
+
+- Don’t put business logic in handlers; keep it in application services. Handlers orchestrate and publish events.
+- Don’t store full file URLs in DB; store keys and resolve URLs via port’s `getPublicUrl()`.
+- Don’t skip validation on DTOs; use class-validator and global validation pipe.
+- Don’t use `any`; use proper types or `unknown` and narrow.
+
+## Scripts
+
+- `npm run start:dev` — dev with hot reload
+- `npm run build` — production build
+- See `package.json` for full list.

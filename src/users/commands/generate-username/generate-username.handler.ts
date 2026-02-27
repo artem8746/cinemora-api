@@ -5,7 +5,9 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { GenerateUsernameCommand } from './generate-username.command';
 
 @CommandHandler(GenerateUsernameCommand)
-export class GenerateUsernameHandler implements ICommandHandler<GenerateUsernameCommand> {
+export class GenerateUsernameHandler
+  implements ICommandHandler<GenerateUsernameCommand>
+{
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,

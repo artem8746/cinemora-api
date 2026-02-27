@@ -6,7 +6,9 @@ import { CreateDefaultSettingsCommand } from '@/settings/commands/create-default
 import { CreateDefaultSettingsCommandResponse } from '@/settings/commands/create-default-settings/create-default-settings.handler';
 
 @CommandHandler(CreateUserSocialCommand)
-export class CreateUserSocialHandler implements ICommandHandler<CreateUserSocialCommand> {
+export class CreateUserSocialHandler
+  implements ICommandHandler<CreateUserSocialCommand>
+{
   constructor(
     private readonly usersService: UsersService,
     private readonly commandBus: CommandBus,

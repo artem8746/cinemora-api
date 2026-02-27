@@ -1,0 +1,34 @@
+---
+description: Naming, code style, typing, formatting
+globs: "**/*.ts"
+alwaysApply: false
+---
+
+# Conventions
+
+## Naming
+
+- Files: kebab-case (`create-user.command.ts`, `user.entity.ts`)
+- Classes: PascalCase; commands/handlers: `{Action}Command`, `{Action}Handler`
+- DTOs: `{Entity}Dto`, `CreateUserDto`, `UserResponseDto`; use `PartialType` for updates
+- Ports: `I{Name}Port` + `{NAME}_PORT` Symbol for DI
+
+## Typing
+
+- Strict TypeScript; no `any`. Use explicit return types on public methods.
+- DTOs: class-validator decorators (`@IsEmail()`, `@MinLength()`, etc.) + `@ApiProperty()` for Swagger
+
+## Style
+
+- Single responsibility; small functions; avoid deep nesting
+- Prefer dependency injection; avoid static/global state in business logic
+- Validate at boundaries (DTOs); treat all input as untrusted
+
+## Formatting
+
+- Follow ESLint + Prettier (single quotes, etc.). See `.eslintrc*`, `prettier` config.
+
+## Errors & logging
+
+- Handle errors explicitly; no silent catch. Log with context (e.g. Pino).
+- Use NestJS exception filters and validation pipe; see `src/filters/`.

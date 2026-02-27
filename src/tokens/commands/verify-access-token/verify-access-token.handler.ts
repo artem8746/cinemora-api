@@ -6,7 +6,9 @@ import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
 import { TokenExpiredError } from '@nestjs/jwt';
 
 @CommandHandler(VerifyAccessTokenCommand)
-export class VerifyAccessTokenHandler implements ICommandHandler<VerifyAccessTokenCommand> {
+export class VerifyAccessTokenHandler
+  implements ICommandHandler<VerifyAccessTokenCommand>
+{
   constructor(
     private readonly tokensService: TokensService,
     private readonly configService: ConfigService,
