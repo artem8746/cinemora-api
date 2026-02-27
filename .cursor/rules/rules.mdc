@@ -24,6 +24,12 @@ alwaysApply: true
 - Don’t skip validation on DTOs; use class-validator and global validation pipe.
 - Don’t use `any`; use proper types or `unknown` and narrow.
 
+## Before coding:
+
+- search similar implementations
+- reuse existing utilities
+- avoid duplication
+
 ## Scripts
 
 - `npm run start:dev` — dev with hot reload
