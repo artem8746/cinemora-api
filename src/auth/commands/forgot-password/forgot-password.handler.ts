@@ -19,7 +19,9 @@ import { GetUserByEmailQueryResponse } from '@/users/queries/get-user-by-email/g
 import { parseTimeDurationToSeconds } from '@/utils/parse-time-duration';
 
 @CommandHandler(ForgotPasswordCommand)
-export class ForgotPasswordHandler implements ICommandHandler<ForgotPasswordCommand> {
+export class ForgotPasswordHandler
+  implements ICommandHandler<ForgotPasswordCommand>
+{
   constructor(
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,

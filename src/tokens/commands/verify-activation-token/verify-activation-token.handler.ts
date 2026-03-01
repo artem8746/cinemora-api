@@ -7,7 +7,9 @@ import { JwtSummaryDto } from '@/auth/dto/jwt-summary.dto';
 import { UnauthorizedException } from '@nestjs/common';
 
 @CommandHandler(VerifyActivationTokenCommand)
-export class VerifyActivationTokenHandler implements ICommandHandler<VerifyActivationTokenCommand> {
+export class VerifyActivationTokenHandler
+  implements ICommandHandler<VerifyActivationTokenCommand>
+{
   constructor(
     private readonly tokensService: TokensService,
     private readonly configService: ConfigService,

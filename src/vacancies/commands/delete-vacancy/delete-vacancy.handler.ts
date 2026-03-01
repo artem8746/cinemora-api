@@ -5,7 +5,9 @@ import { VacanciesService } from '../../vacancies.service';
 
 @CommandHandler(DeleteVacancyCommand)
 @Injectable()
-export class DeleteVacancyHandler implements ICommandHandler<DeleteVacancyCommand> {
+export class DeleteVacancyHandler
+  implements ICommandHandler<DeleteVacancyCommand>
+{
   constructor(private readonly vacanciesService: VacanciesService) {}
 
   async execute(command: DeleteVacancyCommand): Promise<void> {

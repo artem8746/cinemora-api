@@ -81,6 +81,7 @@ export class ResumeService {
         jobTitle: resume.jobTitle || '',
       },
       content: resume.parsedData.content,
+      customization: resume.parsedData.customization ?? { sectionOrder: [] },
     };
   }
 }

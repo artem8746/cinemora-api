@@ -3,6 +3,13 @@ export interface ResumeRawContent {
   links: string[];
 }
 
+/* -------------------------
+    CUSTOMIZATION TYPES
+-------------------------- */
+export interface Customization {
+  sectionOrder: string[];
+}
+
 export interface ParsedResume {
   id: string;
   userId: string;
@@ -41,6 +48,7 @@ export interface ParsedResume {
       | Section<EducationEntry> // FOR THESE CUSTOM NAMES ABOVE
       | Section<CustomEntry>; // KEY - HEADING
   };
+  customization: Customization;
 }
 
 // NO NEED FOR ID FIELD, ALL KEYS ARE UNIQUE

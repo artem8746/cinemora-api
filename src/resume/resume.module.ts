@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ResumeController } from './presentation/resume.controller';
+import { ResumeCustomizationService } from './application/resume-customization.service';
 import { ResumeAnalysisService } from './application/resume-analysis.service';
 import { ResumeService } from './application/resume.service';
 import { PdfParseService } from './infrastructure/pdf-parse.service';
@@ -21,6 +22,7 @@ export const QueryHandlers = [CompareResumeHandler];
   providers: [
     ResumeAnalysisService,
     ResumeService,
+    ResumeCustomizationService,
     {
       provide: PDF_PARSER_PORT,
       useClass: PdfParseService,
