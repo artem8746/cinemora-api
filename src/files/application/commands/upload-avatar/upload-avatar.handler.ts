@@ -2,7 +2,9 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UploadAvatarCommand } from './upload-avatar.command';
 import { FileStorageService } from '../../file-storage.service';
 @CommandHandler(UploadAvatarCommand)
-export class UploadAvatarHandler implements ICommandHandler<UploadAvatarCommand> {
+export class UploadAvatarHandler
+  implements ICommandHandler<UploadAvatarCommand>
+{
   constructor(private readonly fileStorageService: FileStorageService) {}
 
   async execute(command: UploadAvatarCommand): Promise<string> {

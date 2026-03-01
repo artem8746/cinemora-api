@@ -9,6 +9,7 @@ import {
   ProfileEntry,
   ProjectEntry,
   EducationEntry,
+  Customization,
 } from '@/resume/presentation/types/resume';
 
 export const SOCIAL_LINK_ICON_KEYS = {
@@ -28,6 +29,7 @@ export const SOCIAL_LINK_ICON_KEYS_MAP = {
 export class ResumeContentMapper {
   static toParsedResume(
     content: ResumeParsedContent,
+    customization: Customization,
     userId: string,
   ): ParsedResume {
     return {
@@ -51,6 +53,7 @@ export class ResumeContentMapper {
         project: this.mapProjectSection(content.content.project),
         education: this.mapEducationSection(content.content.education),
       },
+      customization,
     };
   }
 

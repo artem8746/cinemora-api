@@ -3,7 +3,9 @@ import { UsersService } from '@/users/users.service';
 import { GetUserByEmailQuery } from './get-user-by-email.query';
 
 @QueryHandler(GetUserByEmailQuery)
-export class GetUserByEmailHandler implements IQueryHandler<GetUserByEmailQuery> {
+export class GetUserByEmailHandler
+  implements IQueryHandler<GetUserByEmailQuery>
+{
   constructor(private readonly usersService: UsersService) {}
 
   execute(command: GetUserByEmailQuery) {

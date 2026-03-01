@@ -1,6 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UserTableMakePasswordOptional1760023368694 implements MigrationInterface {
+export class UserTableMakePasswordOptional1760023368694
+  implements MigrationInterface
+{
   name = 'UserTableMakePasswordOptional1760023368694';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

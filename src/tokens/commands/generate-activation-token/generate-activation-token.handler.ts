@@ -8,7 +8,9 @@ import { GetUserByEmailQuery } from '@/users/queries/get-user-by-email/get-user-
 import { GetUserByEmailQueryResponse } from '@/users/queries/get-user-by-email/get-user-by-email.handler';
 
 @CommandHandler(GenerateActivationTokenCommand)
-export class GenerateActivationTokenHandler implements ICommandHandler<GenerateActivationTokenCommand> {
+export class GenerateActivationTokenHandler
+  implements ICommandHandler<GenerateActivationTokenCommand>
+{
   constructor(
     private readonly queryBus: QueryBus,
     private readonly tokensService: TokensService,

@@ -3,7 +3,9 @@ import { ResetPasswordTokenCommand } from './reset-password-token.command';
 import { TokensService } from '@/tokens/tokens.service';
 
 @CommandHandler(ResetPasswordTokenCommand)
-export class ResetPasswordTokenHandler implements ICommandHandler<ResetPasswordTokenCommand> {
+export class ResetPasswordTokenHandler
+  implements ICommandHandler<ResetPasswordTokenCommand>
+{
   constructor(private readonly tokenService: TokensService) {}
 
   execute(command: ResetPasswordTokenCommand): Promise<string> {
