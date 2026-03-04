@@ -1,0 +1,37 @@
+---
+description: App structure, layers, modules, main directories
+globs: src/**/*.ts
+alwaysApply: false
+---
+
+# Architecture
+
+## Structure
+
+- **Root**: `src/app.module.ts`, `src/main.ts`, `src/instrument.ts`
+- **Config**: `src/config/` — configuration, env validation
+- **Database**: `src/database/` — TypeORM data-source, migrations
+- **Feature modules**: `auth/`, `users/`, `tokens/`, `email/`, `files/`, `resume/`, `vacancies/`, `settings/`, `notifications/`, `openai/`, `redis/`
+- **Shared**: `src/common/`, `src/filters/`, `src/utils/`, `src/validators/`, `src/transformers/`
+
+## Layered (DDD) modules
+
+Where used (e.g. `files/`, `resume/`):
+
+- **presentation/** — controllers, DTOs, pipes, interceptors
+- **application/** — commands, queries, handlers, events; depends only on domain ports
+- **domain/** — interfaces (ports), types, enums; no framework, no I/O
+- **infrastructure/** — adapters implementing domain ports (DB, R2, etc.)
+
+Controllers → Application (handlers/services) → Domain ports; Infrastructure implements ports.
+
+## CQRS
+
+- **Commands**: `commands/{action-name}/{action-name}.command.ts`, `{action-name}.handler.ts`
+- **Queries**: `queries/{action-name}/` same pattern
+- Handlers orchestrate; business logic lives in application services. Publish domain events after success.
+- See existing `users/commands/create-user`, `auth/commands/register`, `files/application/commands`.
+
+## Module registration
+
+Feature modules in `app.module.ts`. Use NestJS DI; inject ports via `@Inject(SYMBOL)` where DDD layers exist.

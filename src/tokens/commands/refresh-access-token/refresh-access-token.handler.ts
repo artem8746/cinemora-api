@@ -7,7 +7,9 @@ import { User } from '@/users/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 
 @CommandHandler(RefreshAccessTokenCommand)
-export class RefreshAccessTokenHandler implements ICommandHandler<RefreshAccessTokenCommand> {
+export class RefreshAccessTokenHandler
+  implements ICommandHandler<RefreshAccessTokenCommand>
+{
   constructor(
     private readonly tokensService: TokensService,
     private readonly configService: ConfigService,

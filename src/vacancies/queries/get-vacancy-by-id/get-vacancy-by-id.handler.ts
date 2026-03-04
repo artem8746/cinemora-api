@@ -6,7 +6,9 @@ import { Vacancy } from '../../vacancy.entity';
 
 @QueryHandler(GetVacancyByIdQuery)
 @Injectable()
-export class GetVacancyByIdHandler implements IQueryHandler<GetVacancyByIdQuery> {
+export class GetVacancyByIdHandler
+  implements IQueryHandler<GetVacancyByIdQuery>
+{
   constructor(private readonly vacanciesService: VacanciesService) {}
 
   async execute(query: GetVacancyByIdQuery): Promise<Vacancy> {

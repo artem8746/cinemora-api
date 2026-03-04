@@ -12,7 +12,9 @@ import { PinoLogger } from 'nestjs-pino';
 import { compare } from 'bcrypt';
 
 @CommandHandler(ResetPasswordCommand)
-export class ResetPasswordHandler implements ICommandHandler<ResetPasswordCommand> {
+export class ResetPasswordHandler
+  implements ICommandHandler<ResetPasswordCommand>
+{
   constructor(
     private readonly commandBus: CommandBus,
     private readonly tokensService: TokensService,

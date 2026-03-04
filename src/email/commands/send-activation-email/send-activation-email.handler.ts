@@ -7,7 +7,9 @@ import { ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
 
 @CommandHandler(SendActivationEmailCommand)
-export class SendActivationEmailHandler implements ICommandHandler<SendActivationEmailCommand> {
+export class SendActivationEmailHandler
+  implements ICommandHandler<SendActivationEmailCommand>
+{
   constructor(
     private readonly commandBus: CommandBus,
     private readonly emailService: EmailService,

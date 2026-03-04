@@ -1,0 +1,28 @@
+---
+description: Product/domain concepts, API surface, key terms
+globs: "src/**/dto/**/*.ts"
+alwaysApply: false
+---
+
+# Product / Domain
+
+## API surface
+
+- **Auth**: register, login, logout, refresh, JWT access/refresh; OAuth (Google, GitHub); forgot/reset password
+- **Users**: CRUD, profile, activation, password change; social accounts
+- **Tokens**: JWT generation/verification, activation tokens, refresh token storage
+- **Resume**: resume creation/management (see `resume/` module)
+- **Vacancies**: vacancy management
+- **Settings / Notifications**: user settings, SSE notifications
+- **Files**: uploads (e.g. avatars); R2 storage; store keys in DB, not full URLs
+
+## Key terms
+
+- **User**: email, password (hashed), activation status, profile
+- **Token**: access token (short-lived), refresh token (stored); activation/reset tokens
+- **Port**: domain interface (e.g. `IFileStoragePort`); implemented in infrastructure
+- **Command/Query**: CQRS; commands write, queries read
+
+## DTOs
+
+- Request DTOs for validation; response DTOs for API shape. Use existing `*Dto` and `*ResponseDto` in each module.

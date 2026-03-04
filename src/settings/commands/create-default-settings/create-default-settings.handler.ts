@@ -4,7 +4,9 @@ import { SettingsService } from '@/settings/settings.service';
 import { Settings } from '@/settings/settings.entity';
 
 @CommandHandler(CreateDefaultSettingsCommand)
-export class CreateDefaultSettingsHandler implements ICommandHandler<CreateDefaultSettingsCommand> {
+export class CreateDefaultSettingsHandler
+  implements ICommandHandler<CreateDefaultSettingsCommand>
+{
   constructor(private readonly settingsService: SettingsService) {}
 
   execute(command: CreateDefaultSettingsCommand): Promise<Settings> {
