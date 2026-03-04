@@ -1,0 +1,29 @@
+---
+description: Tech decisions — DB, auth, errors, logging, config, env
+globs: ["src/config/**/*.ts", "src/**/infrastructure/**/*.ts", "src/database/**/*.ts", "src/main.ts"]
+alwaysApply: false
+---
+
+# Decisions
+
+## Stack
+
+- **Runtime**: NestJS 11 + Fastify; TypeScript 5.7+ strict
+- **DB**: PostgreSQL + TypeORM (Data Mapper); migrations in `src/database/migrations/`
+- **Auth**: JWT access/refresh; Passport strategies (local, JWT, Google, GitHub); bcrypt for passwords
+- **Logging**: Pino (nestjs-pino); console + file transports; structured logs; see `app.module.ts` LoggerModule
+- **Errors**: Global `HttpExceptionFilter`; Sentry for errors and profiling
+- **Config**: `ConfigModule` + `getConfiguration`; env validated (e.g. Joi/DTO) in `config/`
+- **Email**: SendGrid; **Redis**: for throttling/cache; **Files**: R2-compatible storage (keys in DB, URLs via port)
+
+## Config & env
+
+- Load via `config/configuration.ts`, `parseEnvironment`, `environment.dto.ts`. No hardcoded secrets; use env vars.
+
+## Rate limiting
+
+- ThrottlerModule with Redis storage; see `app.module.ts` and `common/storage/redis-throttler.storage`.
+
+## Ports (DDD)
+
+- Domain ports use Symbol tokens; inject with `@Inject(SYMBOL)`. Implement in infrastructure; bind in module.
