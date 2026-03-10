@@ -1,10 +1,8 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { QueryBus } from '@nestjs/cqrs';
 import { VacancyNote } from '@/vacancies/vacancy-note.entity';
 import { VacancyNoteType } from '@/vacancies/enums/vacancy-note-type.enum';
-import { GetVacancyByIdQuery } from '@/vacancies/queries/get-vacancy-by-id/get-vacancy-by-id.query';
 
 @Injectable()
 export class VacancyNotesService {
@@ -13,22 +11,16 @@ export class VacancyNotesService {
   constructor(
     @InjectRepository(VacancyNote)
     private readonly vacancyNoteRepository: Repository<VacancyNote>,
-    private readonly queryBus: QueryBus,
   ) {}
 
   async createNote(params: {
     vacancyId: string;
-    userId: string;
     type: VacancyNoteType;
     title?: string | null;
     content: string;
   }): Promise<VacancyNote> {
-    const { vacancyId, userId, type, title, content } = params;
-    this.logger.log(
-      `Creating note for vacancy ${vacancyId} for user: ${userId}`,
-    );
-
-    await this.queryBus.execute(new GetVacancyByIdQuery(vacancyId, userId));
+    const { vacancyId, type, title, content } = params;
+    this.logger.log(`Creating note for vacancy ${vacancyId}`);
 
     const note = this.vacancyNoteRepository.create({
       vacancyId,
@@ -45,14 +37,9 @@ export class VacancyNotesService {
 
   async findNotesByVacancyId(params: {
     vacancyId: string;
-    userId: string;
   }): Promise<VacancyNote[]> {
-    const { vacancyId, userId } = params;
-    this.logger.log(
-      `Finding notes for vacancy ${vacancyId} for user: ${userId}`,
-    );
-
-    await this.queryBus.execute(new GetVacancyByIdQuery(vacancyId, userId));
+    const { vacancyId } = params;
+    this.logger.log(`Finding notes for vacancy ${vacancyId}`);
 
     const notes = await this.vacancyNoteRepository.find({
       where: { vacancyId },
