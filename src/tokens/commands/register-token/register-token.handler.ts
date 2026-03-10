@@ -4,9 +4,7 @@ import { Token } from '@/tokens/token.entity';
 import { TokensService } from '@/tokens/tokens.service';
 
 @CommandHandler(RegisterTokenCommand)
-export class RegisterTokenHandler
-  implements ICommandHandler<RegisterTokenCommand>
-{
+export class RegisterTokenHandler implements ICommandHandler<RegisterTokenCommand> {
   constructor(private readonly tokenService: TokensService) {}
 
   execute(command: RegisterTokenCommand): Promise<Token> {

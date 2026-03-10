@@ -13,6 +13,7 @@ import { User } from '@/users/user.entity';
 import { ParseVacancyQuery } from '@/openai/queries/parse-vacancy/parse-vacancy.query';
 import { ParseVacancyQueryResponse } from '@/openai/queries/parse-vacancy/parse-vacancy.handler';
 import type { VacanciesByStatusDto } from './dto/vacancies-by-status.dto';
+import { CompaniesService } from '@/companies/companies.service';
 
 export type ParsedVacancy = ParsedVacancyResponse;
 
@@ -24,6 +25,7 @@ export class VacanciesService {
   constructor(
     private readonly queryBus: QueryBus,
     private readonly configService: ConfigService<Configuration>,
+    private readonly companiesService: CompaniesService,
     @InjectRepository(Vacancy)
     private readonly vacancyRepository: Repository<Vacancy>,
   ) {
@@ -79,6 +81,9 @@ export class VacanciesService {
   private async findVacancyByUrl(url: string): Promise<Vacancy | null> {
     return await this.vacancyRepository.findOne({
       where: { url },
+      relations: {
+        company: true,
+      },
     });
   }
 
@@ -174,8 +179,29 @@ export class VacanciesService {
       await this.vacancyRepository.save(vacancy);
     } else {
       this.logger.log('Creating new vacancy');
+      const companyName = parsedData.company?.trim();
+      const resolvedCompany =
+        companyName && companyName.length > 0
+          ? await this.companiesService.resolveCompanyForVacancy({
+              companyName,
+              vacancyUrl: url,
+              parsedData,
+            })
+          : null;
+
       vacancy = this.createVacancyEntity(url || null, parsedData);
+      vacancy.companyId = resolvedCompany?.id ?? null;
       vacancy = await this.vacancyRepository.save(vacancy);
+
+      if (resolvedCompany && companyName) {
+        this.companiesService.enqueueEnrichment({
+          companyId: resolvedCompany.id,
+          vacancyId: vacancy.id,
+          vacancyText: this.buildVacancyContext(parsedData),
+          companyName,
+          vacancyUrl: url,
+        });
+      }
     }
 
     const relationExists = await this.vacancyRepository
@@ -199,8 +225,40 @@ export class VacanciesService {
     }
 
     this.logger.log(`Successfully saved vacancy with ID: ${vacancy.id}`);
+    return await this.vacancyRepository.findOneOrFail({
+      where: { id: vacancy.id },
+      relations: {
+        company: true,
+      },
+    });
+  }
 
-    return vacancy;
+  private buildVacancyContext(parsedData: ParsedVacancyData): string {
+    const parts: string[] = [];
+
+    if (parsedData.title) {
+      parts.push(`Title: ${parsedData.title}`);
+    }
+    if (parsedData.company) {
+      parts.push(`Company: ${parsedData.company}`);
+    }
+    if (parsedData.description) {
+      parts.push(`Description: ${parsedData.description}`);
+    }
+    if (parsedData.requirements && parsedData.requirements.length > 0) {
+      parts.push(`Requirements: ${parsedData.requirements.join('; ')}`);
+    }
+    if (parsedData.responsibilities && parsedData.responsibilities.length > 0) {
+      parts.push(`Responsibilities: ${parsedData.responsibilities.join('; ')}`);
+    }
+    if (parsedData.benefits && parsedData.benefits.length > 0) {
+      parts.push(`Benefits: ${parsedData.benefits.join('; ')}`);
+    }
+    if (parsedData.skills && parsedData.skills.length > 0) {
+      parts.push(`Skills: ${parsedData.skills.join('; ')}`);
+    }
+
+    return parts.join('\n').substring(0, 30000);
   }
 
   async findVacanciesByUserId(userId: string): Promise<VacanciesByStatusDto> {
@@ -208,6 +266,7 @@ export class VacanciesService {
     const vacancies = await this.vacancyRepository
       .createQueryBuilder('vacancy')
       .innerJoin('vacancy.users', 'user')
+      .leftJoinAndSelect('vacancy.company', 'company')
       .where('user.id = :userId', { userId })
       .orderBy('vacancy.createdAt', 'DESC')
       .getMany();
@@ -224,6 +283,7 @@ export class VacanciesService {
     const vacancy = await this.vacancyRepository
       .createQueryBuilder('vacancy')
       .innerJoin('vacancy.users', 'user')
+      .leftJoinAndSelect('vacancy.company', 'company')
       .where('vacancy.id = :vacancyId', { vacancyId })
       .andWhere('user.id = :userId', { userId })
       .getOne();

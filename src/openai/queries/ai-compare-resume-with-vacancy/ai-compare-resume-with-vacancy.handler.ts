@@ -6,9 +6,7 @@ import type { ResumeMatchResponseDto } from '@/resume/presentation/dto/compare-r
 
 @QueryHandler(AICompareResumeWithVacancyQuery)
 @Injectable()
-export class AICompareResumeWithVacancyHandler
-  implements IQueryHandler<AICompareResumeWithVacancyQuery>
-{
+export class AICompareResumeWithVacancyHandler implements IQueryHandler<AICompareResumeWithVacancyQuery> {
   private readonly logger = new Logger(AICompareResumeWithVacancyHandler.name);
 
   constructor(private readonly openAIService: OpenAIService) {}

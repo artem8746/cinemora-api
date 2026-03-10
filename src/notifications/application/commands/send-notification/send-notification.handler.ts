@@ -4,9 +4,7 @@ import { NotificationsService } from '../../notifications.service';
 import { NotificationPayload } from '../../../domain/notification-payload.type';
 
 @CommandHandler(SendNotificationCommand)
-export class SendNotificationHandler
-  implements ICommandHandler<SendNotificationCommand>
-{
+export class SendNotificationHandler implements ICommandHandler<SendNotificationCommand> {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   execute(command: SendNotificationCommand): Promise<void> {

@@ -7,9 +7,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { SendNotificationCommand } from '@/notifications/application/commands/send-notification/send-notification.command';
 
 @CommandHandler(UpdateProfileCommand)
-export class UpdateProfileHandler
-  implements ICommandHandler<UpdateProfileCommand>
-{
+export class UpdateProfileHandler implements ICommandHandler<UpdateProfileCommand> {
   constructor(
     private readonly usersService: UsersService,
     private readonly logger: PinoLogger,

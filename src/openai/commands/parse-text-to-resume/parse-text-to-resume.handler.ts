@@ -131,9 +131,7 @@ const MOCK_RESPONSE = {
 };
 
 @CommandHandler(ParseResumeRawContentCommand)
-export class ParseTextToResumeHandler
-  implements ICommandHandler<ParseResumeRawContentCommand>
-{
+export class ParseTextToResumeHandler implements ICommandHandler<ParseResumeRawContentCommand> {
   constructor(private readonly openAIService: OpenAIService) {}
 
   // TODO: Uncomment this to use the actual OpenAI API

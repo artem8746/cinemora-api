@@ -11,6 +11,7 @@ import { UpdateVacancyHandler } from './commands/update-vacancy/update-vacancy.h
 import { GetVacanciesByUserIdHandler } from './queries/get-vacancies-by-user-id/get-vacancies-by-user-id.handler';
 import { GetVacancyByIdHandler } from './queries/get-vacancy-by-id/get-vacancy-by-id.handler';
 import { Vacancy } from './vacancy.entity';
+import { CompaniesModule } from '@/companies/companies.module';
 
 export const CommandHandlers = [
   ParseVacancyHandler,
@@ -26,7 +27,7 @@ export const QueryHandlers = [
 ];
 
 @Module({
-  imports: [CqrsModule, TypeOrmModule.forFeature([Vacancy])],
+  imports: [CqrsModule, TypeOrmModule.forFeature([Vacancy]), CompaniesModule],
   controllers: [VacanciesController],
   providers: [VacanciesService, ...CommandHandlers, ...QueryHandlers],
   exports: [VacanciesService, ...QueryHandlers],
