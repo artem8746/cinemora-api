@@ -4,12 +4,14 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '@/users/user.entity';
 import { VacancyStatus } from './enums/vacancy-status.enum';
 import type { ParsedVacancyData } from '@/openai/types/parsed-vacancy.type';
+import { VacancyNote } from './vacancy-note.entity';
 
 @Entity('vacancies')
 export class Vacancy {
@@ -39,6 +41,9 @@ export class Vacancy {
     inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
   })
   users: User[];
+
+  @OneToMany(() => VacancyNote, (note) => note.vacancy)
+  notes?: VacancyNote[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
