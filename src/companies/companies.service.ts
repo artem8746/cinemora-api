@@ -1,16 +1,11 @@
 import { InjectRedis } from '@nestjs-modules/ioredis';
-import {
-  Inject,
-  Injectable,
-  Logger,
-  OnModuleDestroy,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import type { CompanyProfileDto } from '@/openai/types/company-profile.type';
 import type { ParsedVacancyData } from '@/openai/types/parsed-vacancy.type';
+import { normalizeUrl } from '@/utils/normalize-url.util';
 import { CompanySource, CompanySourceType } from './company-source.entity';
 import { Company } from './company.entity';
 import {
@@ -27,7 +22,6 @@ const PROFILE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const REVIEWS_TTL_MS = 14 * 24 * 60 * 60 * 1000;
 const SOURCES_RETENTION_DAYS = 30;
 const ENRICH_LOCK_TTL_SECONDS = 120;
-const SOURCES_RETENTION_CLEANUP_INTERVAL_MS = 6 * 60 * 60 * 1000;
 const NON_COMPANY_HOST_MARKERS = [
   'linkedin.com',
   'indeed.',
@@ -51,9 +45,8 @@ const NON_COMPANY_HOST_MARKERS = [
 ] as const;
 
 @Injectable()
-export class CompaniesService implements OnModuleInit, OnModuleDestroy {
+export class CompaniesService {
   private readonly logger = new Logger(CompaniesService.name);
-  private cleanupInterval?: NodeJS.Timeout;
 
   constructor(
     @InjectRepository(Company)
@@ -66,18 +59,6 @@ export class CompaniesService implements OnModuleInit, OnModuleDestroy {
     private readonly websiteContextProvider: CompanyWebsiteContextPort,
     @InjectRedis() private readonly redisClient: Redis,
   ) {}
-
-  onModuleInit(): void {
-    this.cleanupInterval = setInterval(() => {
-      void this.cleanupOldSources();
-    }, SOURCES_RETENTION_CLEANUP_INTERVAL_MS);
-  }
-
-  onModuleDestroy(): void {
-    if (this.cleanupInterval) {
-      clearInterval(this.cleanupInterval);
-    }
-  }
 
   async resolveCompanyForVacancy(params: {
     companyName: string;
@@ -234,7 +215,7 @@ export class CompaniesService implements OnModuleInit, OnModuleDestroy {
         summary.sources.find((source) =>
           this.isLikelyCompanyWebsite(source.url),
         )?.url ?? null;
-      const normalizedSummaryPageUrl = this.normalizeUrl(summary.pageUrl);
+      const normalizedSummaryPageUrl = normalizeUrl(summary.pageUrl);
 
       company.displayName = summary.displayName || company.displayName;
       company.domain = domain;
@@ -266,7 +247,6 @@ export class CompaniesService implements OnModuleInit, OnModuleDestroy {
       );
     } finally {
       await this.redisClient.del(lockKey);
-      await this.cleanupOldSources();
     }
   }
 
@@ -317,7 +297,7 @@ export class CompaniesService implements OnModuleInit, OnModuleDestroy {
       .execute();
   }
 
-  private async cleanupOldSources(): Promise<void> {
+  async cleanupOldSources(): Promise<void> {
     await this.companySourceRepository
       .createQueryBuilder()
       .delete()
@@ -346,7 +326,7 @@ export class CompaniesService implements OnModuleInit, OnModuleDestroy {
     }
 
     for (const rawUrl of urls) {
-      const normalizedUrl = this.normalizeUrl(rawUrl);
+      const normalizedUrl = normalizeUrl(rawUrl);
       if (!normalizedUrl) {
         continue;
       }
@@ -356,21 +336,6 @@ export class CompaniesService implements OnModuleInit, OnModuleDestroy {
     }
 
     return null;
-  }
-
-  private normalizeUrl(url: string | null | undefined): string | null {
-    if (!url) {
-      return null;
-    }
-
-    try {
-      const parsed = new URL(url.trim());
-      parsed.hash = '';
-      parsed.search = '';
-      return parsed.toString();
-    } catch (_error) {
-      return null;
-    }
   }
 
   private extractDomain(url: string): string | null {
