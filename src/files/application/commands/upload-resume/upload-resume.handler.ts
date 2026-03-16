@@ -3,9 +3,7 @@ import { UploadResumeCommand } from './upload-resume.command';
 import { FileStorageService } from '../../file-storage.service';
 
 @CommandHandler(UploadResumeCommand)
-export class UploadResumeHandler
-  implements ICommandHandler<UploadResumeCommand>
-{
+export class UploadResumeHandler implements ICommandHandler<UploadResumeCommand> {
   constructor(private readonly fileStorageService: FileStorageService) {}
 
   async execute(command: UploadResumeCommand): Promise<string> {

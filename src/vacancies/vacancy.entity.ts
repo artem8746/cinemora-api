@@ -2,8 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -11,6 +13,7 @@ import {
 import { User } from '@/users/user.entity';
 import { VacancyStatus } from './enums/vacancy-status.enum';
 import type { ParsedVacancyData } from '@/openai/types/parsed-vacancy.type';
+import { Company } from '@/companies/company.entity';
 import { VacancyNote } from './vacancy-note.entity';
 
 @Entity('vacancies')
@@ -33,6 +36,13 @@ export class Vacancy {
     name: 'parsed_data',
   })
   parsedData: ParsedVacancyData;
+
+  @Column({ type: 'uuid', name: 'company_id', nullable: true })
+  companyId?: string | null;
+
+  @ManyToOne(() => Company, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'company_id' })
+  company?: Company | null;
 
   @ManyToMany(() => User, (user) => user.vacancies)
   @JoinTable({

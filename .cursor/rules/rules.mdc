@@ -10,6 +10,8 @@ alwaysApply: true
 - Use path alias `@/` for `src/` (e.g. `@/users/user.entity`).
 - No circular dependencies between modules. Application layer must not import infrastructure except via module wiring.
 - Domain layer has no imports from NestJS, TypeORM, or other infra.
+- Services must not import services from other domains/modules directly; cross-domain orchestration should happen via commands/queries (CQRS) or explicit ports.
+- Each service is responsible for a single domain concern (SRP); avoid mixing domain logic from multiple modules in one service.
 
 ## Workflow
 
@@ -23,6 +25,11 @@ alwaysApply: true
 - Don’t store full file URLs in DB; store keys and resolve URLs via port’s `getPublicUrl()`.
 - Don’t skip validation on DTOs; use class-validator and global validation pipe.
 - Don’t use `any`; use proper types or `unknown` and narrow.
+- For LLM prompts that define/expect JSON schema, add a short comment with the exact code type/DTO path they map to (e.g. `@/openai/types/...`). This enables quick search/update when the type changes.
+
+## Database operations
+
+- For bulk operations and complex DB write cases (insert/upsert/update/delete), prefer TypeORM `QueryBuilder` set-based queries over per-entity loops. Use conflict-safe patterns like `insert().orIgnore()`/`orUpdate()` when applicable.
 
 ## Before coding:
 

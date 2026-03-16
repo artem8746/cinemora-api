@@ -7,9 +7,7 @@ import { Repository } from 'typeorm';
 import { hashPassword } from '@/utils/hash-passwords';
 
 @CommandHandler(UpdateUserPasswordCommand)
-export class UpdateUserPasswordHandler
-  implements ICommandHandler<UpdateUserPasswordCommand>
-{
+export class UpdateUserPasswordHandler implements ICommandHandler<UpdateUserPasswordCommand> {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,

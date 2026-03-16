@@ -12,6 +12,7 @@ import { getConfiguration } from './config';
 import { TokensModule } from './tokens/tokens.module';
 import { OpenAIModule } from './openai/openai.module';
 import { CqrsModule } from '@nestjs/cqrs';
+import { ScheduleModule } from '@nestjs/schedule';
 import { RedisModule } from './redis/redis.module';
 import { FilesModule } from './files/files.module';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -41,6 +42,7 @@ import Redis from 'ioredis';
       }),
     }),
     CqrsModule,
+    ScheduleModule.forRoot(),
     ThrottlerModule.forRootAsync({
       imports: [RedisModule],
       useFactory: (redisClient: Redis) => ({
