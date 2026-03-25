@@ -6,9 +6,7 @@ import type { ResumeOptimizationResult } from '@/resume-optimization/presentatio
 
 @QueryHandler(AIOptimizeResumeQuery)
 @Injectable()
-export class AIOptimizeResumeHandler
-  implements IQueryHandler<AIOptimizeResumeQuery>
-{
+export class AIOptimizeResumeHandler implements IQueryHandler<AIOptimizeResumeQuery> {
   private readonly logger = new Logger(AIOptimizeResumeHandler.name);
 
   constructor(private readonly openAIService: OpenAIService) {}

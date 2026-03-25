@@ -6,9 +6,7 @@ import type { ParsedResume } from '@/resume/presentation/types/resume';
 
 @QueryHandler(ResolveSourceResumeQuery)
 @Injectable()
-export class ResolveSourceResumeHandler
-  implements IQueryHandler<ResolveSourceResumeQuery>
-{
+export class ResolveSourceResumeHandler implements IQueryHandler<ResolveSourceResumeQuery> {
   constructor(private readonly resumeService: ResumeService) {}
 
   async execute(query: ResolveSourceResumeQuery): Promise<ParsedResume> {

@@ -6,9 +6,7 @@ import { ResumeAnalysis } from '@/resume-optimization/resume-analysis.entity';
 
 @QueryHandler(GetResumeAnalysisQuery)
 @Injectable()
-export class GetResumeAnalysisHandler
-  implements IQueryHandler<GetResumeAnalysisQuery>
-{
+export class GetResumeAnalysisHandler implements IQueryHandler<GetResumeAnalysisQuery> {
   constructor(
     private readonly resumeOptimizationService: ResumeOptimizationService,
   ) {}

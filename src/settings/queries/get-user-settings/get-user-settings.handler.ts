@@ -6,9 +6,7 @@ import { Settings } from '@/settings/settings.entity';
 
 @QueryHandler(GetUserSettingsQuery)
 @Injectable()
-export class GetUserSettingsHandler
-  implements IQueryHandler<GetUserSettingsQuery>
-{
+export class GetUserSettingsHandler implements IQueryHandler<GetUserSettingsQuery> {
   constructor(private readonly settingsService: SettingsService) {}
 
   async execute(query: GetUserSettingsQuery): Promise<Settings> {

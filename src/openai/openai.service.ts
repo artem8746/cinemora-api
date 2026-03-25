@@ -23,6 +23,11 @@ import {
 import type { ResumeMatchResponseDto } from '@/resume/presentation/dto/compare-resume.dto';
 import type { ResumeOptimizationResult } from '@/resume-optimization/presentation/types/resume-analysis';
 import { removeMarkdownCodeBlocks, assignIdsToNewEntries } from '@/utils';
+import {
+  COMPANY_ENRICHMENT_SYSTEM_PROMPT,
+  getCompanyEnrichmentPrompt,
+} from './constants/prompts/company-enrichment.prompt';
+import type { CompanyProfileDto } from './types/company-profile.type';
 
 @Injectable()
 export class OpenAIService {
@@ -260,6 +265,76 @@ export class OpenAIService {
         `Error comparing resume with vacancy: ${error instanceof Error ? error.message : 'unknown error'}`,
       );
       throw error;
+    }
+  }
+
+  async summarizeCompanyProfile(params: {
+    companyName: string;
+    vacancyText: string;
+    websiteContent: string | null;
+  }): Promise<CompanyProfileDto> {
+    const { companyName, vacancyText, websiteContent } = params;
+
+    const totalContextLimit = 15000;
+    const vacancyPartLimit = Math.floor(totalContextLimit * 0.7);
+    const websitePartLimit = totalContextLimit - vacancyPartLimit;
+    const prompt = getCompanyEnrichmentPrompt({
+      companyName,
+      vacancyText: vacancyText.substring(0, vacancyPartLimit),
+      websiteContent: websiteContent
+        ? websiteContent.substring(0, websitePartLimit)
+        : null,
+    });
+
+    const response = await this.client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      response_format: { type: 'json_object' },
+      temperature: 0,
+      messages: [
+        {
+          role: 'system',
+          content: COMPANY_ENRICHMENT_SYSTEM_PROMPT,
+        },
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      throw new Error('Empty response from OpenAI');
+    }
+
+    try {
+      const parsed = JSON.parse(content) as CompanyProfileDto;
+      return {
+        displayName: parsed.displayName ?? companyName,
+        normalizedName:
+          parsed.normalizedName ?? companyName.trim().toLowerCase(),
+        domain: parsed.domain ?? null,
+        pageUrl: parsed.pageUrl ?? null,
+        description: parsed.description ?? null,
+        industry: parsed.industry ?? null,
+        headquarters: parsed.headquarters ?? null,
+        size: parsed.size ?? null,
+        reviewsSummary: parsed.reviewsSummary
+          ? {
+              rating: parsed.reviewsSummary.rating ?? null,
+              pros: parsed.reviewsSummary.pros ?? [],
+              cons: parsed.reviewsSummary.cons ?? [],
+              sampleSize: parsed.reviewsSummary.sampleSize ?? null,
+              source: parsed.reviewsSummary.source ?? null,
+            }
+          : null,
+        confidence: parsed.confidence ?? 0,
+        sources: parsed.sources ?? [],
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to parse company enrichment response: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 }

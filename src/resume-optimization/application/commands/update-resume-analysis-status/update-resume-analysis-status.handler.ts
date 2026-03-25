@@ -6,9 +6,7 @@ import { ResumeAnalysis } from '@/resume-optimization/resume-analysis.entity';
 
 @CommandHandler(UpdateResumeAnalysisStatusCommand)
 @Injectable()
-export class UpdateResumeAnalysisStatusHandler
-  implements ICommandHandler<UpdateResumeAnalysisStatusCommand>
-{
+export class UpdateResumeAnalysisStatusHandler implements ICommandHandler<UpdateResumeAnalysisStatusCommand> {
   constructor(
     private readonly resumeOptimizationService: ResumeOptimizationService,
   ) {}

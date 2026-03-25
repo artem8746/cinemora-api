@@ -21,9 +21,7 @@ import type { ResumeOptimizationOptions } from '@/openai/constants/prompts/resum
 
 @CommandHandler(AnalyzeResumeForVacancyCommand)
 @Injectable()
-export class AnalyzeResumeForVacancyHandler
-  implements ICommandHandler<AnalyzeResumeForVacancyCommand>
-{
+export class AnalyzeResumeForVacancyHandler implements ICommandHandler<AnalyzeResumeForVacancyCommand> {
   private readonly logger = new Logger(AnalyzeResumeForVacancyHandler.name);
 
   constructor(

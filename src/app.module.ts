@@ -12,6 +12,7 @@ import { getConfiguration } from './config';
 import { TokensModule } from './tokens/tokens.module';
 import { OpenAIModule } from './openai/openai.module';
 import { CqrsModule } from '@nestjs/cqrs';
+import { ScheduleModule } from '@nestjs/schedule';
 import { RedisModule } from './redis/redis.module';
 import { FilesModule } from './files/files.module';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -20,6 +21,7 @@ import { SettingsModule } from './settings/settings.module';
 import { PdfModule } from './pdf/pdf.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { VacanciesModule } from './vacancies/vacancies.module';
+import { VacancyNotesModule } from './vacancy-notes/vacancy-notes.module';
 import { ResumeModule } from './resume/resume.module';
 import { ResumeOptimizationModule } from './resume-optimization/resume-optimization.module';
 import Redis from 'ioredis';
@@ -41,6 +43,7 @@ import Redis from 'ioredis';
       }),
     }),
     CqrsModule,
+    ScheduleModule.forRoot(),
     ThrottlerModule.forRootAsync({
       imports: [RedisModule],
       useFactory: (redisClient: Redis) => ({
@@ -108,6 +111,7 @@ import Redis from 'ioredis';
     PdfModule,
     NotificationsModule,
     VacanciesModule,
+    VacancyNotesModule,
   ],
   controllers: [],
   providers: [],

@@ -15,6 +15,10 @@ import { ParseVacancyQueryResponse } from '@/openai/queries/parse-vacancy/parse-
 import type { VacanciesByStatusDto } from './dto/vacancies-by-status.dto';
 
 export type ParsedVacancy = ParsedVacancyResponse;
+export interface SaveVacancyResult {
+  vacancy: Vacancy;
+  isNewVacancy: boolean;
+}
 
 @Injectable()
 export class VacanciesService {
@@ -79,6 +83,9 @@ export class VacanciesService {
   private async findVacancyByUrl(url: string): Promise<Vacancy | null> {
     return await this.vacancyRepository.findOne({
       where: { url },
+      relations: {
+        company: true,
+      },
     });
   }
 
@@ -155,8 +162,9 @@ export class VacanciesService {
     url: string | null | undefined;
     parsedData: ParsedVacancyData;
     user: User;
-  }): Promise<Vacancy> {
-    const { url, parsedData, user } = params;
+    companyId?: string | null;
+  }): Promise<SaveVacancyResult> {
+    const { url, parsedData, user, companyId } = params;
     const logMessage = url
       ? `Saving vacancy with URL: ${url} for user: ${user.id}`
       : `Saving vacancy without URL for user: ${user.id}`;
@@ -168,6 +176,8 @@ export class VacanciesService {
       vacancy = await this.findVacancyByUrl(url);
     }
 
+    let isNewVacancy = false;
+
     if (vacancy) {
       this.logger.log(`Found existing vacancy with ID: ${vacancy.id}`);
       vacancy.parsedData = parsedData;
@@ -175,7 +185,9 @@ export class VacanciesService {
     } else {
       this.logger.log('Creating new vacancy');
       vacancy = this.createVacancyEntity(url || null, parsedData);
+      vacancy.companyId = companyId ?? null;
       vacancy = await this.vacancyRepository.save(vacancy);
+      isNewVacancy = true;
     }
 
     const relationExists = await this.vacancyRepository
@@ -199,8 +211,17 @@ export class VacanciesService {
     }
 
     this.logger.log(`Successfully saved vacancy with ID: ${vacancy.id}`);
+    const savedVacancy = await this.vacancyRepository.findOneOrFail({
+      where: { id: vacancy.id },
+      relations: {
+        company: true,
+      },
+    });
 
-    return vacancy;
+    return {
+      vacancy: savedVacancy,
+      isNewVacancy,
+    };
   }
 
   async findVacanciesByUserId(userId: string): Promise<VacanciesByStatusDto> {
@@ -208,6 +229,7 @@ export class VacanciesService {
     const vacancies = await this.vacancyRepository
       .createQueryBuilder('vacancy')
       .innerJoin('vacancy.users', 'user')
+      .leftJoinAndSelect('vacancy.company', 'company')
       .where('user.id = :userId', { userId })
       .orderBy('vacancy.createdAt', 'DESC')
       .getMany();
@@ -224,6 +246,7 @@ export class VacanciesService {
     const vacancy = await this.vacancyRepository
       .createQueryBuilder('vacancy')
       .innerJoin('vacancy.users', 'user')
+      .leftJoinAndSelect('vacancy.company', 'company')
       .where('vacancy.id = :vacancyId', { vacancyId })
       .andWhere('user.id = :userId', { userId })
       .getOne();
