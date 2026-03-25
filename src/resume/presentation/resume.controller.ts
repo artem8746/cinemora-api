@@ -86,6 +86,7 @@ export class ResumeController {
     >(new ParseResumeCommand(userId, file));
   }
 
+  // TODO: REPLACE FOR RESUME ANALYSIS CONTROLLER
   @Post('compare/:vacancyId')
   @ApiOperation({
     summary: 'Compare resume with vacancy using AI analysis',
