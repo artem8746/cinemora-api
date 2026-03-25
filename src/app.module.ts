@@ -21,6 +21,7 @@ import { PdfModule } from './pdf/pdf.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { VacanciesModule } from './vacancies/vacancies.module';
 import { ResumeModule } from './resume/resume.module';
+import { ResumeOptimizationModule } from './resume-optimization/resume-optimization.module';
 import Redis from 'ioredis';
 
 @Module({
@@ -102,6 +103,7 @@ import Redis from 'ioredis';
     OpenAIModule,
     FilesModule,
     ResumeModule,
+    ResumeOptimizationModule,
     SettingsModule,
     PdfModule,
     NotificationsModule,

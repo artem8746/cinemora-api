@@ -8,8 +8,8 @@ import { UploadedFile } from '@/files/presentation/types/file.interface';
 import { ResumeRawContent } from '../presentation/types/resume';
 
 @Injectable()
-export class ResumeAnalysisService {
-  private readonly logger = new Logger(ResumeAnalysisService.name);
+export class ResumeParsePdfService {
+  private readonly logger = new Logger(ResumeParsePdfService.name);
 
   constructor(
     @Inject(PDF_PARSER_PORT)
