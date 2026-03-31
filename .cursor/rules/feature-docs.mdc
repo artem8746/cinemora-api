@@ -1,0 +1,38 @@
+---
+description: Feature documentation must be created/updated with implementation changes
+globs: ["src/**/*.ts", "docs/features/**/*.md"]
+alwaysApply: true
+---
+
+# Feature Documentation Rule
+
+When implementing or changing behavior for a feature, always create or update a feature doc in `docs/features/`.
+
+## Goal
+
+- Preserve implementation context so future agents and developers can safely modify the feature.
+- Keep docs close to the code lifecycle (updated in the same task as code changes).
+
+## Required behavior
+
+- For each implemented/changed feature, ensure a matching document exists at `docs/features/<feature-name>.md`.
+- If a relevant doc already exists, update it instead of creating a duplicate.
+- If the task does not change behavior (pure refactor/chore), briefly confirm whether doc changes are needed.
+
+## Required sections (minimum)
+
+- `# <Feature name>`
+- `## Purpose`
+- `## Business rules`
+- `## Architecture and dependencies`
+- `## API/contracts`
+- `## Data model and migrations` (or "No schema changes")
+- `## Edge cases and known limitations`
+- `## How to change safely in future`
+- `## Related files`
+
+## Quality constraints
+
+- Be concise and specific; avoid generic descriptions.
+- Document invariants, assumptions, and integration boundaries.
+- Keep names/path references aligned with actual code.
