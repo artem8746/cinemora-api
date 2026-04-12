@@ -34,6 +34,7 @@ export class TokensService {
       where: {
         refreshToken,
       },
+      relations: ['user'],
     });
 
     return token ?? null;
@@ -42,7 +43,7 @@ export class TokensService {
   async findToken(userId: string) {
     const token = await this.tokenRepository.findOne({
       where: {
-        id: userId,
+        user: { id: userId },
       },
     });
 
@@ -62,7 +63,7 @@ export class TokensService {
     const token = await this.findToken(userId);
 
     if (token) {
-      return this.tokenRepository.delete({ id: userId });
+      return this.tokenRepository.delete({ id: token.id });
     }
   }
 
