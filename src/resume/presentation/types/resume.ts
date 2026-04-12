@@ -51,6 +51,11 @@ export interface ParsedResume {
   customization: Customization;
 }
 
+export type SaveResumeInput = Omit<ParsedResume, 'id' | 'userId'> & {
+  id?: string;
+  userId?: string;
+};
+
 // NO NEED FOR ID FIELD, ALL KEYS ARE UNIQUE
 
 export interface SocialLink {
@@ -71,6 +76,7 @@ export interface Section<T> {
 -------------------------- */
 
 export interface WorkEntry {
+  id: string;
   employer: string;
   isHidden: boolean;
   jobTitle: string;
@@ -82,12 +88,14 @@ export interface WorkEntry {
 }
 
 export interface SkillEntry {
+  id: string;
   skill: string;
   infoHtml: string;
   isHidden: boolean;
 }
 
 export interface CustomEntry {
+  id: string;
   title: string;
   titleLink: string;
   isHidden: boolean;
@@ -100,11 +108,13 @@ export interface CustomEntry {
 }
 
 export interface ProfileEntry {
+  id: string;
   text: string;
   isHidden: boolean;
 }
 
 export interface ProjectEntry {
+  id: string;
   isHidden: boolean;
   subTitle: string;
   endDateNew: string;
@@ -115,6 +125,7 @@ export interface ProjectEntry {
 }
 
 export interface EducationEntry {
+  id: string;
   degree: string;
   school: string;
   isHidden: boolean;

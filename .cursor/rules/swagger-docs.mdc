@@ -1,0 +1,12 @@
+---
+description: Keep Swagger schemas outside DTO classes
+globs: src/**/*.ts
+alwaysApply: false
+---
+
+# Swagger Docs Convention
+
+- Keep complex OpenAPI schemas in feature-level `swagger/` files (for example `swagger/schemas.ts`), not inline in DTO decorators.
+- DTO classes should reference exported schema constants (`properties`, `items`, `additionalProperties`) to stay readable.
+- Use inline schema objects in DTOs only for very small primitives.
+- When a type is `Record<string, T>`, use OpenAPI `additionalProperties` with a strict schema for `T`.

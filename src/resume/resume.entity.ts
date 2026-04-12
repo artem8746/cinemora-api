@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '@/users/user.entity';
+import { Vacancy } from '@/vacancies/vacancy.entity';
 import type { ParsedResume } from './presentation/types/resume';
 
 @Entity('resumes')
@@ -25,6 +26,16 @@ export class Resume {
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @Column({ type: 'uuid', name: 'vacancy_id', nullable: true })
+  vacancyId: string | null;
+
+  @ManyToOne(() => Vacancy, { onDelete: 'CASCADE', nullable: true })
+  @JoinColumn({ name: 'vacancy_id' })
+  vacancy: Vacancy | null;
+
+  @Column({ type: 'uuid', name: 'analysis_id', nullable: true })
+  analysisId: string | null;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;

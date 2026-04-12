@@ -86,6 +86,7 @@ export class ResumeContentMapper {
   ): Section<WorkEntry> {
     return {
       entries: work.entries.map((entry) => ({
+        id: randomUUID(),
         employer: entry.employer,
         isHidden: false,
         jobTitle: entry.jobTitle,
@@ -106,6 +107,7 @@ export class ResumeContentMapper {
   ): Section<SkillEntry> {
     return {
       entries: skill.entries.map((skillName) => ({
+        id: randomUUID(),
         skill: skillName,
         infoHtml: '',
         isHidden: false,
@@ -120,6 +122,7 @@ export class ResumeContentMapper {
     return {
       entries: [
         {
+          id: randomUUID(),
           text: profile,
           isHidden: false,
         },
@@ -135,6 +138,7 @@ export class ResumeContentMapper {
   ): Section<ProjectEntry> {
     return {
       entries: project.entries.map((entry) => ({
+        id: randomUUID(),
         isHidden: false,
         subTitle: entry.subTitle,
         endDateNew: entry.endDateNew,
@@ -154,6 +158,7 @@ export class ResumeContentMapper {
   ): Section<EducationEntry> {
     return {
       entries: education.entries.map((entry) => ({
+        id: randomUUID(),
         degree: entry.degree,
         school: entry.school,
         isHidden: false,

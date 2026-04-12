@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import { IsObject } from 'class-validator';
+import { parsedResumeSchema } from '@/resume/swagger/schemas';
 import { ParsedResume } from '../types/resume';
 
 export enum SkillMatchStatus {
@@ -56,9 +57,12 @@ export class AiInsightsDto {
 }
 
 export class CompareResumeDto {
+  private static readonly resumeApiPropertyOptions =
+    parsedResumeSchema as unknown as ApiPropertyOptions;
+
   @ApiProperty({
     description: 'Parsed resume data',
-    type: Object,
+    ...CompareResumeDto.resumeApiPropertyOptions,
   })
   @IsObject()
   resume!: ParsedResume;

@@ -1,8 +1,5 @@
-// Request-related swagger decorators for file uploads
-// Currently, file uploads use multipart/form-data handled by FileInterceptor
-// Add @ApiBody decorators here if needed for future endpoints
-
 import { ApiBody } from '@nestjs/swagger';
+import { SaveResumeDto } from '../presentation/dto/save-resume.dto';
 
 export const ResumeRequests = {
   FileUploadRequest: ApiBody({
@@ -17,5 +14,10 @@ export const ResumeRequests = {
         },
       },
     },
+  }),
+
+  SaveResumeRequest: ApiBody({
+    description: 'Save resume request body',
+    type: SaveResumeDto,
   }),
 };
