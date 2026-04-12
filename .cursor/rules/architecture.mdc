@@ -32,6 +32,13 @@ Controllers → Application (handlers/services) → Domain ports; Infrastructure
 - Handlers orchestrate; business logic lives in application services. Publish domain events after success.
 - See existing `users/commands/create-user`, `auth/commands/register`, `files/application/commands`.
 
+## Cross-module communication
+
+- **Never import services from other modules** directly into handlers or services. Use `QueryBus` / `CommandBus` instead.
+- Each module exposes its functionality via CQRS queries and commands. Other modules interact exclusively through the bus.
+- Only same-module services may be injected directly into handlers.
+- This keeps modules decoupled and avoids importing foreign modules just for a single service call.
+
 ## Module registration
 
 Feature modules in `app.module.ts`. Use NestJS DI; inject ports via `@Inject(SYMBOL)` where DDD layers exist.

@@ -15,8 +15,14 @@ import {
   RESUME_COMPARISON_SYSTEM_PROMPT,
   getResumeComparisonPrompt,
 } from './constants/prompts/resume-comparison.prompt';
+import {
+  RESUME_OPTIMIZATION_SYSTEM_PROMPT,
+  getResumeOptimizationPrompt,
+  type ResumeOptimizationOptions,
+} from './constants/prompts/resume-optimization.prompt';
 import type { ResumeMatchResponseDto } from '@/resume/presentation/dto/compare-resume.dto';
-import { removeMarkdownCodeBlocks } from '@/utils';
+import type { ResumeOptimizationResult } from '@/resume-optimization/presentation/types/resume-analysis';
+import { removeMarkdownCodeBlocks, assignIdsToNewEntries } from '@/utils';
 import {
   COMPANY_ENRICHMENT_SYSTEM_PROMPT,
   getCompanyEnrichmentPrompt,
@@ -106,6 +112,88 @@ export class OpenAIService {
       throw new Error(
         `Failed to parse OpenAI response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`,
       );
+    }
+  }
+
+  async optimizeResumeForVacancy(
+    resume: ParsedResume,
+    vacancy: ParsedVacancyData,
+    options: ResumeOptimizationOptions,
+  ): Promise<ResumeOptimizationResult> {
+    try {
+      this.logger.log(
+        `Optimizing resume for vacancy (mode=${options.mode}, style=${options.writingStyle}, lang=${options.contentLang})`,
+      );
+
+      const resumeJson = JSON.stringify(resume, null, 2);
+      const vacancyJson = JSON.stringify(vacancy, null, 2);
+
+      if (!resumeJson || resumeJson.length < 50) {
+        throw new Error('Resume data is too short or empty');
+      }
+      if (!vacancyJson || vacancyJson.length < 50) {
+        throw new Error('Vacancy data is too short or empty');
+      }
+
+      const response = await this.client.chat.completions.create({
+        model: 'gpt-4o-mini',
+        response_format: { type: 'json_object' },
+        messages: [
+          {
+            role: 'system',
+            content: RESUME_OPTIMIZATION_SYSTEM_PROMPT,
+          },
+          {
+            role: 'user',
+            content: getResumeOptimizationPrompt(
+              resumeJson,
+              vacancyJson,
+              options,
+            ),
+          },
+        ],
+        temperature: 0.3,
+      });
+
+      const content = response.choices[0]?.message.content;
+      if (!content) {
+        throw new Error(
+          'Failed to optimize resume: empty response from OpenAI',
+        );
+      }
+
+      const parsedContent = removeMarkdownCodeBlocks(content);
+
+      let result: ResumeOptimizationResult;
+      try {
+        result = JSON.parse(parsedContent) as ResumeOptimizationResult;
+      } catch (parseError) {
+        this.logger.error(
+          `Failed to parse optimization response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`,
+        );
+        throw new Error(
+          `Failed to parse optimization response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`,
+        );
+      }
+
+      result.analysis.keySkillsMatch = result.analysis.keySkillsMatch ?? [];
+      result.analysis.strengths = result.analysis.strengths ?? [];
+      result.analysis.improvements = result.analysis.improvements ?? [];
+      result.sectionChanges = result.sectionChanges ?? {};
+      result.suggestedContent = result.suggestedContent ?? {};
+
+      assignIdsToNewEntries(result.suggestedContent, result.sectionChanges);
+
+      this.logger.log(
+        `Resume optimization completed — initial ATS score: ${result.analysis.initialAtsScore}`,
+      );
+
+      return result;
+    } catch (error) {
+      this.logger.error(
+        `Error optimizing resume: ${error instanceof Error ? error.message : 'unknown error'}`,
+      );
+      throw error;
     }
   }
 

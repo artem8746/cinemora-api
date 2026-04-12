@@ -7,4 +7,5 @@ export * from './hash-passwords';
 export { cleanHTML } from './clean-html.util';
 export { bytesToMegabytes, formatFileSize } from './file-size.helper';
 export { removeMarkdownCodeBlocks } from './remove-markdown-code-blocks.util';
+export { assignIdsToNewEntries } from './assign-ids-to-new-entries.util';
 export { normalizeUrl } from './normalize-url.util';
