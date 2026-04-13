@@ -15,23 +15,23 @@ const workEntrySchema = {
     isHidden: { type: 'boolean', example: false },
     jobTitle: { type: 'string', example: 'Software Engineer' },
     location: { type: 'string', example: 'San Francisco, CA' },
-    endDateNew: { type: 'string', example: '2024-12' },
+    endDate: { type: 'string', example: '2024-12' },
     description: {
       type: 'string',
       example: '<ul><li>Developed features</li></ul>',
     },
     employerLink: { type: 'string', example: 'https://techcorp.com' },
-    startDateNew: { type: 'string', example: '2022-01' },
+    startDate: { type: 'string', example: '2022-01' },
   },
   required: [
     'employer',
     'isHidden',
     'jobTitle',
     'location',
-    'endDateNew',
+    'endDate',
     'description',
     'employerLink',
-    'startDateNew',
+    'startDate',
   ],
 };
 
@@ -59,13 +59,13 @@ const projectEntrySchema = {
   properties: {
     isHidden: { type: 'boolean', example: false },
     subTitle: { type: 'string', example: 'Full Stack Application' },
-    endDateNew: { type: 'string', example: '2024-06' },
+    endDate: { type: 'string', example: '2024-06' },
     description: {
       type: 'string',
       example: '<ul><li>Built with React</li></ul>',
     },
     projectTitle: { type: 'string', example: 'E-commerce Platform' },
-    startDateNew: { type: 'string', example: '2023-01' },
+    startDate: { type: 'string', example: '2023-01' },
     projectTitleLink: {
       type: 'string',
       example: 'https://github.com/user/project',
@@ -74,10 +74,10 @@ const projectEntrySchema = {
   required: [
     'isHidden',
     'subTitle',
-    'endDateNew',
+    'endDate',
     'description',
     'projectTitle',
-    'startDateNew',
+    'startDate',
     'projectTitleLink',
   ],
 };
@@ -89,20 +89,20 @@ const educationEntrySchema = {
     school: { type: 'string', example: 'University of Technology' },
     isHidden: { type: 'boolean', example: false },
     location: { type: 'string', example: 'New York, NY' },
-    endDateNew: { type: 'string', example: '2020-05' },
+    endDate: { type: 'string', example: '2020-05' },
     schoolLink: { type: 'string', example: 'https://university.edu' },
     description: { type: 'string', example: 'Computer Science' },
-    startDateNew: { type: 'string', example: '2016-09' },
+    startDate: { type: 'string', example: '2016-09' },
   },
   required: [
     'degree',
     'school',
     'isHidden',
     'location',
-    'endDateNew',
+    'endDate',
     'schoolLink',
     'description',
-    'startDateNew',
+    'startDate',
   ],
 };
 
@@ -114,12 +114,12 @@ const customEntrySchema = {
     isHidden: { type: 'boolean', example: false },
     location: { type: 'string', example: 'Online' },
     subTitle: { type: 'string', example: 'AWS Certified' },
-    endDateNew: { type: 'string', example: '2024-01' },
+    endDate: { type: 'string', example: '2024-01' },
     description: {
       type: 'string',
       example: '<ul><li>Cloud architecture</li></ul>',
     },
-    startDateNew: { type: 'string', example: '2023-06' },
+    startDate: { type: 'string', example: '2023-06' },
     icon: { type: 'string', example: 'certificate' },
   },
   required: [
@@ -128,9 +128,9 @@ const customEntrySchema = {
     'isHidden',
     'location',
     'subTitle',
-    'endDateNew',
+    'endDate',
     'description',
-    'startDateNew',
+    'startDate',
     'icon',
   ],
 };

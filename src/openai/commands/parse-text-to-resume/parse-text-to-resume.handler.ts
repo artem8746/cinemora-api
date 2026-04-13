@@ -24,21 +24,21 @@ const MOCK_RESPONSE = {
           employer: 'Antagosoft',
           jobTitle: 'Full-stack Developer',
           location: '',
-          endDateNew: 'present',
+          endDate: 'present',
           description:
             '<ul><li>Refactored critical components into reusable modules, according to FSD, improving code maintainability and onboarding efficiency for new developers</li><li>Engineered a scalable reporting system, automating Excel report generation for large datasets and reducing manual workload by 80%</li><li>Developed and secured an admin panel, implementing role-based access control (RBAC)</li></ul>',
           employerLink: '',
-          startDateNew: '2024-09',
+          startDate: '2024-09',
         },
         {
           employer: 'Insiders',
           jobTitle: 'Full-stack Developer',
           location: '',
-          endDateNew: '2024-09',
+          endDate: '2024-09',
           description:
             '<ul><li>Deployed a scalable web app to Azure using Docker, streamlining CI/CD workflows</li><li>Integrated third-party APIs to enhance application functionality and improve user experience</li><li>Implemented UI using Mantine, translating Figma prototypes into responsive and accessible components</li><li>Engineered efficient GraphQL endpoints, enabling flexible data querying and reducing API complexity and response times by 20%.</li></ul>',
           employerLink: '',
-          startDateNew: '2024-01',
+          startDate: '2024-01',
         },
       ],
     },
@@ -85,30 +85,30 @@ const MOCK_RESPONSE = {
       entries: [
         {
           subTitle: 'TechStar (Shop Catalog)',
-          endDateNew: '',
+          endDate: '',
           description:
             '<ul><li>Set up a development environment with Vite, Prettier, ESLint, and Husky for consistent code quality.</li><li>Customized Swiper on the main page to improve user experience.</li><li>Integrated Redux Toolkit to enhance state management and scalability.</li></ul>',
           projectTitle: 'TechStar (Shop Catalog)',
-          startDateNew: '',
+          startDate: '',
           projectTitleLink:
             'https://github.com/fe-nov23-DOMinationDynasty/product_catalog',
         },
         {
           subTitle: 'MyBike landing',
-          endDateNew: '',
+          endDate: '',
           description:
             '<ul><li>Developed a responsive and accessible website using BEM, HTML5, and SASS, ensuring cross-device compatibility and web accessibility</li></ul>',
           projectTitle: 'MyBike landing',
-          startDateNew: '',
+          startDate: '',
           projectTitleLink: 'https://github.com/artem8746/mybike-landing',
         },
         {
           subTitle: 'Todo app',
-          endDateNew: '',
+          endDate: '',
           description:
             '<ul><li>Implemented CRUD operations, bulk actions, and inline editing with accessible and responsive design using Bulma, along with loading overlays and error handling to enhance user experience and data management</li></ul>',
           projectTitle: 'Todo app',
-          startDateNew: '',
+          startDate: '',
           projectTitleLink:
             'https://github.com/artem8746/react_todo-app-with-api-prod/tree/master',
         },
@@ -120,10 +120,10 @@ const MOCK_RESPONSE = {
           degree: 'Associate Specialist in Computer Science',
           school: 'NTU KHPI',
           location: 'Kharkiv, Ukraine',
-          endDateNew: 'present',
+          endDate: 'present',
           schoolLink: '',
           description: '',
-          startDateNew: '2022-09',
+          startDate: '2022-09',
         },
       ],
     },
