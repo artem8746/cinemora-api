@@ -78,6 +78,26 @@ export class RefreshTokenService {
     await this.redisClient.del(key);
   }
 
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /** Waits while another in-flight request holds the refresh lock (parallel tabs / burst). */
+  private async acquireLockWithRetry(refreshToken: string): Promise<boolean> {
+    const maxAttempts = 40;
+    const delayMs = 50;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const acquired = await this.acquireLock(refreshToken);
+      if (acquired) {
+        return true;
+      }
+      await this.sleep(delayMs);
+    }
+
+    return false;
+  }
+
   async handleRefreshToken(
     req: FastifyRequest,
     reply: FastifyReply,
@@ -111,9 +131,11 @@ export class RefreshTokenService {
       return;
     }
 
-    const lockAcquired = await this.acquireLock(refreshToken);
+    const lockAcquired = await this.acquireLockWithRetry(refreshToken);
     if (!lockAcquired) {
-      this.logger.debug('Refresh token is being processed by another request');
+      this.logger.warn(
+        'Refresh token lock not acquired after retries; skipping refresh',
+      );
       return;
     }
 
