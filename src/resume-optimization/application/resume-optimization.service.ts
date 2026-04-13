@@ -111,6 +111,27 @@ export class ResumeOptimizationService {
     return await this.analysisRepository.save(analysis);
   }
 
+  async applyAnalysisForUserAndAnalysisId(
+    userId: string,
+    analysisId: string,
+    appliedAtsScore: number,
+    appliedMatchScore: number,
+  ): Promise<ResumeAnalysis | null> {
+    const analysis = await this.analysisRepository.findOne({
+      where: { id: analysisId, userId },
+    });
+
+    if (!analysis) {
+      return null;
+    }
+
+    analysis.isApplied = true;
+    analysis.appliedAtsScore = appliedAtsScore;
+    analysis.appliedMatchScore = appliedMatchScore;
+
+    return await this.analysisRepository.save(analysis);
+  }
+
   async findById(id: string): Promise<ResumeAnalysis | null> {
     return await this.analysisRepository.findOne({ where: { id } });
   }

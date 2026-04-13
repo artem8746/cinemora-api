@@ -4,13 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ResumeOptimizationController } from './presentation/resume-optimization.controller';
 import { ResumeOptimizationService } from './application/resume-optimization.service';
 import { AnalyzeResumeForVacancyHandler } from './application/commands/analyze-resume/analyze-resume.handler';
-import { UpdateResumeAnalysisStatusHandler } from './application/commands/update-resume-analysis-status/update-resume-analysis-status.handler';
+import { ApplyResumeAnalysisHandler } from './application/commands/apply-resume-analysis/apply-resume-analysis.handler';
 import { GetResumeAnalysisHandler } from './application/queries/get-resume-analysis/get-resume-analysis.handler';
 import { ResumeAnalysis } from './resume-analysis.entity';
 
 const CommandHandlers = [
   AnalyzeResumeForVacancyHandler,
-  UpdateResumeAnalysisStatusHandler,
+  ApplyResumeAnalysisHandler,
 ];
 const QueryHandlers = [GetResumeAnalysisHandler];
 

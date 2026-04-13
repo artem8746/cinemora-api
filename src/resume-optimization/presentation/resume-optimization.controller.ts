@@ -18,9 +18,9 @@ import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { CurrentUserId } from '@/common/decorators/current-user-id.decorator';
 import { ResumeAnalysisResponseDto } from './dto/resume-analysis.dto';
 import { ResumeOptimizationResponses } from '../swagger/response';
-import { UpdateResumeAnalysisStatusDto } from '@/resume-optimization/presentation/dto/update-resume-analysis-status.dto';
-import { UpdateResumeAnalysisStatusCommand } from '@/resume-optimization/application/commands/update-resume-analysis-status/update-resume-analysis-status.command';
-import type { UpdateResumeAnalysisStatusCommandResponse } from '@/resume-optimization/application/commands/update-resume-analysis-status/update-resume-analysis-status.handler';
+import { ApplyResumeAnalysisDto } from '@/resume-optimization/presentation/dto/apply-resume-analysis.dto';
+import { ApplyResumeAnalysisCommand } from '@/resume-optimization/application/commands/apply-resume-analysis/apply-resume-analysis.command';
+import type { ApplyResumeAnalysisCommandResponse } from '@/resume-optimization/application/commands/apply-resume-analysis/apply-resume-analysis.handler';
 
 @ApiTags('resume-optimization')
 @Controller('resume')
@@ -82,29 +82,36 @@ export class ResumeOptimizationController {
     return result;
   }
 
-  @Patch('analysis/:analysisId/status')
+  @Patch('analysis/:analysisId/apply')
   @ApiOperation({
-    summary: 'Update resume analysis status',
+    summary: 'Apply resume analysis',
     description:
-      'Updates the status field of an existing resume analysis (e.g. processing/completed/failed).',
+      'Marks a resume analysis as applied and stores ATS/match scores at the application moment.',
   })
   @ApiParam({
     name: 'analysisId',
     description: 'ID of the analysis',
     type: String,
   })
-  @ResumeOptimizationResponses.UpdateStatusSuccess
-  @ResumeOptimizationResponses.UpdateStatusNotFound
-  async updateAnalysisStatus(
+  @ResumeOptimizationResponses.ApplySuccess
+  @ResumeOptimizationResponses.ApplyNotFound
+  async applyAnalysis(
     @Param('analysisId', ParseUUIDPipe) analysisId: string,
     @CurrentUserId() userId: string,
-    @Body() body: UpdateResumeAnalysisStatusDto,
+    @Body() body: ApplyResumeAnalysisDto,
   ): Promise<ResumeAnalysisResponseDto> {
-    const result: UpdateResumeAnalysisStatusCommandResponse =
+    const result: ApplyResumeAnalysisCommandResponse =
       await this.commandBus.execute<
-        UpdateResumeAnalysisStatusCommand,
-        UpdateResumeAnalysisStatusCommandResponse
-      >(new UpdateResumeAnalysisStatusCommand(userId, analysisId, body.status));
+        ApplyResumeAnalysisCommand,
+        ApplyResumeAnalysisCommandResponse
+      >(
+        new ApplyResumeAnalysisCommand(
+          userId,
+          analysisId,
+          body.appliedAtsScore,
+          body.appliedMatchScore,
+        ),
+      );
 
     return result;
   }

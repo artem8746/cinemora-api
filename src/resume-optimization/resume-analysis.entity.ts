@@ -61,6 +61,15 @@ export class ResumeAnalysis {
   @Column({ type: 'int', name: 'initial_match_score', nullable: true })
   initialMatchScore: number | null;
 
+  @Column({ type: 'boolean', name: 'is_applied', default: false })
+  isApplied: boolean;
+
+  @Column({ type: 'int', name: 'applied_ats_score', nullable: true })
+  appliedAtsScore: number | null;
+
+  @Column({ type: 'int', name: 'applied_match_score', nullable: true })
+  appliedMatchScore: number | null;
+
   @Column({ type: 'jsonb', name: 'key_skills_match', nullable: true })
   keySkillsMatch: KeySkillMatch[] | null;
 

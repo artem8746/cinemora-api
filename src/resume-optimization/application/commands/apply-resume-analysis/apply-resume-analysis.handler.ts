@@ -1,24 +1,23 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateResumeAnalysisStatusCommand } from './update-resume-analysis-status.command';
+import { ApplyResumeAnalysisCommand } from './apply-resume-analysis.command';
 import { ResumeOptimizationService } from '@/resume-optimization/application/resume-optimization.service';
 import { ResumeAnalysis } from '@/resume-optimization/resume-analysis.entity';
 
-@CommandHandler(UpdateResumeAnalysisStatusCommand)
+@CommandHandler(ApplyResumeAnalysisCommand)
 @Injectable()
-export class UpdateResumeAnalysisStatusHandler implements ICommandHandler<UpdateResumeAnalysisStatusCommand> {
+export class ApplyResumeAnalysisHandler implements ICommandHandler<ApplyResumeAnalysisCommand> {
   constructor(
     private readonly resumeOptimizationService: ResumeOptimizationService,
   ) {}
 
-  async execute(
-    command: UpdateResumeAnalysisStatusCommand,
-  ): Promise<ResumeAnalysis> {
+  async execute(command: ApplyResumeAnalysisCommand): Promise<ResumeAnalysis> {
     const updated =
-      await this.resumeOptimizationService.updateStatusForUserAndAnalysisId(
+      await this.resumeOptimizationService.applyAnalysisForUserAndAnalysisId(
         command.userId,
         command.analysisId,
-        command.status,
+        command.appliedAtsScore,
+        command.appliedMatchScore,
       );
 
     if (!updated) {
@@ -29,4 +28,4 @@ export class UpdateResumeAnalysisStatusHandler implements ICommandHandler<Update
   }
 }
 
-export type UpdateResumeAnalysisStatusCommandResponse = ResumeAnalysis;
+export type ApplyResumeAnalysisCommandResponse = ResumeAnalysis;

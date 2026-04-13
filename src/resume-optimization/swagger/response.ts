@@ -25,13 +25,13 @@ export const ResumeOptimizationResponses = {
     description: 'No analysis found for this vacancy',
   }),
 
-  UpdateStatusSuccess: ApiResponse({
+  ApplySuccess: ApiResponse({
     status: HttpStatus.OK,
-    description: 'Resume analysis status updated successfully',
+    description: 'Resume analysis apply data saved successfully',
     type: ResumeAnalysisResponseDto,
   }),
 
-  UpdateStatusNotFound: ApiResponse({
+  ApplyNotFound: ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'No analysis found',
   }),
