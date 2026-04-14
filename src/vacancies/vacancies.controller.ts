@@ -134,6 +134,7 @@ export class VacanciesController {
         vacancyId,
         userId,
         status: updateVacancyDto.status,
+        position: updateVacancyDto.position,
         url: updateVacancyDto.url,
         parsedData: updateVacancyDto.parsedData,
       }),

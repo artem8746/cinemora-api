@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsEnum, IsString, ValidateNested } from 'class-validator';
+import {
+  IsOptional,
+  IsEnum,
+  IsString,
+  ValidateNested,
+  IsInt,
+  Min,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { VacancyStatus } from '../enums/vacancy-status.enum';
 import { VacancyDataDto } from './vacancy-data.dto';
@@ -14,6 +21,17 @@ export class UpdateVacancyDto {
   @IsOptional()
   @IsEnum(VacancyStatus)
   readonly status?: VacancyStatus;
+
+  @ApiProperty({
+    required: false,
+    description: 'Target position inside status column (0-based)',
+    example: 0,
+    minimum: 0,
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  readonly position?: number;
 
   @ApiProperty({
     required: false,
