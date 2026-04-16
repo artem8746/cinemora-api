@@ -5,6 +5,7 @@ export interface UpdateVacancyCommandPayload {
   vacancyId: string;
   userId: string;
   status?: VacancyStatus;
+  position?: number;
   url?: string;
   parsedData?: ParsedVacancyData;
 }
@@ -13,6 +14,7 @@ export class UpdateVacancyCommand {
   public readonly vacancyId: string;
   public readonly userId: string;
   public readonly status?: VacancyStatus;
+  public readonly position?: number;
   public readonly url?: string;
   public readonly parsedData?: ParsedVacancyData;
 
@@ -20,6 +22,7 @@ export class UpdateVacancyCommand {
     this.vacancyId = payload.vacancyId;
     this.userId = payload.userId;
     this.status = payload.status;
+    this.position = payload.position;
     this.url = payload.url;
     this.parsedData = payload.parsedData;
   }

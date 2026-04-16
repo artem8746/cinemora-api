@@ -10,12 +10,13 @@ export class UpdateVacancyHandler implements ICommandHandler<UpdateVacancyComman
   constructor(private readonly vacanciesService: VacanciesService) {}
 
   async execute(command: UpdateVacancyCommand): Promise<Vacancy> {
-    const { vacancyId, userId, status, url, parsedData } = command;
+    const { vacancyId, userId, status, position, url, parsedData } = command;
     return await this.vacanciesService.updateVacancy({
       vacancyId,
       userId,
       updateData: {
         status,
+        position,
         url,
         parsedData,
       },

@@ -13,11 +13,16 @@ import { User } from '@/users/user.entity';
 import { ParseVacancyQuery } from '@/openai/queries/parse-vacancy/parse-vacancy.query';
 import { ParseVacancyQueryResponse } from '@/openai/queries/parse-vacancy/parse-vacancy.handler';
 import type { VacanciesByStatusDto } from './dto/vacancies-by-status.dto';
+import { UserVacancyOrderingService } from './services/user-vacancy-ordering.service';
 
 export type ParsedVacancy = ParsedVacancyResponse;
 export interface SaveVacancyResult {
   vacancy: Vacancy;
   isNewVacancy: boolean;
+}
+
+interface UserVacancyStatusRaw {
+  user_vacancy_status: VacancyStatus;
 }
 
 @Injectable()
@@ -28,6 +33,7 @@ export class VacanciesService {
   constructor(
     private readonly queryBus: QueryBus,
     private readonly configService: ConfigService<Configuration>,
+    private readonly userVacancyOrderingService: UserVacancyOrderingService,
     @InjectRepository(Vacancy)
     private readonly vacancyRepository: Repository<Vacancy>,
   ) {
@@ -199,11 +205,24 @@ export class VacanciesService {
       .then((count) => count > 0);
 
     if (!relationExists) {
-      await this.vacancyRepository
+      const position =
+        await this.userVacancyOrderingService.getNextPositionForStatus({
+          manager: this.vacancyRepository.manager,
+          userId: user.id,
+          status: VacancyStatus.SENT_CV,
+        });
+
+      await this.vacancyRepository.manager
         .createQueryBuilder()
-        .relation(Vacancy, 'users')
-        .of(vacancy.id)
-        .add(user.id);
+        .insert()
+        .into('user_vacancies')
+        .values({
+          vacancy_id: vacancy.id,
+          user_id: user.id,
+          status: VacancyStatus.SENT_CV,
+          position,
+        })
+        .execute();
 
       this.logger.log(`Adding user ${user.id} to vacancy`);
     } else {
@@ -211,11 +230,9 @@ export class VacanciesService {
     }
 
     this.logger.log(`Successfully saved vacancy with ID: ${vacancy.id}`);
-    const savedVacancy = await this.vacancyRepository.findOneOrFail({
-      where: { id: vacancy.id },
-      relations: {
-        company: true,
-      },
+    const savedVacancy = await this.findVacancyById({
+      vacancyId: vacancy.id,
+      userId: user.id,
     });
 
     return {
@@ -226,13 +243,29 @@ export class VacanciesService {
 
   async findVacanciesByUserId(userId: string): Promise<VacanciesByStatusDto> {
     this.logger.log(`Finding vacancies for user: ${userId}`);
-    const vacancies = await this.vacancyRepository
+    const queryResult = await this.vacancyRepository
       .createQueryBuilder('vacancy')
-      .innerJoin('vacancy.users', 'user')
+      .innerJoin(
+        'user_vacancies',
+        'user_vacancy',
+        'user_vacancy.vacancy_id = vacancy.id',
+      )
       .leftJoinAndSelect('vacancy.company', 'company')
-      .where('user.id = :userId', { userId })
-      .orderBy('vacancy.createdAt', 'DESC')
-      .getMany();
+      .where('user_vacancy.user_id = :userId', { userId })
+      .addSelect('user_vacancy.status', 'user_vacancy_status')
+      .addSelect('user_vacancy.position', 'user_vacancy_position')
+      .orderBy('user_vacancy.status', 'ASC')
+      .addOrderBy('user_vacancy.position', 'ASC')
+      .getRawAndEntities();
+
+    const rawRows = queryResult.raw as UserVacancyStatusRaw[];
+    const vacancies = queryResult.entities.map((vacancy, index) => {
+      const row = rawRows[index];
+      if (row) {
+        vacancy.status = row.user_vacancy_status;
+      }
+      return vacancy;
+    });
 
     return this.groupVacanciesByStatus(vacancies);
   }
@@ -245,19 +278,28 @@ export class VacanciesService {
     this.logger.log(`Finding vacancy ${vacancyId} for user: ${userId}`);
     const vacancy = await this.vacancyRepository
       .createQueryBuilder('vacancy')
-      .innerJoin('vacancy.users', 'user')
+      .innerJoin(
+        'user_vacancies',
+        'user_vacancy',
+        'user_vacancy.vacancy_id = vacancy.id',
+      )
       .leftJoinAndSelect('vacancy.company', 'company')
+      .addSelect('user_vacancy.status', 'user_vacancy_status')
       .where('vacancy.id = :vacancyId', { vacancyId })
-      .andWhere('user.id = :userId', { userId })
-      .getOne();
+      .andWhere('user_vacancy.user_id = :userId', { userId })
+      .getRawAndEntities();
 
-    if (!vacancy) {
+    const entity = vacancy.entities[0];
+    const raw = (vacancy.raw as UserVacancyStatusRaw[])[0];
+
+    if (!entity || !raw) {
       throw new NotFoundException(
         `Vacancy with ID ${vacancyId} not found or does not belong to user`,
       );
     }
 
-    return vacancy;
+    entity.status = raw.user_vacancy_status;
+    return entity;
   }
 
   async deleteVacancy(params: {
@@ -269,11 +311,29 @@ export class VacanciesService {
 
     const vacancy = await this.findVacancyById({ vacancyId, userId });
 
-    await this.vacancyRepository
-      .createQueryBuilder()
-      .relation(Vacancy, 'users')
-      .of(vacancy.id)
-      .remove(userId);
+    await this.vacancyRepository.manager.transaction(async (manager) => {
+      const userVacancy =
+        await this.userVacancyOrderingService.findUserVacancyOrFail({
+          manager,
+          userId,
+          vacancyId,
+        });
+
+      await manager
+        .createQueryBuilder()
+        .delete()
+        .from('user_vacancies')
+        .where('"user_id" = :userId', { userId })
+        .andWhere('"vacancy_id" = :vacancyId', { vacancyId })
+        .execute();
+
+      await this.userVacancyOrderingService.compactPositionsAfterDelete({
+        manager,
+        userId,
+        status: userVacancy.status,
+        deletedPosition: userVacancy.position,
+      });
+    });
 
     this.logger.log(`Removed user ${userId} from vacancy ${vacancyId}`);
 
@@ -300,6 +360,7 @@ export class VacanciesService {
     userId: string;
     updateData: {
       status?: VacancyStatus;
+      position?: number;
       url?: string;
       parsedData?: ParsedVacancyData;
     };
@@ -307,24 +368,59 @@ export class VacanciesService {
     const { vacancyId, userId, updateData } = params;
     this.logger.log(`Updating vacancy ${vacancyId} for user: ${userId}`);
 
-    const vacancy = await this.findVacancyById({ vacancyId, userId });
+    const updatedVacancy = await this.vacancyRepository.manager.transaction(
+      async (manager) => {
+        const userVacancy =
+          await this.userVacancyOrderingService.findUserVacancyOrFail({
+            manager,
+            userId,
+            vacancyId,
+          });
+        const vacancy = await manager.findOne(Vacancy, {
+          where: { id: vacancyId },
+          relations: {
+            company: true,
+          },
+        });
 
-    if (updateData.status) {
-      vacancy.status = updateData.status;
-      this.logger.log(`Updating status to ${updateData.status}`);
-    }
+        if (!vacancy) {
+          throw new NotFoundException(
+            `Vacancy with ID ${vacancyId} not found or does not belong to user`,
+          );
+        }
 
-    if (updateData.url) {
-      vacancy.url = updateData.url;
-      this.logger.log(`Updating URL to ${updateData.url}`);
-    }
+        if (updateData.url) {
+          vacancy.url = updateData.url;
+          this.logger.log(`Updating URL to ${updateData.url}`);
+        }
 
-    if (updateData.parsedData) {
-      vacancy.parsedData = updateData.parsedData;
-      this.logger.log('Updating parsed data');
-    }
+        if (updateData.parsedData) {
+          vacancy.parsedData = updateData.parsedData;
+          this.logger.log('Updating parsed data');
+        }
 
-    const updatedVacancy = await this.vacancyRepository.save(vacancy);
+        if (updateData.status || updateData.position !== undefined) {
+          await this.userVacancyOrderingService.reorderUserVacancy({
+            manager,
+            userVacancy,
+            targetStatus: updateData.status,
+            targetPosition: updateData.position,
+          });
+        }
+
+        const savedVacancy = await manager.save(vacancy);
+        const updatedUserVacancy =
+          await this.userVacancyOrderingService.findUserVacancyOrFail({
+            manager,
+            userId,
+            vacancyId,
+          });
+
+        savedVacancy.status = updatedUserVacancy.status;
+        return savedVacancy;
+      },
+    );
+
     this.logger.log(`Successfully updated vacancy ${vacancyId}`);
 
     return updatedVacancy;

@@ -12,6 +12,7 @@ import { GetVacanciesByUserIdHandler } from './queries/get-vacancies-by-user-id/
 import { GetVacancyByIdHandler } from './queries/get-vacancy-by-id/get-vacancy-by-id.handler';
 import { Vacancy } from './vacancy.entity';
 import { CompaniesModule } from '@/companies/companies.module';
+import { UserVacancyOrderingService } from './services/user-vacancy-ordering.service';
 
 export const CommandHandlers = [
   ParseVacancyHandler,
@@ -29,7 +30,12 @@ export const QueryHandlers = [
 @Module({
   imports: [CqrsModule, TypeOrmModule.forFeature([Vacancy]), CompaniesModule],
   controllers: [VacanciesController],
-  providers: [VacanciesService, ...CommandHandlers, ...QueryHandlers],
+  providers: [
+    VacanciesService,
+    UserVacancyOrderingService,
+    ...CommandHandlers,
+    ...QueryHandlers,
+  ],
   exports: [VacanciesService, ...QueryHandlers],
 })
 export class VacanciesModule {}
