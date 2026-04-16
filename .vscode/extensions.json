@@ -1,3 +1,7 @@
 {
-  "recommendations": ["cweijan.dbclient-jdbc"]
+  "recommendations": [
+    "cweijan.dbclient-jdbc",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ]
 }

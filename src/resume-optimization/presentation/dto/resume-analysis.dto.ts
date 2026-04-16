@@ -31,7 +31,11 @@ export class ResumeAnalysisResponseDto {
   @ApiProperty({ description: 'Vacancy ID', format: 'uuid' })
   vacancyId: string;
 
-  @ApiPropertyOptional({ description: 'Source resume ID', format: 'uuid' })
+  @ApiPropertyOptional({
+    description: 'Source resume ID',
+    format: 'uuid',
+    type: String,
+  })
   sourceResumeId: string | null;
 
   @ApiProperty({
@@ -44,6 +48,7 @@ export class ResumeAnalysisResponseDto {
     description: 'Initial ATS score before optimization (0-100)',
     minimum: 0,
     maximum: 100,
+    type: Number,
   })
   initialAtsScore: number | null;
 
@@ -51,8 +56,30 @@ export class ResumeAnalysisResponseDto {
     description: 'Initial match score before optimization (0-100)',
     minimum: 0,
     maximum: 100,
+    type: Number,
   })
   initialMatchScore: number | null;
+
+  @ApiProperty({
+    description: 'Whether this analysis was used to apply to vacancy',
+  })
+  isApplied: boolean;
+
+  @ApiPropertyOptional({
+    description: 'ATS score at the moment of applying (0-100)',
+    minimum: 0,
+    maximum: 100,
+    type: Number,
+  })
+  appliedAtsScore: number | null;
+
+  @ApiPropertyOptional({
+    description: 'Match score at the moment of applying (0-100)',
+    minimum: 0,
+    maximum: 100,
+    type: Number,
+  })
+  appliedMatchScore: number | null;
 
   @ApiPropertyOptional({
     description: 'Key skills match analysis',
