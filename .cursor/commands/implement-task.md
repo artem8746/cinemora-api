@@ -30,11 +30,30 @@ Invoke the **senior-backend-developer** subagent with the plan.
 - Ask it to implement tasks in dependency order and to report what was done against the acceptance criteria.
 - Use the developer's output (and any code/artifacts) as the **implementation result** for the next step.
 
-### Step 4 — Test (QA)
+### Step 4 — Document feature (Dev)
 
-Invoke the **manual-senior-qa** subagent with the scope and implementation summary.
+Invoke the **senior-backend-developer** subagent with the implementation result.
 
-- In the prompt, include: the clarified scope, what was implemented (from the developer), and the acceptance criteria.
+- In the prompt, include: clarified scope, implemented changes, and acceptance criteria.
+- Ask it to create or update a feature doc in `docs/features/` for each implemented/changed feature.
+- Required doc sections:
+  - `# <Feature name>`
+  - `## Purpose`
+  - `## Business rules`
+  - `## Architecture and dependencies`
+  - `## API/contracts`
+  - `## Data model and migrations` (or "No schema changes")
+  - `## Edge cases and known limitations`
+  - `## How to change safely in future`
+  - `## Related files`
+- If a feature already has a doc, update it instead of creating duplicates.
+- Use this as the **documentation result** for the next step.
+
+### Step 5 — Test (QA)
+
+Invoke the **manual-senior-qa** subagent with the scope, implementation summary, and feature documentation summary.
+
+- In the prompt, include: the clarified scope, what was implemented (from the developer), the created/updated feature docs, and the acceptance criteria.
 - Ask for: test cases, exploratory focus areas, and release-readiness assessment.
 - Summarize for the user what was tested and what remains or is at risk.
 
@@ -46,4 +65,4 @@ Invoke the **manual-senior-qa** subagent with the scope and implementation summa
 
 ## Final output
 
-After Step 4, give the user a short summary: what was clarified, what was planned, what was implemented, and what QA recommended. List any follow-ups or risks.
+After Step 5, give the user a short summary: what was clarified, what was planned, what was implemented, what docs were created/updated, and what QA recommended. List any follow-ups or risks.
