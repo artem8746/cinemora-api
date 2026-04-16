@@ -16,10 +16,10 @@ export interface ResumeParsedContent {
         employer: string;
         jobTitle: string;
         location: string;
-        endDateNew: string; // format: "YYYY-MM" or ""
+        endDate: string; // format: "YYYY-MM" or ""
         description: string; // HTML with <ul><li>
         employerLink: string;
-        startDateNew: string; // format: "YYYY-MM"
+        startDate: string; // format: "YYYY-MM"
       }>;
     };
 
@@ -32,10 +32,10 @@ export interface ResumeParsedContent {
     project: {
       entries: Array<{
         subTitle: string;
-        endDateNew: string;
+        endDate: string;
         description: string; // HTML with <ul><li>
         projectTitle: string;
-        startDateNew: string;
+        startDate: string;
         projectTitleLink: string; // repo / project URL
       }>;
     };
@@ -45,10 +45,10 @@ export interface ResumeParsedContent {
         degree: string;
         school: string;
         location: string;
-        endDateNew: string;
+        endDate: string;
         schoolLink: string;
         description: string;
-        startDateNew: string;
+        startDate: string;
       }>;
     };
   };

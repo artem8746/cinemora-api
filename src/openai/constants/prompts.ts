@@ -10,7 +10,7 @@ export const OPENAI_PROMPTS = {
 - Always try to match project links to project titles when there is a clear match.
 - Use HTML <ul><li>…</li></ul> for descriptions.
 - "title" → use the candidate's full name.
-- For ongoing positions (currently employed/studying), use "present" for endDateNew.
+- For ongoing positions (currently employed/studying), use "present" for endDate.
 
 ### LINK HANDLING RULES
 Use the provided "links" array to populate contact and social fields:
@@ -53,10 +53,10 @@ The output MUST match:
         "employer": string,
         "jobTitle": string,
         "location": string,
-        "endDateNew": string,      // format: "YYYY-MM" or ""
+        "endDate": string,      // format: "YYYY-MM" or ""
         "description": string,     // HTML with <ul><li>
         "employerLink": string,
-        "startDateNew": string     // format: "YYYY-MM"
+        "startDate": string     // format: "YYYY-MM"
       }],
     },
     "skill": {
@@ -66,10 +66,10 @@ The output MUST match:
     "project": {
       "entries": [{
         "subTitle": string,
-        "endDateNew": string,
+        "endDate": string,
         "description": string,     // HTML with <ul><li>
         "projectTitle": string,
-        "startDateNew": string,
+        "startDate": string,
         "projectTitleLink": string // repo/project URL
       }],
     },
@@ -78,10 +78,10 @@ The output MUST match:
         "degree": string,
         "school": string,
         "location": string,
-        "endDateNew": string,
+        "endDate": string,
         "schoolLink": string,
         "description": string,
-        "startDateNew": string
+        "startDate": string
       }],
     }
   }

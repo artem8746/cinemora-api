@@ -81,10 +81,10 @@ export interface WorkEntry {
   isHidden: boolean;
   jobTitle: string;
   location: string;
-  endDateNew: string;
+  endDate: string;
   description: string; // HTML string
   employerLink: string;
-  startDateNew: string;
+  startDate: string;
 }
 
 export interface SkillEntry {
@@ -101,9 +101,9 @@ export interface CustomEntry {
   isHidden: boolean;
   location: string;
   subTitle: string;
-  endDateNew: string;
+  endDate: string;
   description: string;
-  startDateNew: string;
+  startDate: string;
   icon: string;
 }
 
@@ -117,10 +117,10 @@ export interface ProjectEntry {
   id: string;
   isHidden: boolean;
   subTitle: string;
-  endDateNew: string;
+  endDate: string;
   description: string; // HTML
   projectTitle: string;
-  startDateNew: string;
+  startDate: string;
   projectTitleLink: string;
 }
 
@@ -130,8 +130,8 @@ export interface EducationEntry {
   school: string;
   isHidden: boolean;
   location: string;
-  endDateNew: string;
+  endDate: string;
   schoolLink: string;
   description: string;
-  startDateNew: string;
+  startDate: string;
 }

@@ -49,10 +49,10 @@ Include in suggestedContent ONLY what changed. Omit a key entirely if nothing ch
 - personalDetails: include only changed keys (e.g. { "jobTitle": "...", "fullName": "..." }). Field names: phone, photo, social, address, fullName, jobTitle, detailsOrder, displayEmail.
 - content.<section>.entries: array of only changed or added entries (each entry must include ALL fields for its type). Section key names match the input: profile, work, skill, project, education.
   - profile entry fields: id, text, isHidden.
-  - work entry fields: id, employer, jobTitle, location, startDateNew, endDateNew, description, employerLink, isHidden.
+  - work entry fields: id, employer, jobTitle, location, startDate, endDate, description, employerLink, isHidden.
   - skill entry fields: id, skill, infoHtml, isHidden. **IMPORTANT**: Only include skill entries where content actually changed (skill name, infoHtml, or isHidden differs from original) or that are newly added. Do NOT include skills just because they exist — unchanged skills must be omitted. If you want to reorder skills, include ONLY the skills whose position changed along with a note in sectionChanges.
-  - project entry fields: id, projectTitle, projectTitleLink, subTitle, startDateNew, endDateNew, description, isHidden.
-  - education entry fields: id, degree, school, schoolLink, location, startDateNew, endDateNew, description, isHidden.
+  - project entry fields: id, projectTitle, projectTitleLink, subTitle, startDate, endDate, description, isHidden.
+  - education entry fields: id, degree, school, schoolLink, location, startDate, endDate, description, isHidden.
 - customization.sectionOrder: include only if section order changed (full array).
 
 Merge semantics: backend merges by entry id (replace existing, append new). For ALL sections including skills, only send entries that actually changed. Do NOT send the full list just for reordering — only include entries with changed content or position.
@@ -70,10 +70,10 @@ Merge semantics: backend merges by entry id (replace existing, append new). For 
     "personalDetails": { "jobTitle": "Senior Frontend Engineer" },
     "content": {
       "profile": { "entries": [{ "id": "existing-uuid-or-__new__1", "text": "...", "isHidden": false }] },
-      "work": { "entries": [{ "id": "existing-uuid-or-__new__2", "employer": "...", "jobTitle": "...", "location": "...", "startDateNew": "...", "endDateNew": "...", "description": "...", "employerLink": "...", "isHidden": false }] },
+      "work": { "entries": [{ "id": "existing-uuid-or-__new__2", "employer": "...", "jobTitle": "...", "location": "...", "startDate": "...", "endDate": "...", "description": "...", "employerLink": "...", "isHidden": false }] },
       "skill": { "entries": [{ "id": "only-changed-skill-id", "skill": "React", "infoHtml": "", "isHidden": false }] },
-      "project": { "entries": [{ "id": "existing-uuid-or-__new__4", "projectTitle": "...", "projectTitleLink": "...", "subTitle": "...", "startDateNew": "...", "endDateNew": "...", "description": "...", "isHidden": false }] },
-      "education": { "entries": [{ "id": "existing-uuid-or-__new__5", "degree": "...", "school": "...", "schoolLink": "...", "location": "...", "startDateNew": "...", "endDateNew": "...", "description": "...", "isHidden": false }] }
+      "project": { "entries": [{ "id": "existing-uuid-or-__new__4", "projectTitle": "...", "projectTitleLink": "...", "subTitle": "...", "startDate": "...", "endDate": "...", "description": "...", "isHidden": false }] },
+      "education": { "entries": [{ "id": "existing-uuid-or-__new__5", "degree": "...", "school": "...", "schoolLink": "...", "location": "...", "startDate": "...", "endDate": "...", "description": "...", "isHidden": false }] }
     },
     "customization": { "sectionOrder": ["profile", "work", "skill", "project", "education"] }
   },
