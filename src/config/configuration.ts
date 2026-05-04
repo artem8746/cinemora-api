@@ -80,6 +80,15 @@ function getR2Config(env: EnvironmentDto) {
   } as const;
 }
 
+function getPaymentConfig(env: EnvironmentDto) {
+  return {
+    plataApiToken: env.PLATA_API_TOKEN,
+    plataApiBaseUrl: env.PLATA_API_BASE_URL ?? 'https://api.monobank.ua',
+    successRedirectUrl: env.PAYMENT_SUCCESS_REDIRECT_URL,
+    webhookPublicUrl: env.PAYMENT_WEBHOOK_PUBLIC_URL,
+  } as const;
+}
+
 export function configuration(env: EnvironmentDto) {
   return {
     cors: getCorsConfig(env),
@@ -90,5 +99,6 @@ export function configuration(env: EnvironmentDto) {
     app: getAppConfig(env),
     redis: getRedisConfig(env),
     r2: getR2Config(env),
+    payment: getPaymentConfig(env),
   } as const;
 }

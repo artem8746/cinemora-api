@@ -1,5 +1,11 @@
 import { ToNumber } from '@/transformers/to-number.transaformer';
-import { IsEnum, IsNumber, IsString, IsNotEmpty } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsNotEmpty,
+} from 'class-validator';
 import { IsTimeDuration } from '@/validators/time-duration.validator';
 
 export class EnvironmentDto {
@@ -204,4 +210,27 @@ export class EnvironmentDto {
   @IsString()
   @IsNotEmpty()
   R2_PUBLIC_URL!: string;
+
+  // ==========================================
+  // Plata by Mono payment configuration
+  // ==========================================
+  @IsString()
+  @IsNotEmpty()
+  PLATA_API_TOKEN!: string;
+
+  @IsOptional()
+  @IsString()
+  PLATA_API_BASE_URL?: string;
+
+  /** Full URL Plata redirects the user to after payment (defaults to FRONTEND_URL/payment/success). */
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  PAYMENT_SUCCESS_REDIRECT_URL?: string;
+
+  /** Public HTTPS URL for Plata webhooks (defaults to DOMAIN + /api/payments/webhook/plata). */
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  PAYMENT_WEBHOOK_PUBLIC_URL?: string;
 }
