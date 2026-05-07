@@ -24,7 +24,8 @@
     "migration:generate": "sh -c 'ts-node --esm -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate src/database/migrations/$0 -d src/database/data-source.ts'",
     "migration:run": "ts-node --esm -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/database/data-source.ts",
     "migration:revert": "ts-node -r tsconfig-paths/register node_modules/.bin/typeorm migration:revert -d ./src/database/data-source.ts",
-    "env:sync": "ts-node -r tsconfig-paths/register scripts/sync-env.ts"
+    "env:sync": "ts-node -r tsconfig-paths/register scripts/sync-env.ts",
+    "tunnel:webhook": "ts-node scripts/ngrok-payment-webhook.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.931.0",

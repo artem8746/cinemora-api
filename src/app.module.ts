@@ -24,6 +24,8 @@ import { VacanciesModule } from './vacancies/vacancies.module';
 import { VacancyNotesModule } from './vacancy-notes/vacancy-notes.module';
 import { ResumeModule } from './resume/resume.module';
 import { ResumeOptimizationModule } from './resume-optimization/resume-optimization.module';
+import { PaymentsModule } from './payments/payments.module';
+import { IdempotencyModule } from './common/idempotency/idempotency.module';
 import Redis from 'ioredis';
 
 @Module({
@@ -112,6 +114,8 @@ import Redis from 'ioredis';
     NotificationsModule,
     VacanciesModule,
     VacancyNotesModule,
+    IdempotencyModule,
+    PaymentsModule,
   ],
   controllers: [],
   providers: [],
