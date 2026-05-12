@@ -52,6 +52,15 @@ export const PaymentResponses = {
               currency: { type: 'string', example: 'BYN' },
               ccy: { type: 'integer', example: 933 },
               isActive: { type: 'boolean', example: true },
+              order: { type: 'integer', example: 1 },
+              badge: {
+                oneOf: [{ type: 'string' }, { type: 'null' }],
+                example: 'Popular',
+              },
+              blurb: {
+                oneOf: [{ type: 'string' }, { type: 'null' }],
+                example: 'Best value for money',
+              },
             },
             required: [
               'id',
@@ -61,6 +70,9 @@ export const PaymentResponses = {
               'currency',
               'ccy',
               'isActive',
+              'order',
+              'badge',
+              'blurb',
             ],
           },
         },
@@ -96,6 +108,10 @@ export const PaymentResponses = {
                 oneOf: [{ type: 'string' }, { type: 'null' }],
                 example: 'invoice_123',
               },
+              invoiceUrl: {
+                oneOf: [{ type: 'string', format: 'uri' }, { type: 'null' }],
+                example: 'https://plata.by/checkout/abc123',
+              },
               providerData: {
                 oneOf: [{ type: 'object' }, { type: 'null' }],
                 additionalProperties: true,
@@ -113,6 +129,7 @@ export const PaymentResponses = {
               'status',
               'providerName',
               'providerInvoiceId',
+              'invoiceUrl',
               'providerData',
               'createdAt',
               'updatedAt',
@@ -157,6 +174,10 @@ export const PaymentResponses = {
           oneOf: [{ type: 'string' }, { type: 'null' }],
           example: 'invoice_123',
         },
+        invoiceUrl: {
+          oneOf: [{ type: 'string', format: 'uri' }, { type: 'null' }],
+          example: 'https://plata.by/checkout/abc123',
+        },
         providerData: {
           oneOf: [{ type: 'object' }, { type: 'null' }],
           additionalProperties: true,
@@ -174,6 +195,7 @@ export const PaymentResponses = {
         'status',
         'providerName',
         'providerInvoiceId',
+        'invoiceUrl',
         'providerData',
         'createdAt',
         'updatedAt',

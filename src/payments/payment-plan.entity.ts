@@ -22,4 +22,13 @@ export class PaymentPlan {
 
   @Column({ type: 'boolean', name: 'is_active', default: true })
   isActive: boolean;
+
+  @Column({ type: 'integer', default: 0 })
+  order: number;
+
+  @Column({ type: 'varchar', nullable: true })
+  badge: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  blurb: string | null;
 }

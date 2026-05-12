@@ -12,12 +12,27 @@ import {
   IPaymentProviderPort,
   WebhookPayload,
 } from '../../domain/payment-provider.port';
-import { PaymentStatus } from '../../domain/payment.types';
+import {
+  ProviderInvoiceState,
+  providerStateToPaymentStatus,
+} from '../../domain/provider-invoice-state';
 import { Configuration } from '@/config';
 
 interface PlataInvoiceCreateResponse {
   invoiceId: string;
   pageUrl: string;
+}
+
+interface PlataInvoiceStatusResponse {
+  status:
+    | 'success'
+    | 'failure'
+    | 'expired'
+    | 'reversed'
+    | 'processing'
+    | 'hold'
+    | 'created'
+    | null;
 }
 
 interface PlataPubKeyResponse {
@@ -96,6 +111,50 @@ export class PlataPaymentProviderAdapter
     return { invoiceId: data.invoiceId, pageUrl: data.pageUrl };
   }
 
+  async getInvoiceStatus(invoiceId: string): Promise<ProviderInvoiceState> {
+    const url = `${this.baseUrl}/api/merchant/invoice/status?invoiceId=${encodeURIComponent(invoiceId)}`;
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(
+        PlataPaymentProviderAdapter.REQUEST_TIMEOUT_MS,
+      ),
+      headers: { 'X-Token': this.apiToken },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Plata getInvoiceStatus failed: ${response.status} — ${errorText}`,
+      );
+    }
+
+    const data = (await response.json()) as PlataInvoiceStatusResponse;
+    return this.mapInvoiceState(data.status ?? '');
+  }
+
+  async cancelInvoice(invoiceId: string): Promise<void> {
+    const response = await fetch(
+      `${this.baseUrl}/api/merchant/invoice/cancel`,
+      {
+        method: 'POST',
+        signal: AbortSignal.timeout(
+          PlataPaymentProviderAdapter.REQUEST_TIMEOUT_MS,
+        ),
+        headers: {
+          'X-Token': this.apiToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ invoiceId }),
+      },
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Plata cancelInvoice failed: ${response.status} — ${errorText}`,
+      );
+    }
+  }
+
   parseWebhookBody(body: Record<string, unknown>): WebhookPayload {
     const invoiceId = body['invoiceId'];
     const statusRaw = body['status'];
@@ -141,7 +200,7 @@ export class PlataPaymentProviderAdapter
 
     return {
       invoiceId,
-      status: this.mapStatus(statusRaw),
+      status: providerStateToPaymentStatus(this.mapInvoiceState(statusRaw)),
       amount: numericAmount,
       ccy: ccy as number,
       finalAmount: numericFinal,
@@ -224,18 +283,25 @@ export class PlataPaymentProviderAdapter
     }
   }
 
-  private mapStatus(plataStatus: string): PaymentStatus {
+  private mapInvoiceState(plataStatus: string): ProviderInvoiceState {
     switch (plataStatus) {
       case 'success':
-        return PaymentStatus.SUCCESS;
+        return { kind: 'success' };
       case 'failure':
-        return PaymentStatus.FAILED;
+        return { kind: 'failed' };
       case 'expired':
-        return PaymentStatus.EXPIRED;
+        return { kind: 'expired' };
       case 'reversed':
-        return PaymentStatus.REVERSED;
+        return { kind: 'reversed' };
+      case 'created':
+        return { kind: 'pending_cancellable' };
+      case 'processing':
+      case 'hold':
+        return { kind: 'pending_in_flight' };
+      // Unknown / null — be conservative: assume the invoice may still be
+      // settling and let the scheduler retry instead of cancelling it.
       default:
-        return PaymentStatus.PENDING;
+        return { kind: 'pending_in_flight' };
     }
   }
 }

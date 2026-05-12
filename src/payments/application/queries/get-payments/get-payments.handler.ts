@@ -18,13 +18,13 @@ export class GetPaymentsHandler implements IQueryHandler<GetPaymentsQuery> {
   async execute(query: GetPaymentsQuery): Promise<GetPaymentsQueryResponse> {
     const { items, total } = await this.paymentsService.findByUserIdPaginated(
       query.userId,
-      query.page,
-      query.limit,
+      query.page ?? 1,
+      query.limit ?? 20,
     );
 
     return {
       items,
-      meta: buildPaginationMeta(query.page, query.limit, total),
+      meta: buildPaginationMeta(query.page ?? 1, query.limit ?? 20, total),
     };
   }
 }
