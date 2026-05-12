@@ -127,6 +127,18 @@ export class HandleWebhookHandler implements ICommandHandler<HandleWebhookComman
           };
         }
 
+        // Terminal non-SUCCESS states must not be upgraded by a late SUCCESS
+        // webhook — mirrors the guard in applyMissedSuccess and applyStatusUpdate.
+        if (payment.status !== PaymentStatus.PENDING) {
+          this.logger.warn(
+            `Webhook reports SUCCESS but payment ${payment.id} is locally ${payment.status}; not crediting`,
+          );
+          return {
+            outcome: PaymentWebhookOutcome.IGNORED_DUPLICATE,
+            paymentId: payment.id,
+          };
+        }
+
         this.assertWebhookMatchesPayment(webhook, payment);
 
         await manager.update(Payment, payment.id, {
