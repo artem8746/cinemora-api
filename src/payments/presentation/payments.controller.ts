@@ -30,6 +30,8 @@ import { GetCatalogQuery } from '../application/queries/get-catalog/get-catalog.
 import type { GetCatalogQueryResponse } from '../application/queries/get-catalog/get-catalog.handler';
 import { GetPaymentByIdQuery } from '../application/queries/get-payment-by-id/get-payment-by-id.query';
 import type { GetPaymentByIdQueryResponse } from '../application/queries/get-payment-by-id/get-payment-by-id.handler';
+import { GetPaymentReceiptQuery } from '../application/queries/get-payment-receipt/get-payment-receipt.query';
+import type { GetPaymentReceiptQueryResponse } from '../application/queries/get-payment-receipt/get-payment-receipt.handler';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { GetPaymentsQueryDto } from './dto/get-payments-query.dto';
 import { PaymentRequests } from '../swagger/request';
@@ -120,6 +122,29 @@ export class PaymentsController {
       GetPaymentByIdQuery,
       GetPaymentByIdQueryResponse
     >(new GetPaymentByIdQuery(id, userId));
+  }
+
+  @Get(':id/receipt')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get payment receipt PDF (base64) from the provider',
+    description:
+      'Returns the base64-encoded PDF receipt provided by Plata by Mono. Available only for the payment owner and only when payment status is SUCCESS.',
+  })
+  @PaymentResponses.GetPaymentReceiptSuccess
+  @PaymentResponses.GetPaymentReceiptNotFound
+  @PaymentResponses.GetPaymentReceiptConflict
+  @PaymentResponses.GetPaymentReceiptBadGateway
+  @PaymentResponses.GetPaymentsUnauthorized
+  async getPaymentReceipt(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUserId() userId: string,
+  ): Promise<GetPaymentReceiptQueryResponse> {
+    return await this.queryBus.execute<
+      GetPaymentReceiptQuery,
+      GetPaymentReceiptQueryResponse
+    >(new GetPaymentReceiptQuery(id, userId));
   }
 
   @Post('webhook/plata')

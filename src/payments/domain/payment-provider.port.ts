@@ -18,6 +18,10 @@ export interface InvoiceResult {
   pageUrl: string;
 }
 
+export interface ReceiptResult {
+  file: string;
+}
+
 export interface WebhookPayload {
   invoiceId: string;
   status: PaymentStatus;
@@ -35,4 +39,5 @@ export interface IPaymentProviderPort {
   verifyWebhookSignature(rawBody: Buffer, signature: string): Promise<boolean>;
   getInvoiceStatus(invoiceId: string): Promise<ProviderInvoiceState>;
   cancelInvoice(invoiceId: string): Promise<void>;
+  getReceipt(invoiceId: string): Promise<ReceiptResult>;
 }

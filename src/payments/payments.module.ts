@@ -15,6 +15,7 @@ import { ExpireStalePaymentsHandler } from './application/commands/expire-stale-
 import { GetPaymentsHandler } from './application/queries/get-payments/get-payments.handler';
 import { GetCatalogHandler } from './application/queries/get-catalog/get-catalog.handler';
 import { GetPaymentByIdHandler } from './application/queries/get-payment-by-id/get-payment-by-id.handler';
+import { GetPaymentReceiptHandler } from './application/queries/get-payment-receipt/get-payment-receipt.handler';
 import { StalePaymentsScheduler } from './application/stale-payments.scheduler';
 
 const CommandHandlers = [
@@ -26,6 +27,7 @@ const QueryHandlers = [
   GetPaymentsHandler,
   GetCatalogHandler,
   GetPaymentByIdHandler,
+  GetPaymentReceiptHandler,
 ];
 
 @Module({

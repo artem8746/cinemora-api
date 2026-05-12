@@ -208,6 +208,43 @@ export const PaymentResponses = {
     description: 'Payment not found or does not belong to the current user',
   }),
 
+  GetPaymentReceiptSuccess: ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Receipt PDF (base64) fetched successfully from the provider',
+    schema: {
+      type: 'object',
+      properties: {
+        pdfBase64: {
+          type: 'string',
+          description: 'Base64-encoded PDF receipt as returned by the provider',
+          example: 'JVBERi0xLj4QKJaqrrK0KMSAw...',
+        },
+        mimeType: {
+          type: 'string',
+          enum: ['application/pdf'],
+          example: 'application/pdf',
+        },
+      },
+      required: ['pdfBase64', 'mimeType'],
+    },
+  }),
+
+  GetPaymentReceiptNotFound: ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Payment not found or does not belong to the current user',
+  }),
+
+  GetPaymentReceiptConflict: ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description:
+      'Receipt is only available for payments with status SUCCESS and an attached provider invoice',
+  }),
+
+  GetPaymentReceiptBadGateway: ApiResponse({
+    status: HttpStatus.BAD_GATEWAY,
+    description: 'Payment provider failed to return the receipt',
+  }),
+
   PlataWebhookAccepted: ApiResponse({
     status: HttpStatus.OK,
     description:

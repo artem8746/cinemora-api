@@ -10,6 +10,7 @@ import {
   CreateInvoiceParams,
   InvoiceResult,
   IPaymentProviderPort,
+  ReceiptResult,
   WebhookPayload,
 } from '../../domain/payment-provider.port';
 import {
@@ -129,6 +130,29 @@ export class PlataPaymentProviderAdapter
 
     const data = (await response.json()) as PlataInvoiceStatusResponse;
     return this.mapInvoiceState(data.status ?? '');
+  }
+
+  async getReceipt(invoiceId: string): Promise<ReceiptResult> {
+    const url = `${this.baseUrl}/api/merchant/invoice/receipt?invoiceId=${encodeURIComponent(invoiceId)}`;
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(
+        PlataPaymentProviderAdapter.REQUEST_TIMEOUT_MS,
+      ),
+      headers: { 'X-Token': this.apiToken },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Plata getReceipt failed: ${response.status} — ${errorText}`,
+      );
+    }
+
+    const data = (await response.json()) as ReceiptResult;
+    if (typeof data.file !== 'string' || data.file.length === 0) {
+      throw new Error('Plata getReceipt: empty receipt file in response');
+    }
+    return data;
   }
 
   async cancelInvoice(invoiceId: string): Promise<void> {
