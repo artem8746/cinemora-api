@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { CommandBus } from '@nestjs/cqrs';
 import { ExpireStalePaymentsCommand } from './commands/expire-stale-payments/expire-stale-payments.command';
 
@@ -9,7 +9,7 @@ export class StalePaymentsScheduler {
 
   constructor(private readonly commandBus: CommandBus) {}
 
-  @Cron('0 */15 * * * *')
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async run(): Promise<void> {
     this.logger.debug('Running stale payments reconciliation');
     try {
