@@ -61,10 +61,13 @@ import Redis from 'ioredis';
     }),
     LoggerModule.forRoot({
       pinoHttp: {
+        level: process.env.LOG_LEVEL ?? 'info',
+        autoLogging: process.env.LOG_LEVEL !== 'silent',
         transport: {
           targets: [
             {
               target: 'pino-pretty',
+              level: process.env.LOG_LEVEL ?? 'info',
               options: {
                 translateTime: 'SYS:standard',
                 ignore: 'pid,hostname',

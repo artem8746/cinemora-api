@@ -1,10 +1,11 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, LessThan, Not, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { Payment } from '../payment.entity';
 import { PaymentPlan } from '../payment-plan.entity';
 import { PaymentSettings } from '../payment-settings.entity';
+import { PaymentStatus } from '../domain/payment.types';
 
 @Injectable()
 export class PaymentsService {
@@ -42,6 +43,16 @@ export class PaymentsService {
     return { items, total };
   }
 
+  findStalePendingPayments(olderThan: Date): Promise<Payment[]> {
+    return this.paymentsRepository.find({
+      where: {
+        status: PaymentStatus.PENDING,
+        providerInvoiceId: Not(IsNull()),
+        createdAt: LessThan(olderThan),
+      },
+    });
+  }
+
   async update(id: string, data: Partial<Payment>): Promise<void> {
     await this.paymentsRepository.update(
       id,
@@ -50,7 +61,10 @@ export class PaymentsService {
   }
 
   findActivePlans(): Promise<PaymentPlan[]> {
-    return this.plansRepository.find({ where: { isActive: true } });
+    return this.plansRepository.find({
+      where: { isActive: true },
+      order: { order: 'ASC' },
+    });
   }
 
   findPlanById(id: string): Promise<PaymentPlan | null> {
