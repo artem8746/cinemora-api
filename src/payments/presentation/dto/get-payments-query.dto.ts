@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsInt, Max, Min } from 'class-validator';
+import { IsInt, IsOptional, Max, Min } from 'class-validator';
 import { ToNumber } from '@/transformers/to-number.transaformer';
 
 export class GetPaymentsQueryDto {
@@ -9,10 +9,10 @@ export class GetPaymentsQueryDto {
     default: 1,
     example: 1,
   })
+  @IsOptional()
   @ToNumber({}, 1)
-  @IsInt()
-  @Min(1)
-  page!: number;
+  @Min(1, { always: false })
+  page?: number;
 
   @ApiPropertyOptional({
     description: 'Page size (max 100)',
@@ -21,9 +21,10 @@ export class GetPaymentsQueryDto {
     default: 20,
     example: 20,
   })
+  @IsOptional()
   @ToNumber({}, 20)
   @IsInt()
   @Min(1)
   @Max(100)
-  limit!: number;
+  limit?: number;
 }

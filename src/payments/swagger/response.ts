@@ -52,6 +52,15 @@ export const PaymentResponses = {
               currency: { type: 'string', example: 'BYN' },
               ccy: { type: 'integer', example: 933 },
               isActive: { type: 'boolean', example: true },
+              order: { type: 'integer', example: 1 },
+              badge: {
+                oneOf: [{ type: 'string' }, { type: 'null' }],
+                example: 'Popular',
+              },
+              blurb: {
+                oneOf: [{ type: 'string' }, { type: 'null' }],
+                example: 'Best value for money',
+              },
             },
             required: [
               'id',
@@ -61,6 +70,9 @@ export const PaymentResponses = {
               'currency',
               'ccy',
               'isActive',
+              'order',
+              'badge',
+              'blurb',
             ],
           },
         },
@@ -96,6 +108,10 @@ export const PaymentResponses = {
                 oneOf: [{ type: 'string' }, { type: 'null' }],
                 example: 'invoice_123',
               },
+              invoiceUrl: {
+                oneOf: [{ type: 'string', format: 'uri' }, { type: 'null' }],
+                example: 'https://plata.by/checkout/abc123',
+              },
               providerData: {
                 oneOf: [{ type: 'object' }, { type: 'null' }],
                 additionalProperties: true,
@@ -113,6 +129,7 @@ export const PaymentResponses = {
               'status',
               'providerName',
               'providerInvoiceId',
+              'invoiceUrl',
               'providerData',
               'createdAt',
               'updatedAt',
@@ -157,6 +174,10 @@ export const PaymentResponses = {
           oneOf: [{ type: 'string' }, { type: 'null' }],
           example: 'invoice_123',
         },
+        invoiceUrl: {
+          oneOf: [{ type: 'string', format: 'uri' }, { type: 'null' }],
+          example: 'https://plata.by/checkout/abc123',
+        },
         providerData: {
           oneOf: [{ type: 'object' }, { type: 'null' }],
           additionalProperties: true,
@@ -174,6 +195,7 @@ export const PaymentResponses = {
         'status',
         'providerName',
         'providerInvoiceId',
+        'invoiceUrl',
         'providerData',
         'createdAt',
         'updatedAt',
@@ -184,6 +206,43 @@ export const PaymentResponses = {
   GetPaymentByIdNotFound: ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Payment not found or does not belong to the current user',
+  }),
+
+  GetPaymentReceiptSuccess: ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Receipt PDF (base64) fetched successfully from the provider',
+    schema: {
+      type: 'object',
+      properties: {
+        pdfBase64: {
+          type: 'string',
+          description: 'Base64-encoded PDF receipt as returned by the provider',
+          example: 'JVBERi0xLj4QKJaqrrK0KMSAw...',
+        },
+        mimeType: {
+          type: 'string',
+          enum: ['application/pdf'],
+          example: 'application/pdf',
+        },
+      },
+      required: ['pdfBase64', 'mimeType'],
+    },
+  }),
+
+  GetPaymentReceiptNotFound: ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Payment not found or does not belong to the current user',
+  }),
+
+  GetPaymentReceiptConflict: ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description:
+      'Receipt is only available for payments with status SUCCESS and an attached provider invoice',
+  }),
+
+  GetPaymentReceiptBadGateway: ApiResponse({
+    status: HttpStatus.BAD_GATEWAY,
+    description: 'Payment provider failed to return the receipt',
   }),
 
   PlataWebhookAccepted: ApiResponse({

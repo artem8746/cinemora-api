@@ -1,4 +1,5 @@
 import { PaymentStatus } from './payment.types';
+import { ProviderInvoiceState } from './provider-invoice-state';
 
 export const PAYMENT_PROVIDER_PORT = Symbol('IPaymentProviderPort');
 
@@ -17,6 +18,10 @@ export interface InvoiceResult {
   pageUrl: string;
 }
 
+export interface ReceiptResult {
+  file: string;
+}
+
 export interface WebhookPayload {
   invoiceId: string;
   status: PaymentStatus;
@@ -32,4 +37,7 @@ export interface IPaymentProviderPort {
   createInvoice(params: CreateInvoiceParams): Promise<InvoiceResult>;
   parseWebhookBody(body: Record<string, unknown>): WebhookPayload;
   verifyWebhookSignature(rawBody: Buffer, signature: string): Promise<boolean>;
+  getInvoiceStatus(invoiceId: string): Promise<ProviderInvoiceState>;
+  cancelInvoice(invoiceId: string): Promise<void>;
+  getReceipt(invoiceId: string): Promise<ReceiptResult>;
 }
