@@ -6,6 +6,7 @@ import type { ParsedVacancyResponse } from './types/parsed-vacancy.type';
 import type { ParsedVacancyData } from './types/parsed-vacancy.type';
 import { ParsedResume } from '@/resume/presentation/types/resume';
 import { ResumeRawContent } from '@/resume/presentation/types/resume';
+import { ResumeParsedContent } from '@/openai/types/resume';
 import { RESUME_PARSER_SYSTEM } from './constants/prompts/resume.prompt';
 import {
   VACANCY_PARSER_SYSTEM,
@@ -22,7 +23,11 @@ import {
 } from './constants/prompts/resume-optimization.prompt';
 import type { ResumeMatchResponseDto } from '@/resume/presentation/dto/compare-resume.dto';
 import type { ResumeOptimizationResult } from '@/resume-optimization/presentation/types/resume-analysis';
-import { removeMarkdownCodeBlocks, assignIdsToNewEntries } from '@/utils';
+import {
+  removeMarkdownCodeBlocks,
+  assignIdsToNewEntries,
+  stripUnchangedSuggestions,
+} from '@/utils';
 import {
   COMPANY_ENRICHMENT_SYSTEM_PROMPT,
   getCompanyEnrichmentPrompt,
@@ -44,7 +49,7 @@ export class OpenAIService {
 
   async parseRawResumeContent(
     rawContent: ResumeRawContent,
-  ): Promise<ParsedResume> {
+  ): Promise<ResumeParsedContent> {
     try {
       this.logger.log(`Processing raw resume content`);
 
@@ -68,7 +73,7 @@ export class OpenAIService {
         throw new Error('Failed to parse resume: empty response from OpenAI');
       }
 
-      const parsed = JSON.parse(content) as ParsedResume;
+      const parsed = JSON.parse(content) as ResumeParsedContent;
 
       this.logger.debug(
         `Successfully parsed resume: ${parsed.title || 'Untitled'}`,
@@ -181,6 +186,12 @@ export class OpenAIService {
       result.analysis.improvements = result.analysis.improvements ?? [];
       result.sectionChanges = result.sectionChanges ?? {};
       result.suggestedContent = result.suggestedContent ?? {};
+
+      stripUnchangedSuggestions(
+        result.suggestedContent,
+        result.sectionChanges,
+        resume,
+      );
 
       assignIdsToNewEntries(result.suggestedContent, result.sectionChanges);
 

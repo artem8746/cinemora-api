@@ -3,7 +3,7 @@ import { OpenAIService } from '../../openai.service';
 import { ParseResumeRawContentCommand } from './parse-text-to-resume.command';
 import { ResumeParsedContent } from '@/openai/types/resume';
 
-const MOCK_RESPONSE = {
+const _MOCK_RESPONSE = {
   title: 'Artem Malikov',
   personalDetails: {
     phone: '0982605316',
@@ -44,39 +44,22 @@ const MOCK_RESPONSE = {
     },
     skill: {
       entries: [
-        'HTML5',
-        'CSS3',
-        'Sass (SCSS)',
-        'CSS Modules',
-        'BEM',
-        'Tailwind',
-        'shadcn/ui',
-        'Framer Motion',
-        'Material UI',
-        'React',
-        'Next.js',
-        'Redux',
-        'JavaScript',
-        'TypeScript',
-        'Axios',
-        'Mantine',
-        'React Flow',
-        'Node.js',
-        'Express',
-        'Nest.js',
-        'REST API',
-        'GraphQL',
-        'Sequelize',
-        'Prisma ORM',
-        'PostgreSQL',
-        'Firebase',
-        'Docker',
-        'Git',
-        'CI/CD',
-        'Yarn',
-        'Webpack',
-        'Agile',
-        'OOP',
+        {
+          skill: 'Frontend',
+          description:
+            'HTML5, CSS3, Sass (SCSS), CSS Modules, BEM, Tailwind, shadcn/ui, Framer Motion, Material UI, React, Next.js, Redux, JavaScript, TypeScript, Axios, Mantine, React Flow',
+        },
+        {
+          skill: 'Backend',
+          description:
+            'Node.js, Express, Nest.js, REST API, GraphQL, Sequelize, Prisma ORM',
+        },
+        {
+          skill: 'DevOps & Tools',
+          description:
+            'PostgreSQL, Firebase, Docker, Git, CI/CD, Yarn, Webpack',
+        },
+        { skill: 'Methodologies', description: 'Agile, OOP' },
       ],
     },
     profile:
@@ -135,11 +118,11 @@ export class ParseTextToResumeHandler implements ICommandHandler<ParseResumeRawC
   constructor(private readonly openAIService: OpenAIService) {}
 
   // TODO: Uncomment this to use the actual OpenAI API
-  execute(
-    _command: ParseResumeRawContentCommand,
+  async execute(
+    command: ParseResumeRawContentCommand,
   ): Promise<ResumeParsedContent> {
-    // return await this.openAIService.parseRawResumeContent(command.rawContent);
-    return Promise.resolve(MOCK_RESPONSE);
+    return await this.openAIService.parseRawResumeContent(command.rawContent);
+    // return Promise.resolve(_MOCK_RESPONSE);
   }
 }
 

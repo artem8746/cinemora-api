@@ -106,10 +106,10 @@ export class ResumeContentMapper {
     skill: ResumeParsedContent['content']['skill'],
   ): Section<SkillEntry> {
     return {
-      entries: skill.entries.map((skillName) => ({
+      entries: skill.entries.map((entry) => ({
         id: randomUUID(),
-        skill: skillName,
-        infoHtml: '',
+        skill: entry.skill,
+        description: entry.description,
         isHidden: false,
       })),
       iconKey: 'skill',

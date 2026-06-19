@@ -90,7 +90,7 @@ export interface WorkEntry {
 export interface SkillEntry {
   id: string;
   skill: string;
-  infoHtml: string;
+  description: string;
   isHidden: boolean;
 }
 

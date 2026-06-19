@@ -39,7 +39,7 @@ const skillEntrySchema = {
   properties: {
     id: { type: 'string' },
     skill: { type: 'string' },
-    infoHtml: { type: 'string' },
+    description: { type: 'string' },
     isHidden: { type: 'boolean' },
   },
   additionalProperties: false,

@@ -32,6 +32,14 @@ Use the provided "links" array to populate contact and social fields:
 **Photo:**
 - If an image URL is present in links (profile photo), use it for personalDetails.photo; otherwise empty string
 
+### SKILL HANDLING RULES
+- If the resume lists skills as a flat list (no category headings), output one entry per skill: { "skill": "<name>", "description": "" }.
+- If the resume groups skills under category labels (e.g., "Frontend: React, Next.js", "Backend — Node.js, Express", "Databases | PostgreSQL, Redis"), output one entry PER GROUP:
+  - "skill" → the category label exactly as written (e.g., "Frontend")
+  - "description" → the skills in that group as a comma-separated string (e.g., "React, Next.js, Redux")
+- Do NOT mix the two: if the resume is grouped, never flatten it; if it is flat, never invent groupings.
+- Preserve original ordering of groups and of skills within each group.
+
 ### STRUCTURE
 The output MUST match:
 
@@ -60,7 +68,10 @@ The output MUST match:
       }],
     },
     "skill": {
-      "entries": [string],
+      "entries": [{
+        "skill": string,       // skill name OR group label (e.g., "Frontend") when the resume groups skills
+        "description": string  // "" for ungrouped skills; comma-separated list of skills when "skill" is a group label
+      }],
     },
     "profile": string,            // summary/about text
     "project": {

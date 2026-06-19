@@ -24,7 +24,10 @@ export interface ResumeParsedContent {
     };
 
     skill: {
-      entries: string[];
+      entries: Array<{
+        skill: string; // skill name, or group label (e.g., "Frontend") when grouped
+        description: string; // empty for ungrouped skills; comma-separated list of skills when `skill` is a group label
+      }>;
     };
 
     profile: string; // summary/about

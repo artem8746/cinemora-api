@@ -38,11 +38,14 @@ const workEntrySchema = {
 const skillEntrySchema = {
   type: 'object',
   properties: {
-    skill: { type: 'string', example: 'TypeScript' },
-    infoHtml: { type: 'string', example: '<p>Advanced level</p>' },
+    skill: { type: 'string', example: 'Frontend' },
+    description: {
+      type: 'string',
+      example: 'React, Next.js, Redux, TypeScript',
+    },
     isHidden: { type: 'boolean', example: false },
   },
-  required: ['skill', 'infoHtml', 'isHidden'],
+  required: ['skill', 'description', 'isHidden'],
 };
 
 const profileEntrySchema = {
