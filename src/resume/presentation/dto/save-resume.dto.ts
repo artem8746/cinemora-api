@@ -20,7 +20,8 @@ export class SaveResumeDto {
   resume: SaveResumeInput;
 
   @ApiPropertyOptional({
-    description: 'Vacancy ID to save as vacancy-specific optimized resume',
+    description:
+      'Vacancy ID to save as vacancy-specific optimized resume. Must be sent together with analysisId or omitted together.',
     format: 'uuid',
   })
   @IsOptional()
@@ -29,7 +30,7 @@ export class SaveResumeDto {
 
   @ApiPropertyOptional({
     description:
-      'Analysis ID that generated this resume (links saved resume to the analysis)',
+      'Analysis ID that generated this resume (links saved resume to the analysis). Must be sent together with vacancyId or omitted together.',
     format: 'uuid',
   })
   @IsOptional()

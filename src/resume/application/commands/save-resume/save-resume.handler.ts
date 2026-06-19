@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { SaveResumeCommand } from './save-resume.command';
 import { ResumeService } from '../../resume.service';
 import { Resume } from '@/resume/resume.entity';
@@ -14,6 +14,12 @@ export class SaveResumeHandler implements ICommandHandler<SaveResumeCommand> {
 
   async execute(command: SaveResumeCommand): Promise<Resume> {
     const { userId, resume, vacancyId, analysisId } = command;
+
+    if (Boolean(vacancyId) !== Boolean(analysisId)) {
+      throw new BadRequestException(
+        'vacancyId and analysisId must be provided together or omitted together',
+      );
+    }
 
     const parsedResume: SaveResumeInput = {
       ...resume,
