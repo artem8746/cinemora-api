@@ -212,17 +212,11 @@ export class VacanciesService {
           status: VacancyStatus.SENT_CV,
         });
 
-      await this.vacancyRepository.manager
-        .createQueryBuilder()
-        .insert()
-        .into('user_vacancies')
-        .values({
-          vacancy_id: vacancy.id,
-          user_id: user.id,
-          status: VacancyStatus.SENT_CV,
-          position,
-        })
-        .execute();
+      await this.vacancyRepository.manager.query(
+        `INSERT INTO "user_vacancies" ("vacancy_id", "user_id", "status", "position")
+         VALUES ($1, $2, $3, $4)`,
+        [vacancy.id, user.id, VacancyStatus.SENT_CV, position],
+      );
 
       this.logger.log(`Adding user ${user.id} to vacancy`);
     } else {
